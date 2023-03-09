@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
@@ -6,22 +5,10 @@ import '../../../model/Schedule.dart';
 
 const List<int> hourList = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3];
 
-class ScheduleStartEndPoint {
-  final Schedule schedule;
-  final Point<int> startPoint;
-  final Point<int> endPoint;
-
-  ScheduleStartEndPoint({
-    required this.schedule,
-    required this.startPoint,
-    required this.endPoint,
-  });
-}
-
 class ScheduleTable extends StatefulWidget {
   final List<Schedule> scheduleList;
   final void Function(Schedule schedule) onTapSchedule;
-  final void Function(List<Point<int>> pointList) onTapSelectedCell;
+  final void Function(List<int> indexList) onTapSelected;
   final double width;
   final double? height;
   final double? rowHeaderWidth;
@@ -32,7 +19,7 @@ class ScheduleTable extends StatefulWidget {
     Key? key,
     required this.scheduleList,
     required this.onTapSchedule,
-    required this.onTapSelectedCell,
+    required this.onTapSelected,
     required this.width,
     this.height,
     this.rowHeaderWidth,
@@ -46,16 +33,17 @@ class ScheduleTable extends StatefulWidget {
 
 class _ScheduleTableState extends State<ScheduleTable> {
   bool onLoading = true;
-  List<Point<int>> unselectableCellList = [];
-  List<Point<int>> selectedPointList = [];
-  Point<int>? startPoint;
-  Point<int> minUnselectablePoint = const Point(0, 24);
-  Point<int>? endPoint;
+
+  List<int> unselectableIndexList = [];
+  List<int> selectedIndexList = [];
+  int? startIndex;
+  int minUnselectableIndex = 144;
+  int? endIndex;
 
   @override
   void initState() {
     setState(() {
-      widget.scheduleList.forEach((schedule) => unselectableCellList.addAll(schedule.schedulePointList));
+      widget.scheduleList.forEach((schedule) => unselectableIndexList.addAll(schedule.scheduleIndexList));
       onLoading = false;
     });
     super.initState();
@@ -66,73 +54,58 @@ class _ScheduleTableState extends State<ScheduleTable> {
     super.dispose();
   }
 
-  void getMinUnselectablePoint(Point<int> point) {
-    if (unselectableCellList.contains(point)) {
-      minUnselectablePoint = point;
+  void getMinUnselectableIndex(int currentIndex) {
+    if (unselectableIndexList.contains(currentIndex)) {
+      minUnselectableIndex = currentIndex;
       return;
     }
     int minDistance = 144;
-    for (int i = 0; i < unselectableCellList.length; i++) {
-      Point<int> unselectablePoint = unselectableCellList[i];
-      int distance = (unselectablePoint.y - point.y) * 6 + (unselectablePoint.x - point.x);
+    for (int i = 0; i < unselectableIndexList.length; i++) {
+      int unselectableIndex = unselectableIndexList[i];
+      int distance = unselectableIndex - currentIndex;
       if (distance > 0 && distance < minDistance) {
         minDistance = distance;
-        minUnselectablePoint = unselectablePoint;
+        minUnselectableIndex = unselectableIndex;
       }
     }
   }
 
-  bool enablePoint(Point<int> point) {
-    return ((minUnselectablePoint.y - point.y) * 6 + minUnselectablePoint.x - point.x) > 0;
+  bool isEnableIndex(int index) {
+    return (minUnselectableIndex - index) > 0;
   }
 
-  Color? getCellColor(Point<int> point) {
-    if (unselectableCellList.contains(point)) {
-      String colorHex = widget.scheduleList.firstWhere((schedule) => schedule.schedulePointList.contains(point)).scheduleColorHex;
+  Color? getIndexColor(int index) {
+    if (unselectableIndexList.contains(index)) {
+      String colorHex = widget.scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.contains(index)).scheduleColorHex;
       return Color(int.parse(colorHex, radix: 16) + 0xFF000000);
     }
     return null;
   }
 
-  Schedule? getCellSchedule({required Point<int> point}) {
+  Schedule? getIndexSchedule(int index) {
     try {
-      return widget.scheduleList.firstWhere((e) => e.schedulePointList.first == point);
+      return widget.scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.first == index);
     } catch (e) {
       return null;
     }
   }
 
-  bool isCellSelected(Point<int> point) {
-    if (startPoint == null || endPoint == null) {
+  bool isSelectedIndex(int index) {
+    if (startIndex == null || endIndex == null) {
       return false;
     }
-    return ((point.y - startPoint!.y) * 6 + point.x - startPoint!.x) >= 0 && ((endPoint!.y - point.y) * 6 + endPoint!.x - point.x) >= 0;
+    return !(index - startIndex!).isNegative && !(endIndex! - index).isNegative;
   }
 
-  Point<int> getPointFromPosition({required Offset position, required double cellHeight, required double cellWidth}) {
-    final x = position.dx ~/ cellWidth;
-    final y = position.dy ~/ cellHeight;
-    return Point<int>(x, y);
+  int getIndexFromPosition({required Offset position, required double cellHeight, required double cellWidth}) {
+    final int x = position.dx ~/ cellWidth;
+    final int y = position.dy ~/ cellHeight;
+    return (x + 6 * y);
   }
 
-  void setSelectedPointList() {
-    if (startPoint!.y == endPoint!.y) {
-      for (int x = startPoint!.x; x < endPoint!.x + 1; x++) {
-        selectedPointList.add(Point<int>(x, startPoint!.y));
-      }
-      return;
-    }
-
-    for (int x = startPoint!.x; x < 6; x++) {
-      selectedPointList.add(Point<int>(x, startPoint!.y));
-    }
-    for (int y = startPoint!.y + 1; y < endPoint!.y; y++) {
-      for (int x = 0; x < 6; x++) {
-        selectedPointList.add(Point<int>(x, y));
-      }
-    }
-    for (int x = 0; x < endPoint!.x + 1; x++) {
-      selectedPointList.add(Point<int>(x, endPoint!.y));
+  void setSelectedIndexList() {
+    for (int index = startIndex! ; index < endIndex! + 1 ; index++) {
+      selectedIndexList.add(index);
     }
   }
 
@@ -224,51 +197,51 @@ class _ScheduleTableState extends State<ScheduleTable> {
                       ),
                       GestureDetector(
                         onTapDown: (TapDownDetails details) {
-                          Point<int> selectedPoint = getPointFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
-                          if (selectedPointList.contains(selectedPoint)) {
-                            widget.onTapSelectedCell(selectedPointList);
+                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                          if (selectedIndexList.contains(selectedIndex)) {
+                            widget.onTapSelected(selectedIndexList);
                             return;
                           }
-                          if (endPoint != null) {
+                          if (endIndex != null) {
                             setState(() {
-                              startPoint = null;
-                              endPoint = null;
-                              minUnselectablePoint = const Point(0, 24);
-                              selectedPointList.clear();
+                              startIndex = null;
+                              endIndex = null;
+                              minUnselectableIndex = 144;
+                              selectedIndexList.clear();
                             });
                             return;
                           }
-                          final int scheduleIndex = widget.scheduleList.indexWhere((schedule) => schedule.schedulePointList.contains(selectedPoint));
+                          final int scheduleIndex = widget.scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
                           if (scheduleIndex == -1) return;
 
                           final Schedule schedule = widget.scheduleList[scheduleIndex];
                           widget.onTapSchedule(schedule);
                         },
                         onLongPressStart: (LongPressStartDetails details) {
-                          selectedPointList.clear();
-                          Point<int> selectedPoint = getPointFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
-                          getMinUnselectablePoint(selectedPoint);
-                          if (!enablePoint(selectedPoint)) return;
+                          selectedIndexList.clear();
+                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                          getMinUnselectableIndex(selectedIndex);
+                          if (!isEnableIndex(selectedIndex)) return;
                           setState(() {
-                            startPoint = selectedPoint;
-                            endPoint = null;
+                            startIndex = selectedIndex;
+                            endIndex = null;
                           });
                         },
                         onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                          Point<int> selectedPoint = getPointFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
 
                           setState(() {
-                            if (startPoint == null || !enablePoint(selectedPoint)) {
+                            if (startIndex == null || !isEnableIndex(selectedIndex)) {
                               return;
                             }
-                            endPoint = selectedPoint;
+                            endIndex = selectedIndex;
                           });
                         },
                         onLongPressEnd: (LongPressEndDetails details) {
                           setState(() {
-                            minUnselectablePoint = const Point(0, 24);
-                            if (startPoint == null || endPoint == null) return;
-                            setSelectedPointList();
+                            minUnselectableIndex = 144;
+                            if (startIndex == null || endIndex == null) return;
+                            setSelectedIndexList();
                           });
                         },
                         child: SizedBox(
@@ -302,7 +275,7 @@ class _ScheduleTableState extends State<ScheduleTable> {
         continue;
       }
 
-      Schedule? schedule = getCellSchedule(point: Point<int>(columnIndex, rowIndex));
+      Schedule? schedule = getIndexSchedule(rowIndex * 6 + columnIndex);
 
       if (schedule == null) {
         tableRow.add(
@@ -315,8 +288,8 @@ class _ScheduleTableState extends State<ScheduleTable> {
                 width: 0.5,
                 strokeAlign: StrokeAlign.center,
               ),
-              color: getCellColor(Point<int>(columnIndex, rowIndex)) ??
-                  (isCellSelected(Point<int>(columnIndex, rowIndex))
+              color: getIndexColor(rowIndex * 6 + columnIndex) ??
+                  (isSelectedIndex(rowIndex * 6 + columnIndex)
                       ? Colors.blue
                       : rowIndex < 14 && rowIndex > 1
                           ? StyledPalette.WHITE
@@ -327,7 +300,7 @@ class _ScheduleTableState extends State<ScheduleTable> {
         continue;
       }
 
-      columnSpan = schedule.schedulePointList.where((element) => element.y == rowIndex).length;
+      columnSpan = schedule.scheduleIndexList.where((schedule) => schedule ~/ 6 == rowIndex).length;
       Color scheduleColor = Color(int.parse(schedule.scheduleColorHex, radix: 16) + 0xFF000000);
       tableRow.add(
         SizedBox(

@@ -2,7 +2,8 @@ import 'dart:math';
 
 class Schedule {
   final int scheduleId;
-  final List<Point<int>> schedulePointList;
+  final DateTime scheduleDate;
+  final List<int> scheduleIndexList;
   final String scheduleColorHex;
   final String scheduleName;
   final String scheduleDetail;
@@ -10,7 +11,8 @@ class Schedule {
 
   Schedule({
     required this.scheduleId,
-    required this.schedulePointList,
+    required this.scheduleDate,
+    required this.scheduleIndexList,
     required this.scheduleColorHex,
     required this.scheduleName,
     required this.scheduleDetail,

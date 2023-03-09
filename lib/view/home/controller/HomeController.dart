@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../constant/PageNames.dart';
 import '../../../model/Schedule.dart';
+import '../component/bottomSheet/ScheduleBottomSheet.dart';
 
 const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -18,8 +18,13 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   final Rx<bool> isSelecting = RxBool(false);
   Set<int> previousSelectedIndexList = {};
 
+  /// Select Schedule
+  final Rxn<Schedule> selectedSchedule = Rxn(null);
   final Rx<DateTime> selectedDate = Rx(DateTime.now());
   final Rx<String> selectedDateText = Rx("");
+
+  // final Rx<int> selectedScheduleStartAt = Rx(0);
+  // final Rx<int> selectedScheduleEndAt = Rx(0);
 
   @override
   void onInit() async {
@@ -41,44 +46,65 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   Future<void> getScheduleList() async {
     scheduleList.clear();
     scheduleList.addAll([
-      Schedule(scheduleId: 1, schedulePointList: [Point<int>(1, 2), Point<int>(2, 2), Point<int>(3, 2)], scheduleColorHex: "859039", scheduleName: "코딩 공부", scheduleDetail: "DateTime 공부", scheduleDone: false),
-      Schedule(scheduleId: 1, schedulePointList: [Point<int>(2, 6), Point<int>(3, 6), Point<int>(4, 6), Point<int>(5, 6), Point<int>(0, 7), Point<int>(1, 7)], scheduleColorHex: "77DD77", scheduleName: "코딩", scheduleDetail: "DateTime 작업", scheduleDone: false),
+      Schedule(
+          scheduleId: 1,
+          scheduleDate: DateTime(2023, 3, 10),
+          scheduleIndexList: [13, 14, 15],
+          scheduleColorHex: "859039",
+          scheduleName: "코딩 공부",
+          scheduleDetail: "DateTime 공부",
+          scheduleDone: false),
+      Schedule(
+          scheduleId: 1,
+          scheduleDate: DateTime(2023, 3, 10),
+          scheduleIndexList: [38, 39, 40, 41, 42, 43],
+          scheduleColorHex: "77DD77",
+          scheduleName: "코딩",
+          scheduleDetail: "DateTime 작업",
+          scheduleDone: false),
     ]);
     scheduleList.refresh();
   }
 
-  void createSchedule(List<Point<int>> pointList) async {
-    final Schedule? schedule = await Get.toNamed(PageNames.CREATE, arguments: pointList) as Schedule?;
+  void createSchedule(List<int> indexList) async {
+    final Schedule? schedule = await Get.toNamed(PageNames.CREATE, arguments: indexList) as Schedule?;
     if (schedule == null) return;
 
     await uploadSchedule(schedule: schedule);
     confirmSelection();
   }
 
+  Future<void> selectSchedule({required Schedule schedule}) async {
+    selectedSchedule.value = schedule;
+    selectedDate.value = schedule.scheduleDate;
+    selectedDateText.value = dateToString(date: schedule.scheduleDate);
+  }
+
   void showScheduleDetail(Schedule schedule) async {
-    // await Get.bottomSheet(
-    //     BottomSheet(onClosing: () => print("hello"), builder: (context) => Container(
-    //       color: Colors.blue,
-    //       height: 200,
-    //       width: double.infinity,
-    //       child: Text(schedule.scheduleName),
-    //     ))
-    // );
+    await selectSchedule(schedule: schedule);
+    bool? isSaved = await Get.bottomSheet(const ScheduleBottomSheet()) as bool?;
+
+    if (isSaved == null) return;
   }
 
-  Future<void> uploadSchedule({required Schedule schedule}) async {
-  }
+  Future<void> uploadSchedule({required Schedule schedule}) async {}
 
-  void confirmSelection() {
-
-  }
+  void confirmSelection() {}
 
   String dateToString({required DateTime date}) {
-    return '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday%7]})';
+    return '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]})';
   }
 
   /// BottomSheet
-  void onTapBottomSheet() async {
+  void onTapBottomSheet() async {}
 
+  void closeScheduleBottomSheet() {}
+
+  void deleteSchedule() async {
+    // TODO : [Feat] Create Function to Delete Schedule
+  }
+
+  void saveSchedule() async {
+    // TODO : [Feat] Create Function to Delete Schedule
   }
 }
