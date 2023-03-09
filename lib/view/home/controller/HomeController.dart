@@ -22,9 +22,17 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   final Rxn<Schedule> selectedSchedule = Rxn(null);
   final Rx<DateTime> selectedDate = Rx(DateTime.now());
   final Rx<String> selectedDateText = Rx("");
+  int selectedScheduleStartAt = 0;
+  int selectedScheduleEndAt = 0;
 
-  // final Rx<int> selectedScheduleStartAt = Rx(0);
-  // final Rx<int> selectedScheduleEndAt = Rx(0);
+  String get selectedScheduleTimeText =>
+      '${selectedScheduleStartAt ~/ 6 + 4}시 ${selectedScheduleStartAt % 6 * 10}분 ~ ${selectedScheduleEndAt ~/ 6 + 4}시 ${selectedScheduleEndAt % 6 * 10 + 10}분 (${(selectedScheduleEndAt - selectedScheduleStartAt) * 10 + 10}분)';
+
+  /// Schedule Editor
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController memberController = TextEditingController();
+  final TextEditingController detailController = TextEditingController();
 
   @override
   void onInit() async {
@@ -47,21 +55,26 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
     scheduleList.clear();
     scheduleList.addAll([
       Schedule(
-          scheduleId: 1,
-          scheduleDate: DateTime(2023, 3, 10),
-          scheduleIndexList: [13, 14, 15],
-          scheduleColorHex: "859039",
-          scheduleName: "코딩 공부",
-          scheduleDetail: "DateTime 공부",
-          scheduleDone: false),
+        scheduleId: 1,
+        scheduleDate: DateTime(2023, 3, 10),
+        scheduleIndexList: [13, 14, 15],
+        scheduleColorHex: "859039",
+        scheduleTitle: "코딩 공부",
+        scheduleDetail: "DateTime 공부",
+        scheduleDone: false,
+        scheduleMember: [],
+      ),
       Schedule(
-          scheduleId: 1,
-          scheduleDate: DateTime(2023, 3, 10),
-          scheduleIndexList: [38, 39, 40, 41, 42, 43],
-          scheduleColorHex: "77DD77",
-          scheduleName: "코딩",
-          scheduleDetail: "DateTime 작업",
-          scheduleDone: false),
+        scheduleId: 1,
+        scheduleDate: DateTime(2023, 3, 10),
+        scheduleIndexList: [38, 39, 40, 41, 42, 43],
+        scheduleColorHex: '77DD77',
+        scheduleTitle: '코딩',
+        scheduleDetail: 'DB 구축 회의\n짱구 - 모델 설계\n철수 - API 설계\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택 ',
+        scheduleDone: false,
+        scheduleMember: ['짱구','철수','맹구'],
+        scheduleLocation: '서울',
+      ),
     ]);
     scheduleList.refresh();
   }
@@ -78,6 +91,8 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
     selectedSchedule.value = schedule;
     selectedDate.value = schedule.scheduleDate;
     selectedDateText.value = dateToString(date: schedule.scheduleDate);
+    selectedScheduleStartAt = schedule.scheduleIndexList.first;
+    selectedScheduleEndAt = schedule.scheduleIndexList.last;
   }
 
   void showScheduleDetail(Schedule schedule) async {
@@ -96,7 +111,8 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   }
 
   /// BottomSheet
-  void onTapBottomSheet() async {}
+  void onTapBottomSheet() async {
+  }
 
   void closeScheduleBottomSheet() {}
 
@@ -105,6 +121,11 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   }
 
   void saveSchedule() async {
-    // TODO : [Feat] Create Function to Delete Schedule
+    // TODO : [Feat] Create Function to Save Schedule (Create, Update)
+  }
+
+  /// Schedule Editor
+  void addContent() async {
+    // TODO : [Feat] Create Function to Add Content
   }
 }

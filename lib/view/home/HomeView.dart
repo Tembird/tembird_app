@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/AssetNames.dart';
@@ -90,7 +88,7 @@ class HomeView extends GetView<HomeController> {
                             width: width,
                             scheduleList: controller.scheduleList,
                             onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                            onTapSelectedCell: (List<Point<int>> pointList) => controller.createSchedule(pointList),
+                            onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
                           ),
                         ),
                       ),

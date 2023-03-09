@@ -5,8 +5,10 @@ class Schedule {
   final DateTime scheduleDate;
   final List<int> scheduleIndexList;
   final String scheduleColorHex;
-  final String scheduleName;
-  final String scheduleDetail;
+  final String scheduleTitle;
+  final String? scheduleDetail;
+  final String? scheduleLocation;
+  final List<String> scheduleMember;
   bool scheduleDone;
 
   Schedule({
@@ -14,8 +16,10 @@ class Schedule {
     required this.scheduleDate,
     required this.scheduleIndexList,
     required this.scheduleColorHex,
-    required this.scheduleName,
-    required this.scheduleDetail,
+    required this.scheduleTitle,
+    this.scheduleDetail,
+    this.scheduleLocation,
+    required this.scheduleMember,
     required this.scheduleDone,
   });
 }
