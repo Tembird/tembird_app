@@ -24,16 +24,16 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Tembird',
       theme: ThemeData(
-        backgroundColor: StyledPalette.WHITE,
+        backgroundColor: StyledPalette.MINERAL,
         scaffoldBackgroundColor: StyledPalette.WHITE,
-        primaryColor: StyledPalette.PRIMARY_SKY_BRIGHT,
+        dialogBackgroundColor: StyledPalette.MINERAL,
         appBarTheme: const AppBarTheme(
-          backgroundColor: StyledPalette.WHITE,
+          backgroundColor: StyledPalette.MINERAL,
           foregroundColor: StyledPalette.BLACK,
           elevation: 0,
           titleSpacing: 16,
           centerTitle: false,
-          titleTextStyle: StyledFont.TITLE_3,
+          toolbarHeight: 50,
         ),
       ),
       initialBinding: HomeBinding(),

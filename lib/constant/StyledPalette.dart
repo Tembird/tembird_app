@@ -2,8 +2,12 @@ import 'dart:ui';
 
 class StyledPalette {
   static const Color BLACK = Color.fromRGBO(18, 18, 18, 1);
+  static const Color BLACK10 = Color.fromRGBO(18, 18, 18, 0.1);
+  static const Color BLACK50 = Color.fromRGBO(18, 18, 18, 0.5);
+  static const Color BLACK80 = Color.fromRGBO(18, 18, 18, 0.8);
   static const Color GRAY = Color.fromRGBO(157, 157, 157, 1);
   static const Color WHITE = Color.fromRGBO(255, 255, 255, 1);
+  static const Color MINERAL = Color.fromRGBO(249, 249, 249, 1);
 
   static const Color PRIMARY_SKY_DARK = Color.fromRGBO(148, 191, 255, 1);
   static const Color PRIMARY_SKY_BRIGHT = Color.fromRGBO(176, 213, 255, 1);

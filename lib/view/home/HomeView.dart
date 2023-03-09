@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tembird_app/constant/AssetNames.dart';
+import 'package:tembird_app/constant/StyledFont.dart';
+import 'package:tembird_app/constant/StyledPalette.dart';
 
 import '../../model/Schedule.dart';
 import '../common/ScheduleTable.dart';
@@ -12,28 +15,141 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: const [
-            SizedBox(width: 16),
-            Text('Tembird'),
-          ],
-        ),
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Obx(
-          () => controller.onLoading.isTrue
-              ? Container(
-                  color: Colors.blue,
-                )
-              : ScheduleTable(
-                  scheduleList: controller.scheduleList,
-                  onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                  onTapSelectedCell: (List<Point<int>> pointList) => controller.createSchedule(pointList),
+    final double width = MediaQuery.of(context).size.width;
+    const double rowHeaderWidth = 32;
+    const double columnHeaderHeight = 20;
+    return Obx(
+      () => controller.onLoading.isTrue
+          ? Container(color: Colors.blue)
+          : Scaffold(
+              appBar: AppBar(
+                leadingWidth: 0,
+                toolbarHeight: 80,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                title: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
+                        ],
+                      ),
+                      const HomeTabBar()
+                    ],
+                  ),
                 ),
+              ),
+              body: Container(
+                color: StyledPalette.MINERAL,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      Container(
+                        color: StyledPalette.MINERAL,
+                        child: SizedBox(
+                          height: 20,
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 32,
+                                height: columnHeaderHeight,
+                                child: Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
+                              ),
+                              SizedBox(
+                                width: width - rowHeaderWidth,
+                                height: columnHeaderHeight,
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 6,
+                                  itemBuilder: (context, index) => SizedBox(
+                                    width: (width - rowHeaderWidth) / 6,
+                                    child: Center(
+                                      child: Text(
+                                        '${index * 10}',
+                                        textAlign: TextAlign.center,
+                                        style: StyledFont.FOOTNOTE,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: ScheduleTable(
+                            showColumnHeader: false,
+                            rowHeaderWidth: rowHeaderWidth,
+                            columnHeaderHeight: columnHeaderHeight,
+                            width: width,
+                            scheduleList: controller.scheduleList,
+                            onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                            onTapSelectedCell: (List<Point<int>> pointList) => controller.createSchedule(pointList),
+                          ),
+                        ),
+                      ),
+                      const HomeBottomBar()
+                    ],
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+class HomeTabBar extends GetView<HomeController> {
+  const HomeTabBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: TabBar(
+          controller: controller.tabController!,
+          padding: const EdgeInsets.only(left: 16),
+          indicatorColor: StyledPalette.BLACK,
+          isScrollable: true,
+          tabs: const [
+            Tab(text: "Scheduler"),
+            Tab(text: "TodoList"),
+          ],
+          labelStyle: StyledFont.CALLOUT_700,
+          labelColor: StyledPalette.BLACK,
+          unselectedLabelStyle: StyledFont.FOOTNOTE_GRAY,
+          unselectedLabelColor: StyledPalette.GRAY,
+        ),
+      ),
+    );
+  }
+}
+
+class HomeBottomBar extends GetView<HomeController> {
+  const HomeBottomBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: controller.onTapBottomSheet,
+      child: Container(
+        color: StyledPalette.MINERAL,
+        height: 52,
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(controller.selectedDateText.value, style: StyledFont.HEADLINE),
+            controller.onBottomSheet.isFalse ? Image.asset(AssetNames.menuUp, width: 24, fit: BoxFit.contain,) : Container()
+          ],
         ),
       ),
     );
