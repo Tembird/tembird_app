@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../constant/PageNames.dart';
 import '../../../model/Schedule.dart';
-import '../component/bottomSheet/ScheduleBottomSheet.dart';
+import '../../create/schedule/CreateScheduleView.dart';
 
 const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -27,6 +27,8 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
 
   String get selectedScheduleTimeText =>
       '${selectedScheduleStartAt ~/ 6 + 4}시 ${selectedScheduleStartAt % 6 * 10}분 ~ ${selectedScheduleEndAt ~/ 6 + 4}시 ${selectedScheduleEndAt % 6 * 10 + 10}분 (${(selectedScheduleEndAt - selectedScheduleStartAt) * 10 + 10}분)';
+
+  final RxBool onEditing = RxBool(false);
 
   /// Schedule Editor
   final TextEditingController titleController = TextEditingController();
@@ -72,7 +74,7 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
         scheduleTitle: '코딩',
         scheduleDetail: 'DB 구축 회의\n짱구 - 모델 설계\n철수 - API 설계\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택\n맹구 - DB 및 서버 공급 서비스 선택 ',
         scheduleDone: false,
-        scheduleMember: ['짱구','철수','맹구'],
+        scheduleMember: ['짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구짱구', '철수', '맹구'],
         scheduleLocation: '서울',
       ),
     ]);
@@ -93,13 +95,20 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
     selectedDateText.value = dateToString(date: schedule.scheduleDate);
     selectedScheduleStartAt = schedule.scheduleIndexList.first;
     selectedScheduleEndAt = schedule.scheduleIndexList.last;
+    titleController.text = schedule.scheduleTitle;
   }
 
   void showScheduleDetail(Schedule schedule) async {
     await selectSchedule(schedule: schedule);
-    bool? isSaved = await Get.bottomSheet(const ScheduleBottomSheet()) as bool?;
+    bool? isChanged = await Get.bottomSheet(
+      CreateScheduleView.route(schedule, false),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as bool?;
 
-    if (isSaved == null) return;
+    if (isChanged == null) return;
+    await getScheduleList();
   }
 
   Future<void> uploadSchedule({required Schedule schedule}) async {}
@@ -111,7 +120,12 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   }
 
   /// BottomSheet
-  void onTapBottomSheet() async {
+  void onTapBottomSheet() async {}
+
+  void onEdit() {
+    if (onEditing.isTrue) return;
+    onEditing.value = true;
+    print("======> onEditing");
   }
 
   void closeScheduleBottomSheet() {}

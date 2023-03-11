@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tembird_app/constant/StyledFont.dart';
-import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/create/CreateView.dart';
+import 'package:tembird_app/view/create/schedule/CreateScheduleView.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
 
@@ -47,6 +43,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: PageNames.CREATE,
           page: () => const CreateView(),
+        ),
+        GetPage(
+          name: PageNames.CREATE_SCHEDULE,
+          page: () => const CreateScheduleView(),
         ),
       ],
     );

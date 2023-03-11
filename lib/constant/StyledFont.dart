@@ -6,6 +6,7 @@ class StyledFont {
   static const TextStyle LARGE_TITLE = TextStyle(fontWeight: FontWeight.w400, fontSize: 34, height: 41 / 34, color: StyledPalette.BLACK);
   static const TextStyle TITLE_1 = TextStyle(fontWeight: FontWeight.w400, fontSize: 28, height: 34 / 28, color: StyledPalette.BLACK);
   static const TextStyle TITLE_2 = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
+  static const TextStyle TITLE_2_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.GRAY);
   static const TextStyle TITLE_2_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
   static const TextStyle TITLE_3 = TextStyle(fontWeight: FontWeight.w400, fontSize: 20, height: 25 / 20, color: StyledPalette.BLACK);
   static const TextStyle HEADLINE = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.BLACK);
@@ -13,7 +14,9 @@ class StyledFont {
   static const TextStyle HEADLINE_INFO = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.STATUS_INFO);
   static const TextStyle HEADLINE_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.WHITE);
   static const TextStyle BODY = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.BLACK);
+  static const TextStyle BODY_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.GRAY);
   static const TextStyle CALLOUT = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK);
+  static const TextStyle CALLOUT_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.GRAY);
   static const TextStyle CALLOUT_INFO = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.STATUS_INFO);
   static const TextStyle CALLOUT_NEGATIVE = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.STATUS_NEGATIVE);
   static const TextStyle CALLOUT_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK);
