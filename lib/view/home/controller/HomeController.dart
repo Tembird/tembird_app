@@ -9,6 +9,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   TabController? tabController;
   static HomeController to = Get.find();
 
+  final RxInt viewIndex = RxInt(0);
+
   final RxList<Schedule> scheduleList = RxList([]);
   final Rx<bool> onLoading = RxBool(true);
   final Rx<bool> onBottomSheet = RxBool(true);
@@ -72,6 +74,11 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     scheduleList.refresh();
   }
 
+  void selectView(int index) {
+    if (viewIndex.value == index) return;
+    viewIndex.value = index;
+  }
+
   void createSchedule(List<int> indexList) async {
     final Schedule schedule = Schedule(
         scheduleId: 0,
@@ -102,6 +109,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     ) as bool?;
 
     if (isChanged == null) return;
+    await getScheduleList();
+  }
+
+  void changeScheduleStatus(Schedule schedule) async {
+    print("=========> changeScheduleStatus");
+    // TODO : Connect Repository to Change Status of Schedule
     await getScheduleList();
   }
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/AssetNames.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/view/home/TodoList.dart';
 
 import '../../model/Schedule.dart';
 import '../common/ScheduleTable.dart';
@@ -45,54 +46,72 @@ class HomeView extends GetView<HomeController> {
                 child: SafeArea(
                   child: Column(
                     children: [
-                      Container(
-                        color: StyledPalette.MINERAL,
-                        child: SizedBox(
-                          height: 20,
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 32,
-                                height: columnHeaderHeight,
-                                child: Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
-                              ),
-                              SizedBox(
-                                width: width - rowHeaderWidth,
-                                height: columnHeaderHeight,
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 6,
-                                  itemBuilder: (context, index) => SizedBox(
-                                    width: (width - rowHeaderWidth) / 6,
-                                    child: Center(
-                                      child: Text(
-                                        '${index * 10}',
-                                        textAlign: TextAlign.center,
-                                        style: StyledFont.FOOTNOTE,
-                                      ),
+                      Expanded(
+                        child: IndexedStack(
+                          index: controller.viewIndex.value,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  color: StyledPalette.MINERAL,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 32,
+                                          height: columnHeaderHeight,
+                                          child: Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
+                                        ),
+                                        SizedBox(
+                                          width: width - rowHeaderWidth,
+                                          height: columnHeaderHeight,
+                                          child: ListView.builder(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: 6,
+                                            itemBuilder: (context, index) => SizedBox(
+                                              width: (width - rowHeaderWidth) / 6,
+                                              child: Center(
+                                                child: Text(
+                                                  '${index * 10}',
+                                                  textAlign: TextAlign.center,
+                                                  style: StyledFont.FOOTNOTE,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: ScheduleTable(
+                                      showColumnHeader: false,
+                                      rowHeaderWidth: rowHeaderWidth,
+                                      columnHeaderHeight: columnHeaderHeight,
+                                      width: width,
+                                      scheduleList: controller.scheduleList,
+                                      onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                                      onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SingleChildScrollView(
+                              child: TodoList(
+                                scheduleList: controller.scheduleList,
+                                // changeTaskState: (Schedule schedule) => controller.changeScheduleStatus(schedule),
+                                onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: ScheduleTable(
-                            showColumnHeader: false,
-                            rowHeaderWidth: rowHeaderWidth,
-                            columnHeaderHeight: columnHeaderHeight,
-                            width: width,
-                            scheduleList: controller.scheduleList,
-                            onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                            onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
-                          ),
-                        ),
-                      ),
-                      const HomeBottomBar()
+                      const HomeBottomBar(),
                     ],
                   ),
                 ),
@@ -121,6 +140,7 @@ class HomeTabBar extends GetView<HomeController> {
             Tab(text: "Scheduler"),
             Tab(text: "TodoList"),
           ],
+          onTap: controller.selectView,
           labelStyle: StyledFont.CALLOUT_700,
           labelColor: StyledPalette.BLACK,
           unselectedLabelStyle: StyledFont.FOOTNOTE_GRAY,
@@ -146,7 +166,13 @@ class HomeBottomBar extends GetView<HomeController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Obx(() => Text(controller.selectedDateText.value, style: StyledFont.HEADLINE)),
-            controller.onBottomSheet.isFalse ? Image.asset(AssetNames.menuUp, width: 24, fit: BoxFit.contain,) : Container()
+            controller.onBottomSheet.isFalse
+                ? Image.asset(
+                    AssetNames.menuUp,
+                    width: 24,
+                    fit: BoxFit.contain,
+                  )
+                : Container()
           ],
         ),
       ),
