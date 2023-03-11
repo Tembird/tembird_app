@@ -5,7 +5,7 @@ class Schedule {
   final DateTime scheduleDate;
   final List<int> scheduleIndexList;
   final String scheduleColorHex;
-  final String scheduleTitle;
+  final String? scheduleTitle;
   final String? scheduleDetail;
   final String? scheduleLocation;
   final List<String> scheduleMember;
@@ -16,7 +16,7 @@ class Schedule {
     required this.scheduleDate,
     required this.scheduleIndexList,
     required this.scheduleColorHex,
-    required this.scheduleTitle,
+    this.scheduleTitle,
     this.scheduleDetail,
     this.scheduleLocation,
     required this.scheduleMember,

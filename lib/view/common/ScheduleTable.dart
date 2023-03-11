@@ -335,7 +335,7 @@ class _ScheduleTableState extends State<ScheduleTable> {
                 height: cellHeight,
                 child: Center(
                   child: Text(
-                    schedule.scheduleTitle,
+                    schedule.scheduleTitle??'제목 없음',
                     style: StyledFont.CALLOUT_700_WHITE,
                     textAlign: TextAlign.center,
                   ),

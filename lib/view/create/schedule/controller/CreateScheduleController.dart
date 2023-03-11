@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
 import 'package:tembird_app/service/RootController.dart';
-
-const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 
 class CreateScheduleController extends RootController {
   final Schedule schedule;
@@ -23,10 +20,7 @@ class CreateScheduleController extends RootController {
   final RxList<String> memberList = RxList([]);
 
   /// Uneditable Fields - DateTime
-  String get selectedDateText => '${schedule.scheduleDate.year}년 '
-      '${schedule.scheduleDate.month}월 '
-      '${schedule.scheduleDate.day}일 '
-      '(${dayList[schedule.scheduleDate.weekday % 7]})';
+  String get selectedDateText => dateToString(date: schedule.scheduleDate);
 
   String get selectedScheduleTimeText => '${schedule.scheduleIndexList.first ~/ 6 + 4}시 ${schedule.scheduleIndexList.first % 6 * 10}분 ~ '
       '${schedule.scheduleIndexList.last ~/ 6 + 4}시 ${schedule.scheduleIndexList.last % 6 * 10 + 10}분 '
@@ -46,7 +40,10 @@ class CreateScheduleController extends RootController {
   @override
   void onInit() async {
     onLoading.value = true;
-    titleController.text = schedule.scheduleTitle;
+    if (schedule.scheduleLocation != null) {
+      titleController.text = schedule.scheduleTitle!;
+      hasLocation.value = true;
+    }
     if (schedule.scheduleMember.isNotEmpty) {
       memberList.addAll(schedule.scheduleMember);
       hasMember.value = true;

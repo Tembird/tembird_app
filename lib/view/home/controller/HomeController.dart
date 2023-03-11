@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../constant/PageNames.dart';
+import 'package:tembird_app/service/RootController.dart';
 import '../../../model/Schedule.dart';
 import '../../create/schedule/CreateScheduleView.dart';
 
-const dayList = ['일', '월', '화', '수', '목', '금', '토'];
-
-class HomeController extends GetxController with GetSingleTickerProviderStateMixin {
+class HomeController extends RootController with GetSingleTickerProviderStateMixin {
   TabController? tabController;
   static HomeController to = Get.find();
 
@@ -55,6 +52,7 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
 
   Future<void> getScheduleList() async {
     scheduleList.clear();
+    // TODO : Connect Repository to get Schedule List in SelectedDate
     scheduleList.addAll([
       Schedule(
         scheduleId: 1,
@@ -82,24 +80,15 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   }
 
   void createSchedule(List<int> indexList) async {
-    final Schedule? schedule = await Get.toNamed(PageNames.CREATE, arguments: indexList) as Schedule?;
-    if (schedule == null) return;
+    final Schedule schedule = Schedule(
+        scheduleId: 0,
+        scheduleDate: selectedDate.value,
+        scheduleIndexList: indexList,
+        scheduleColorHex: '000000',
+        scheduleMember: [],
+        scheduleDone: false,
+    );
 
-    await uploadSchedule(schedule: schedule);
-    confirmSelection();
-  }
-
-  Future<void> selectSchedule({required Schedule schedule}) async {
-    selectedSchedule.value = schedule;
-    selectedDate.value = schedule.scheduleDate;
-    selectedDateText.value = dateToString(date: schedule.scheduleDate);
-    selectedScheduleStartAt = schedule.scheduleIndexList.first;
-    selectedScheduleEndAt = schedule.scheduleIndexList.last;
-    titleController.text = schedule.scheduleTitle;
-  }
-
-  void showScheduleDetail(Schedule schedule) async {
-    await selectSchedule(schedule: schedule);
     bool? isChanged = await Get.bottomSheet(
       CreateScheduleView.route(schedule, false),
       isScrollControlled: true,
@@ -111,35 +100,18 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
     await getScheduleList();
   }
 
-  Future<void> uploadSchedule({required Schedule schedule}) async {}
+  void showScheduleDetail(Schedule schedule) async {
+    bool? isChanged = await Get.bottomSheet(
+      CreateScheduleView.route(schedule, false),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as bool?;
 
-  void confirmSelection() {}
-
-  String dateToString({required DateTime date}) {
-    return '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]})';
+    if (isChanged == null) return;
+    await getScheduleList();
   }
 
   /// BottomSheet
   void onTapBottomSheet() async {}
-
-  void onEdit() {
-    if (onEditing.isTrue) return;
-    onEditing.value = true;
-    print("======> onEditing");
-  }
-
-  void closeScheduleBottomSheet() {}
-
-  void deleteSchedule() async {
-    // TODO : [Feat] Create Function to Delete Schedule
-  }
-
-  void saveSchedule() async {
-    // TODO : [Feat] Create Function to Save Schedule (Create, Update)
-  }
-
-  /// Schedule Editor
-  void addContent() async {
-    // TODO : [Feat] Create Function to Add Content
-  }
 }

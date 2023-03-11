@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../model/ModalAction.dart';
 
+const dayList = ['일', '월', '화', '수', '목', '금', '토'];
+
 class RootController extends GetxController {
   static RootController to = Get.find();
 
@@ -28,4 +30,6 @@ class RootController extends GetxController {
   void hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
+
+  String dateToString({required DateTime date}) => '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]})';
 }
