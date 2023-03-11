@@ -137,7 +137,7 @@ class HomeBottomBar extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: controller.onTapBottomSheet,
+      onTap: controller.showCalendar,
       child: Container(
         color: StyledPalette.MINERAL,
         height: 52,
@@ -145,7 +145,7 @@ class HomeBottomBar extends GetView<HomeController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(controller.selectedDateText.value, style: StyledFont.HEADLINE),
+            Obx(() => Text(controller.selectedDateText.value, style: StyledFont.HEADLINE)),
             controller.onBottomSheet.isFalse ? Image.asset(AssetNames.menuUp, width: 24, fit: BoxFit.contain,) : Container()
           ],
         ),

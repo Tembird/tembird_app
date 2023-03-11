@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/service/RootController.dart';
+import 'package:tembird_app/view/calendar/CalendarView.dart';
 import '../../../model/Schedule.dart';
 import '../../create/schedule/CreateScheduleView.dart';
 
@@ -16,16 +17,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   Set<int> previousSelectedIndexList = {};
 
   /// Select Schedule
-  final Rxn<Schedule> selectedSchedule = Rxn(null);
-  final Rx<DateTime> selectedDate = Rx(DateTime.now());
+  final Rx<DateTime> selectedDate = Rx(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
   final Rx<String> selectedDateText = Rx("");
-  int selectedScheduleStartAt = 0;
-  int selectedScheduleEndAt = 0;
-
-  String get selectedScheduleTimeText =>
-      '${selectedScheduleStartAt ~/ 6 + 4}시 ${selectedScheduleStartAt % 6 * 10}분 ~ ${selectedScheduleEndAt ~/ 6 + 4}시 ${selectedScheduleEndAt % 6 * 10 + 10}분 (${(selectedScheduleEndAt - selectedScheduleStartAt) * 10 + 10}분)';
-
-  final RxBool onEditing = RxBool(false);
 
   /// Schedule Editor
   final TextEditingController titleController = TextEditingController();
@@ -113,5 +106,17 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   /// BottomSheet
-  void onTapBottomSheet() async {}
+  void showCalendar() async {
+    DateTime? newDate = await Get.bottomSheet(
+      CalendarView.route(selectedDate.value),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as DateTime?;
+
+    if (newDate == null) return;
+    selectedDate.value = newDate;
+    selectedDateText.value = dateToString(date: newDate);
+    await getScheduleList();
+  }
 }
