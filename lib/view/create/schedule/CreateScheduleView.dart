@@ -46,7 +46,7 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                     const SizedBox(height: 16),
                     Expanded(
                       child: GestureDetector(
-                        onTap: FocusManager.instance.primaryFocus?.unfocus,
+                        onTap: controller.hideKeyboard,
                         child: Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -62,8 +62,8 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                               Row(
                                 children: [
                                   TextButton(
-                                    onPressed: controller.removeSchedule,
-                                    child: Text('취소', style: StyledFont.CALLOUT_GRAY),
+                                    onPressed: controller.cancelSchedule,
+                                    child: const Text('취소', style: StyledFont.CALLOUT_GRAY),
                                   ),
                                   Expanded(
                                     child: Text(
@@ -96,6 +96,7 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                 child: SingleChildScrollView(
                                   primary: false,
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       // TODO : [Feat] Text => TextInputForm
                                       Obx(
@@ -171,24 +172,24 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: controller.addContent,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(16),
-                                        color: StyledPalette.MINERAL,
-                                        child: const Text('+ 내용 추가', style: StyledFont.HEADLINE),
-                                      ),
-                                    ),
-                                  ),
-                                  if (!controller.isNew)
+                              GestureDetector(
+                                onVerticalDragStart: (_) => controller.hideKeyboard(),
+                                child: Row(
+                                  children: [
                                     TextButton(
-                                      onPressed: controller.removeSchedule,
-                                      child: const Text('삭제', style: StyledFont.CALLOUT_NEGATIVE),
+                                      onPressed: controller.addContent,
+                                      child: const Text('+ 내용 추가', style: StyledFont.HEADLINE),
                                     ),
-                                ],
+                                    Expanded(
+                                      child: Container(),
+                                    ),
+                                    if (!controller.isNew)
+                                      TextButton(
+                                        onPressed: controller.removeSchedule,
+                                        child: const Text('삭제', style: StyledFont.CALLOUT_NEGATIVE),
+                                      ),
+                                  ],
+                                ),
                               ),
                               SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                             ],
@@ -233,6 +234,8 @@ class TextContent extends GetView<CreateScheduleController> {
               border: InputBorder.none,
               hintText: hintText,
               hintStyle: StyledFont.BODY_GRAY,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 4),
             ),
             maxLines: maxLines,
             style: StyledFont.BODY,

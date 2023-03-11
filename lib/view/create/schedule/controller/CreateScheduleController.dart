@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
+import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
+import 'package:tembird_app/service/RootController.dart';
 
 const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 
-class CreateScheduleController extends GetxController {
+class CreateScheduleController extends RootController {
   final Schedule schedule;
   final bool isNew;
   static CreateScheduleController to = Get.find();
@@ -95,18 +97,41 @@ class CreateScheduleController extends GetxController {
     print('=======> Show Ads');
   }
 
-  void cancelSchedule() {
-    // TODO : [Feat] Alert that If Cancel on Editing, All Edited Value will be Removed
+  void cancelSchedule() async {
+    if (onEditing.isFalse) {
+      Get.back();
+      return;
+    }
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '확인', onPressed: () => Get.back(result: true)),
+    ];
+    bool? isConfirmed = await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: '변경 사항이 모두 삭제됩니다',
+    );
+    if (isConfirmed == null) return;
     Get.back();
   }
 
   void removeSchedule() async {
-    // TODO : [Feat] Alert to Confirm to Remove
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '삭제', onPressed: () => Get.back(result: true)),
+    ];
+    bool? isConfirmed = await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: '일정이 삭제됩니다',
+    );
+    if (isConfirmed == null) return;
     // TODO : [Feat] Connect Repository to Remove Schedule on DB
     Get.back();
   }
 
   void saveSchedule() async {
+    if (onEditing.isFalse) {
+      Get.back();
+      return;
+    }
+
     try {
       final Schedule newSchedule = Schedule(
         scheduleId: schedule.scheduleId,
@@ -128,7 +153,33 @@ class CreateScheduleController extends GetxController {
 
   /// Schedule Editor
   void addContent() async {
-    // TODO : [Feat] Create Function to Add Content
+    final List<ModalAction> modalActionList = [
+      if (hasLocation.isFalse)
+        ModalAction(name: '장소 추가', onPressed: addLocationForm),
+      if (hasMember.isFalse)
+        ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm),
+      if (hasDetail.isFalse)
+        ModalAction(name: '상세 내용 추가', onPressed: addDetailForm),
+    ];
+    await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다'
+    );
+  }
+
+  void addLocationForm() {
+    hasLocation.value = true;
+    Get.back();
+  }
+
+  void addMemberForm() {
+    hasMember.value = true;
+    Get.back();
+  }
+
+  void addDetailForm() {
+    hasDetail.value = true;
+    Get.back();
   }
 
   void addMember() {
@@ -137,34 +188,19 @@ class CreateScheduleController extends GetxController {
     memberController.clear();
   }
 
-  void showMemberInfo(int index) async {
-    bool? removed = await Get.dialog(
-      Dialog(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: IntrinsicHeight(
-            child: Column(
-              children: [
-                Text(
-                  memberList[index],
-                  style: StyledFont.BODY,
-                ),
-                const SizedBox(height: 4),
-                InkWell(
-                  onTap: () => removeMember(index),
-                  child: const Text('삭제', style: StyledFont.CALLOUT_NEGATIVE),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void removeMember(int index) {
     memberList.removeAt(index);
     memberList.refresh();
     Get.back();
+  }
+
+  void showMemberInfo(int index) async {
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '삭제', onPressed: () => removeMember(index)),
+    ];
+    await showCupertinoActionSheet(
+        modalActionList: modalActionList,
+        title: memberList[index],
+    );
   }
 }
