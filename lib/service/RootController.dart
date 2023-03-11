@@ -14,11 +14,13 @@ class RootController extends GetxController {
         title: title == null ? null : Text(title),
         message: message == null ? null : Text(message),
         actions: List.generate(
-            modalActionList.length,
-            (index) => CupertinoActionSheetAction(
-                  onPressed: modalActionList[index].onPressed,
-                  child: Text(modalActionList[index].name),
-                )),
+          modalActionList.length,
+          (index) => CupertinoActionSheetAction(
+            onPressed: modalActionList[index].onPressed,
+            isDestructiveAction: modalActionList[index].isNegative,
+            child: Text(modalActionList[index].name),
+          ),
+        ),
         cancelButton: CupertinoActionSheetAction(
           onPressed: Get.back,
           child: const Text('취소'),

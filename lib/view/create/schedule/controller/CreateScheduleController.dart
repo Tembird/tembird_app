@@ -100,7 +100,7 @@ class CreateScheduleController extends RootController {
       return;
     }
     final List<ModalAction> modalActionList = [
-      ModalAction(name: '확인', onPressed: () => Get.back(result: true)),
+      ModalAction(name: '확인', onPressed: () => Get.back(result: true), isNegative: false),
     ];
     bool? isConfirmed = await showCupertinoActionSheet(
       modalActionList: modalActionList,
@@ -112,7 +112,7 @@ class CreateScheduleController extends RootController {
 
   void removeSchedule() async {
     final List<ModalAction> modalActionList = [
-      ModalAction(name: '삭제', onPressed: () => Get.back(result: true)),
+      ModalAction(name: '삭제', onPressed: () => Get.back(result: true), isNegative: true),
     ];
     bool? isConfirmed = await showCupertinoActionSheet(
       modalActionList: modalActionList,
@@ -152,11 +152,11 @@ class CreateScheduleController extends RootController {
   void addContent() async {
     final List<ModalAction> modalActionList = [
       if (hasLocation.isFalse)
-        ModalAction(name: '장소 추가', onPressed: addLocationForm),
+        ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),
       if (hasMember.isFalse)
-        ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm),
+        ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
       if (hasDetail.isFalse)
-        ModalAction(name: '상세 내용 추가', onPressed: addDetailForm),
+        ModalAction(name: '상세 내용 추가', onPressed: addDetailForm, isNegative: false),
     ];
     await showCupertinoActionSheet(
       modalActionList: modalActionList,
@@ -193,7 +193,7 @@ class CreateScheduleController extends RootController {
 
   void showMemberInfo(int index) async {
     final List<ModalAction> modalActionList = [
-      ModalAction(name: '삭제', onPressed: () => removeMember(index)),
+      ModalAction(name: '삭제', onPressed: () => removeMember(index), isNegative: true),
     ];
     await showCupertinoActionSheet(
         modalActionList: modalActionList,
