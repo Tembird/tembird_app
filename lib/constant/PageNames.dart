@@ -1,3 +1,4 @@
 class PageNames {
-  static const HOME = '/';
+  static const INIT = '/';
+  static const HOME = '/home';
 }
