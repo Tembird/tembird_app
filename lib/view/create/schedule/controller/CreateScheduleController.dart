@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
+import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 
 import '../../../../model/ScheduleAction.dart';
 
 class CreateScheduleController extends RootController {
+  final ScheduleRepository scheduleRepository = ScheduleRepository();
   final Schedule schedule;
   final bool isNew;
   static CreateScheduleController to = Get.find();
@@ -116,16 +118,21 @@ class CreateScheduleController extends RootController {
   }
 
   void removeSchedule() async {
-    final List<ModalAction> modalActionList = [
-      ModalAction(name: '삭제', onPressed: () => Get.back(result: true), isNegative: true),
-    ];
-    bool? isConfirmed = await showCupertinoActionSheet(
-      modalActionList: modalActionList,
-      title: '일정이 삭제됩니다',
-    );
-    if (isConfirmed == null) return;
-    // TODO : [Feat] Connect Repository to Remove Schedule on DB
-    Get.back(result: ScheduleAction(action: ActionType.removed));
+    try {
+      final List<ModalAction> modalActionList = [
+        ModalAction(name: '삭제', onPressed: () => Get.back(result: true), isNegative: true),
+      ];
+      bool? isConfirmed = await showCupertinoActionSheet(
+        modalActionList: modalActionList,
+        title: '일정이 삭제됩니다',
+      );
+      if (isConfirmed == null) return;
+      await scheduleRepository.deleteSchedule(schedule: schedule);
+      Get.back(result: ScheduleAction(action: ActionType.removed));
+    } catch(e) {
+      Get.back();
+      return;
+    }
   }
 
   void saveSchedule() async {
@@ -138,9 +145,9 @@ class CreateScheduleController extends RootController {
       }
 
       if (isNew) {
-        // TODO : [Feat] Connect Repository to Create Schedule
+        await scheduleRepository.createSchedule(schedule: resultSchedule.value!);
       } else {
-        // TODO : [Feat] Connect Repository to Update Schedule
+        await scheduleRepository.updateSchedule(schedule: resultSchedule.value!);
       }
 
       Get.back(
@@ -150,7 +157,8 @@ class CreateScheduleController extends RootController {
         ),
       );
     } catch (e) {
-      print("업로드 실패. 다시시도");
+      Get.back();
+      return;
     }
   }
 
