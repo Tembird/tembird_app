@@ -19,7 +19,7 @@ class InitView extends GetView<InitController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Image.asset(AssetNames.logoSplash, width: 200),
+                    child: Image.asset(AssetNames.logoSplash, width: 150),
                   ),
                 ],
               ),
@@ -37,7 +37,7 @@ class InitView extends GetView<InitController> {
               children: [
                 Expanded(
                   child: Center(
-                    child: Image.asset(AssetNames.logo, width: 200),
+                    child: Image.asset(AssetNames.logo, width: 150),
                   ),
                 ),
                 const SizedBox(height: 8),
