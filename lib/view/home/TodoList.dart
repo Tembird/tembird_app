@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tembird_app/constant/AssetNames.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 
@@ -7,8 +8,9 @@ import '../../model/Schedule.dart';
 class TodoList extends StatefulWidget {
   final List<Schedule> scheduleList;
   final void Function(Schedule schedule) onTapTodo;
+  final Future<void> Function(Schedule schedule) changeStatus;
 
-  const TodoList({Key? key, required this.scheduleList, required this.onTapTodo}) : super(key: key);
+  const TodoList({Key? key, required this.scheduleList, required this.onTapTodo, required this.changeStatus}) : super(key: key);
 
   @override
   State<TodoList> createState() => _TodoListState();
@@ -33,6 +35,11 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
+  void changeTodoStatus(Schedule schedule) async {
+    await widget.changeStatus(schedule);
+    print('======> isChanged');
+  }
+
   Widget _buildTodoListItem({required Schedule schedule, required void Function(Schedule) onTapTodo}) {
     return schedule.scheduleTitle == null
         ? Container()
@@ -40,20 +47,14 @@ class _TodoListState extends State<TodoList> {
             height: 50,
             child: Row(
               children: [
-                // SizedBox(
-                //   width: 24,
-                //   child: InkWell(
-                //     onTap: changeTodoState,
-                //     child: CircleAvatar(
-                //       radius: 12,
-                //       backgroundColor: StyledPalette.GRAY,
-                //       child: CircleAvatar(
-                //         radius: 10,
-                //         backgroundColor: schedule.scheduleDone ? StyledPalette.STATUS_INFO : StyledPalette.MINERAL,
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                InkWell(
+                  onTap: () => changeTodoStatus(schedule),
+                  child: Image.asset(
+                    schedule.scheduleDone ? AssetNames.checkboxMarked : AssetNames.checkboxBlank,
+                    width: 24,
+                    fit: BoxFit.contain,
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: InkWell(

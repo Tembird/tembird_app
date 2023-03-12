@@ -123,6 +123,24 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     scheduleListUpdatedAt.value = DateTime.now();
   }
 
+  Future<void> changeScheduleStatus({required Schedule schedule}) async {
+    Schedule changedSchedule = Schedule(
+        scheduleId: schedule.scheduleId,
+        scheduleDate: schedule.scheduleDate,
+        scheduleIndexList: schedule.scheduleIndexList,
+        scheduleColorHex: schedule.scheduleColorHex,
+        scheduleMember: schedule.scheduleMember,
+        scheduleDone: !schedule.scheduleDone
+    );
+    try {
+      await scheduleRepository.updateSchedule(schedule: changedSchedule);
+      scheduleList.firstWhere((e) => e == schedule).scheduleDone = changedSchedule.scheduleDone;
+    } finally {
+      scheduleList.refresh();
+      updateEditedAt();
+    }
+  }
+
   /// BottomSheet
   void showCalendar() async {
     DateTime? newDate = await Get.bottomSheet(

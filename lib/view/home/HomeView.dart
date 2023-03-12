@@ -115,11 +115,14 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
                             SingleChildScrollView(
-                              child: TodoList(
-                                scheduleList: controller.scheduleList,
-                                // changeTaskState: (Schedule schedule) => controller.changeScheduleStatus(schedule),
-                                onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                              ),
+                              child: Obx(() {
+                                DateTime updatedAt = controller.scheduleListUpdatedAt.value;
+                                return TodoList(
+                                  scheduleList: controller.scheduleList,
+                                  changeStatus: (Schedule schedule) => controller.changeScheduleStatus(schedule: schedule),
+                                  onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                                );
+                              }),
                             ),
                           ],
                         ),

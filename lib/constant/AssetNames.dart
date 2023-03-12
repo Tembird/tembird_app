@@ -7,4 +7,6 @@ class AssetNames {
   static const menuDown = 'assets/icons/menu-down.png';
   static const menuUp = 'assets/icons/menu-up.png';
   static const account = 'assets/icons/account.png';
+  static const checkboxMarked = 'assets/icons/checkbox-marked.png';
+  static const checkboxBlank = 'assets/icons/checkbox-blank.png';
 }
