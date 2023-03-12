@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
@@ -12,6 +11,7 @@ import 'package:tembird_app/view/auth/resetPassword/ResetPasswordView.dart';
 import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding.dart';
 import 'package:tembird_app/view/auth/signup/SignupView.dart';
 import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
+import 'package:tembird_app/view/common/HtmlView.dart';
 import 'package:tembird_app/view/help/HelpView.dart';
 import 'package:tembird_app/view/help/binding/HelpBinding.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
@@ -82,6 +82,10 @@ class MyApp extends StatelessWidget {
           name: PageNames.HELP,
           page: () => const HelpView(),
           binding: HelpBinding(),
+        ),
+        GetPage(
+          name: PageNames.HTML,
+          page: () => const HtmlView(),
         ),
       ],
     );
