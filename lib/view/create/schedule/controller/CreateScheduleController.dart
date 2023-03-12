@@ -4,6 +4,8 @@ import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
 import 'package:tembird_app/service/RootController.dart';
 
+import '../../../../model/ScheduleAction.dart';
+
 class CreateScheduleController extends RootController {
   final Schedule schedule;
   final bool isNew;
@@ -15,6 +17,7 @@ class CreateScheduleController extends RootController {
 
   final Rx<bool> onLoading = RxBool(true);
   final RxBool onEditing = RxBool(false);
+  final Rxn<Schedule> resultSchedule = Rxn(null);
   final RxnString location = RxnString(null);
   final RxnString detail = RxnString(null);
   final RxList<String> memberList = RxList([]);
@@ -94,10 +97,13 @@ class CreateScheduleController extends RootController {
   }
 
   void cancelSchedule() async {
-    if (onEditing.isFalse) {
+    createResultSchedule();
+
+    if (resultSchedule.value == null) {
       Get.back();
       return;
     }
+
     final List<ModalAction> modalActionList = [
       ModalAction(name: '확인', onPressed: () => Get.back(result: true), isNegative: false),
     ];
@@ -119,48 +125,70 @@ class CreateScheduleController extends RootController {
     );
     if (isConfirmed == null) return;
     // TODO : [Feat] Connect Repository to Remove Schedule on DB
-    Get.back();
+    Get.back(result: ScheduleAction(action: ActionType.removed));
   }
 
   void saveSchedule() async {
-    if (onEditing.isFalse) {
-      Get.back();
-      return;
-    }
-
     try {
-      final Schedule newSchedule = Schedule(
-        scheduleId: schedule.scheduleId,
-        scheduleDate: schedule.scheduleDate,
-        scheduleIndexList: schedule.scheduleIndexList,
-        scheduleColorHex: schedule.scheduleColorHex,
-        scheduleTitle: titleController.value.text.isEmpty ? '제목 없음' : titleController.value.text,
-        scheduleMember: memberList.toList(),
-        scheduleDone: false,
-      );
-      // TODO : [Feat] Connect Repository to Create Or Update Schedule on DB
+      createResultSchedule();
+
+      if (resultSchedule.value == null) {
+        Get.back();
+        return;
+      }
+
+      if (isNew) {
+        // TODO : [Feat] Connect Repository to Create Schedule
+      } else {
+        // TODO : [Feat] Connect Repository to Update Schedule
+      }
+
       Get.back(
-        result: newSchedule,
+        result: ScheduleAction(
+          action: isNew ? ActionType.created : ActionType.updated,
+          schedule: resultSchedule.value,
+        ),
       );
     } catch (e) {
       print("업로드 실패. 다시시도");
     }
   }
 
+  void createResultSchedule() {
+    final Schedule newSchedule = Schedule(
+      scheduleId: schedule.scheduleId,
+      scheduleDate: schedule.scheduleDate,
+      scheduleIndexList: schedule.scheduleIndexList,
+      scheduleColorHex: schedule.scheduleColorHex,
+      scheduleTitle: titleController.value.text.isEmpty ? null : titleController.value.text,
+      scheduleLocation: locationController.value.text.isEmpty ? null : locationController.value.text,
+      scheduleDetail: detailController.value.text.isEmpty ? null : detailController.value.text,
+      scheduleMember: memberList.toList(),
+      scheduleDone: schedule.scheduleDone,
+    );
+
+    bool isChanged = newSchedule.scheduleTitle != schedule.scheduleTitle ||
+        newSchedule.scheduleLocation != schedule.scheduleLocation ||
+        newSchedule.scheduleMember.toString() != schedule.scheduleMember.toString() ||
+        newSchedule.scheduleDetail != schedule.scheduleDetail;
+
+    if (!isChanged) {
+      resultSchedule.value = null;
+      return;
+    }
+
+    resultSchedule.value = newSchedule;
+  }
+
   /// Schedule Editor
   void addContent() async {
     final List<ModalAction> modalActionList = [
-      if (hasLocation.isFalse)
-        ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),
-      if (hasMember.isFalse)
-        ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
-      if (hasDetail.isFalse)
-        ModalAction(name: '상세 내용 추가', onPressed: addDetailForm, isNegative: false),
+      if (hasLocation.isFalse) ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),
+      if (hasMember.isFalse) ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
+      if (hasDetail.isFalse) ModalAction(name: '상세 내용 추가', onPressed: addDetailForm, isNegative: false),
     ];
     await showCupertinoActionSheet(
-      modalActionList: modalActionList,
-      title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다'
-    );
+        modalActionList: modalActionList, title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
   }
 
   void addLocationForm() {
@@ -185,6 +213,7 @@ class CreateScheduleController extends RootController {
   }
 
   void removeMember(int index) {
+    onEdit();
     memberList.removeAt(index);
     memberList.refresh();
     Get.back();
@@ -195,8 +224,8 @@ class CreateScheduleController extends RootController {
       ModalAction(name: '삭제', onPressed: () => removeMember(index), isNegative: true),
     ];
     await showCupertinoActionSheet(
-        modalActionList: modalActionList,
-        title: memberList[index],
+      modalActionList: modalActionList,
+      title: memberList[index],
     );
   }
 }
