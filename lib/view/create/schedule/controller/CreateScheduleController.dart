@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
+import 'package:tembird_app/service/SessionService.dart';
+import 'package:tembird_app/view/home/controller/HomeController.dart';
 
 import '../../../../model/ScheduleAction.dart';
 
 class CreateScheduleController extends RootController {
   final ScheduleRepository scheduleRepository = ScheduleRepository();
+  final List<String> scheduleColorHexList = HomeController.to.scheduleColorHexList;
   final Schedule schedule;
   final bool isNew;
   static CreateScheduleController to = Get.find();
@@ -19,6 +23,8 @@ class CreateScheduleController extends RootController {
 
   final Rx<bool> onLoading = RxBool(true);
   final RxBool onEditing = RxBool(false);
+  final RxBool scheduleDone = RxBool(false);
+  final RxString scheduleColorHex = RxString('000000');
   final Rxn<Schedule> resultSchedule = Rxn(null);
   final RxnString location = RxnString(null);
   final RxnString detail = RxnString(null);
@@ -45,6 +51,8 @@ class CreateScheduleController extends RootController {
   @override
   void onInit() async {
     onLoading.value = true;
+    scheduleDone.value = schedule.scheduleDone;
+    scheduleColorHex.value = schedule.scheduleColorHex;
     if (schedule.scheduleTitle != null) {
       titleController.text = schedule.scheduleTitle!;
     }
@@ -167,18 +175,20 @@ class CreateScheduleController extends RootController {
       scheduleId: schedule.scheduleId,
       scheduleDate: schedule.scheduleDate,
       scheduleIndexList: schedule.scheduleIndexList,
-      scheduleColorHex: schedule.scheduleColorHex,
+      scheduleColorHex: scheduleColorHex.value,
       scheduleTitle: titleController.value.text.isEmpty ? null : titleController.value.text,
       scheduleLocation: locationController.value.text.isEmpty ? null : locationController.value.text,
       scheduleDetail: detailController.value.text.isEmpty ? null : detailController.value.text,
       scheduleMember: memberList.toList(),
-      scheduleDone: schedule.scheduleDone,
+      scheduleDone: scheduleDone.isTrue,
     );
 
     bool isChanged = newSchedule.scheduleTitle != schedule.scheduleTitle ||
         newSchedule.scheduleLocation != schedule.scheduleLocation ||
         newSchedule.scheduleMember.toString() != schedule.scheduleMember.toString() ||
-        newSchedule.scheduleDetail != schedule.scheduleDetail;
+        newSchedule.scheduleDetail != schedule.scheduleDetail ||
+        newSchedule.scheduleColorHex != schedule.scheduleColorHex ||
+        newSchedule.scheduleDone != schedule.scheduleDone;
 
     if (!isChanged) {
       resultSchedule.value = null;
@@ -189,6 +199,14 @@ class CreateScheduleController extends RootController {
   }
 
   /// Schedule Editor
+  void changeStatus() async {
+    scheduleDone.value = !scheduleDone.value;
+  }
+
+  void changeColorHex(String colorHexCode) async {
+    scheduleColorHex.value = colorHexCode;
+  }
+
   void addContent() async {
     final List<ModalAction> modalActionList = [
       if (hasLocation.isFalse) ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),

@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/Schedule.dart';
+import 'package:tembird_app/service/SessionService.dart';
 import 'package:tembird_app/view/create/schedule/controller/CreateScheduleController.dart';
 
+import '../../../constant/AssetNames.dart';
 import '../../ads/FloatingBannerAdView.dart';
 
 class CreateScheduleView extends GetView<CreateScheduleController> {
@@ -60,16 +62,26 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   TextButton(
                                     onPressed: controller.cancelSchedule,
                                     child: const Text('취소', style: StyledFont.CALLOUT_GRAY),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      controller.selectedDateText,
-                                      style: StyledFont.HEADLINE,
-                                      textAlign: TextAlign.center,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          controller.selectedDateText,
+                                          style: StyledFont.HEADLINE,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          controller.selectedScheduleTimeText,
+                                          style: StyledFont.FOOTNOTE,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   TextButton(
@@ -78,27 +90,80 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                   ),
                                 ],
                               ),
-                              Text(controller.selectedScheduleTimeText, style: StyledFont.FOOTNOTE, textAlign: TextAlign.center),
                               const SizedBox(height: 8),
-                              TextFormField(
-                                controller: controller.titleController,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: '일정 제목',
-                                  hintStyle: StyledFont.TITLE_2_GRAY,
-                                ),
-                                style: StyledFont.TITLE_2_700,
-                                textAlign: TextAlign.center,
-                                onTap: controller.onEdit,
-                                textInputAction: TextInputAction.done,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: controller.titleController,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: '일정 제목',
+                                        hintStyle: StyledFont.TITLE_2_GRAY,
+                                      ),
+                                      style: StyledFont.TITLE_2_700,
+                                      textAlign: TextAlign.left,
+                                      onTap: controller.onEdit,
+                                      textInputAction: TextInputAction.done,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  InkWell(
+                                    onTap: controller.changeStatus,
+                                    child: Obx(
+                                      () => Image.asset(
+                                        controller.scheduleDone.isTrue ? AssetNames.checkboxMarked : AssetNames.checkboxBlank,
+                                        width: 24,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Divider(),
                               Expanded(
                                 child: SingleChildScrollView(
                                   primary: false,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // TODO : [Feat] Text => TextInputForm
+                                      controller.scheduleColorHexList.isNotEmpty
+                                          ? SizedBox(
+                                              height: 45,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.horizontal,
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: controller.scheduleColorHexList
+                                                      .map(
+                                                        (e) => Padding(
+                                                          padding: const EdgeInsets.only(right: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              controller.scheduleColorHex.value == e
+                                                                  ? const CircleAvatar(
+                                                                      radius: 2,
+                                                                      backgroundColor: StyledPalette.STATUS_INFO,
+                                                                    )
+                                                                  : const SizedBox(height: 4),
+                                                              const SizedBox(height: 4),
+                                                              InkWell(
+                                                                onTap: () => controller.changeColorHex(e),
+                                                                radius: 12,
+                                                                child: CircleAvatar(
+                                                                  radius: controller.scheduleColorHex.value == e ? 16 : 12,
+                                                                  backgroundColor: Color(int.parse(e, radix: 16) + 0xFF000000),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
                                       Obx(
                                         () => controller.hasMember.isFalse
                                             ? Container(

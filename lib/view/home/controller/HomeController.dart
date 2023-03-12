@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
+import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
+import '../../../constant/StyledPalette.dart';
 import '../../../model/Schedule.dart';
 import '../../create/schedule/CreateScheduleView.dart';
 
 class HomeController extends RootController with GetSingleTickerProviderStateMixin {
   final ScheduleRepository scheduleRepository = ScheduleRepository();
+  final InitRepository initRepository = InitRepository();
   TabController? tabController;
   static HomeController to = Get.find();
 
@@ -17,6 +20,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   final Rx<DateTime> scheduleListUpdatedAt = Rx(DateTime.now());
   final RxList<Schedule> scheduleList = RxList([]);
+  final RxList<String> scheduleColorHexList = RxList([]);
   final Rx<bool> onLoading = RxBool(true);
   final Rx<bool> onBottomSheet = RxBool(true);
 
@@ -29,6 +33,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     selectedDateText.value = dateToString(date: selectedDate.value);
     tabController = TabController(vsync: this, length: 2);
     await getScheduleList(selectedDate.value);
+    await getScheduleHexList();
     super.onInit();
   }
 
@@ -48,6 +53,21 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     } finally {
       scheduleList.refresh();
       onLoading.value = false;
+    }
+  }
+
+
+
+  Future<void> getScheduleHexList() async {
+    try {
+      List<String> list = await initRepository.getScheduleColorHexList();
+      scheduleColorHexList.clear();
+      scheduleColorHexList.addAll(list);
+    } catch (e) {
+      scheduleColorHexList.clear();
+      scheduleColorHexList.addAll(StyledPalette.DEFAULT_SCHEDULE_COLOR_LIST);
+    } finally {
+      scheduleColorHexList.refresh();
     }
   }
 

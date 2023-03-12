@@ -22,4 +22,8 @@ class StyledPalette {
   static const Color STATUS_POSITIVE= Color.fromRGBO(46, 157, 119, 1);
 
   static const Color TRANSPARENT = Color.fromRGBO(0, 0, 0, 0);
+
+  static const List<String> DEFAULT_SCHEDULE_COLOR_LIST = [
+    'F9B294', 'ABE874', '8ECAEE', '67C8CF', 'C8D8B4', 'B6C7CF', 'E7A29B', '6ACD95', '979EBA', 'CDA3EF', 'DEB0D9', 'F6CC7C'
+  ];
 }
