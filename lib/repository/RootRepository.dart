@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 
+import '../service/SessionService.dart';
+
 class RootRepository extends GetConnect {
   static String? accessToken;
 
@@ -52,29 +54,28 @@ class RootRepository extends GetConnect {
     switch (response.statusCode) {
       case 400: // Client Error : Bad Request
         showSnackbar(title: '잘못된 요청', message: response.body["message"]);
-        return;
+        throw Error();
       case 401: // Client Error : Unauthenticated
         accessToken = null;
-        // SessionService.to.quitSession();
         showSnackbar(title: '잘못된 요청', message: response.body["message"]);
-        return;
+        throw Error();
       case 403:
       // Client Error : Forbidden
         showSnackbar(title: '잘못된 요청', message: response.body["message"]);
-        return;
+        throw Error();
       case 409:
       // Client Error : Conflict
-        return;
+        throw Error();
       case 500:
       // throw "Server Error pls retry later";
-        showSnackbar(title: '서버 오류', message: "현재 상황을 개발자 피드백에 남겨주시면 더 좋은 서비스로 보답하겠습니다");
-        return;
+        showSnackbar(title: '서버 오류', message: "서버에 문제가 있어요");
+        throw Error();
       case 503:
         showSnackbar(title: '처리 실패', message: "요청 시간이 초과되었습니다");
-        return;
+        throw Error();
       default:
         showSnackbar(title: '서버 오류', message: "현재 상황을 개발자 피드백에 남겨주시면 더 좋은 서비스로 보답하겠습니다");
-        return;
+        throw Error();
     }
   }
 
