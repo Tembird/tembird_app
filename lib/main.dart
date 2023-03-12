@@ -8,9 +8,10 @@ import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/auth/login/LoginView.dart';
 import 'package:tembird_app/view/auth/login/binding/LoginBinding.dart';
+import 'package:tembird_app/view/auth/resetPassword/ResetPasswordView.dart';
+import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding.dart';
 import 'package:tembird_app/view/auth/signup/SignupView.dart';
 import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
-import 'package:tembird_app/view/create/schedule/CreateScheduleView.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
 import 'package:tembird_app/view/init/InitView.dart';
@@ -64,6 +65,11 @@ class MyApp extends StatelessWidget {
           name: PageNames.SIGN_UP,
           page: () => const SignupView(),
           binding: SignupBinding(),
+        ),
+        GetPage(
+          name: PageNames.RESET_PASSWORD,
+          page: () => const ResetPasswordView(),
+          binding: ResetPasswordBinding(),
         ),
         GetPage(
           name: PageNames.HOME,

@@ -31,7 +31,7 @@ class LoginView extends GetView<LoginController> {
                 SizedBox(height: 16),
                 PasswordForm(),
                 SizedBox(height: 16),
-                FindPassword(),
+                ResetPassword(),
                 SizedBox(height: 16),
                 SubmitButton(),
               ],
@@ -87,13 +87,13 @@ class PasswordForm extends GetView<LoginController> {
   }
 }
 
-class FindPassword extends GetView<LoginController> {
-  const FindPassword({Key? key}) : super(key: key);
+class ResetPassword extends GetView<LoginController> {
+  const ResetPassword({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: controller.routeFindPasswordView,
+      onTap: controller.routeResetPasswordView,
       child: const Text(
         "비밀번호를 잊으셨나요?",
         style: StyledFont.FOOTNOTE_GRAY,

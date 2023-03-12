@@ -64,8 +64,8 @@ class LoginController extends GetxController {
     }
   }
 
-  void routeFindPasswordView() {
-    // TODO : Route to FindPasswordView
+  void routeResetPasswordView() {
+    Get.toNamed(PageNames.RESET_PASSWORD);
   }
 
   void back() {

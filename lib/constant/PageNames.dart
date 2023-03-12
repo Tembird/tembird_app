@@ -3,4 +3,5 @@ class PageNames {
   static const HOME = '/home';
   static const LOGIN = '/auth/login';
   static const SIGN_UP = '/auth/sign-up';
+  static const RESET_PASSWORD = '/auth/reset-password';
 }
