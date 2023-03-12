@@ -10,7 +10,7 @@ class SessionService extends GetxService {
   static SessionService to = Get.find();
   // TODO : Save UserInfo
   String email = 'rjsgy0815@naver.com';
-  String userId = 'Tembird';
+  final RxString userId = RxString('Tembird');
   String appVersion = '1.0.0';
 
   final AuthRepository authRepository = AuthRepository();
@@ -24,6 +24,10 @@ class SessionService extends GetxService {
       return;
     }
     sessionStatus.value = SessionStatus.active;
+  }
+
+  Future<void> updateUserInfo() async {
+    // TODO : Update UserInfo from DB
   }
 
   Future<void> quitSession() async {

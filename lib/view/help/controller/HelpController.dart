@@ -13,7 +13,7 @@ class HelpController extends RootController {
 
   final RxBool onLoading = RxBool(true);
   final String email = SessionService.to.email;
-  final RxString userId = RxString(SessionService.to.userId);
+  final RxString userId = RxString(SessionService.to.userId.value);
   final RxString appVersion = RxString(SessionService.to.appVersion);
 
   final RxnString announcementData = RxnString(null);
@@ -25,8 +25,11 @@ class HelpController extends RootController {
   }
 
   /// ProfileSetting
-  void updateId() {
-    // TODO : Route to UpdateIdView
+  void updateId() async {
+    bool? isUpdated = await Get.toNamed(PageNames.UPDATE_ID) as bool?;
+
+    if (isUpdated == null) return;
+    userId.value = SessionService.to.userId.value;
   }
 
   void updatePassword() {

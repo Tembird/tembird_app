@@ -14,6 +14,8 @@ import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
 import 'package:tembird_app/view/common/HtmlView.dart';
 import 'package:tembird_app/view/help/HelpView.dart';
 import 'package:tembird_app/view/help/binding/HelpBinding.dart';
+import 'package:tembird_app/view/help/updateId/UpdateIdView.dart';
+import 'package:tembird_app/view/help/updateId/binding/UpdateIdBinding.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
 import 'package:tembird_app/view/init/InitView.dart';
@@ -86,6 +88,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: PageNames.HTML,
           page: () => const HtmlView(),
+        ),
+        GetPage(
+          name: PageNames.UPDATE_ID,
+          page: () => const UpdateIdView(),
+          binding: UpdateIdBinding()
         ),
       ],
     );
