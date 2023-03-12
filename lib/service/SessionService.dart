@@ -9,7 +9,7 @@ enum SessionStatus { active, empty }
 class SessionService extends GetxService {
   static SessionService to = Get.find();
 
-  // final AuthRepository authRepository = AuthRepository();
+  final AuthRepository authRepository = AuthRepository();
   final Rx<SessionStatus> sessionStatus = Rx(SessionStatus.empty);
 
   Future<void> initSession() async {
@@ -22,9 +22,9 @@ class SessionService extends GetxService {
     sessionStatus.value = SessionStatus.active;
   }
 
-  // Future<void> quitSession() async {
-  //   await authRepository.signOut();
-  //   await Get.offAllNamed(PageNames.INIT);
-  //   Get.reset();
-  // }
+  Future<void> quitSession() async {
+    await authRepository.signOut();
+    await Get.offAllNamed(PageNames.INIT);
+    Get.reset();
+  }
 }

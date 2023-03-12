@@ -57,6 +57,7 @@ class RootRepository extends GetConnect {
         throw Error();
       case 401: // Client Error : Unauthenticated
         accessToken = null;
+        SessionService.to.quitSession();
         showSnackbar(title: '잘못된 요청', message: response.body["message"]);
         throw Error();
       case 403:
