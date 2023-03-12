@@ -12,12 +12,15 @@ class HelpView extends GetView<HelpController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-          onPressed: controller.back,
-          color: StyledPalette.BLACK,
-        ),
+        automaticallyImplyLeading: false,
         title: const Text('설정', style: StyledFont.TITLE_2),
         centerTitle: true,
+        actions: [
+          CloseButton(
+            onPressed: controller.back,
+            color: StyledPalette.BLACK,
+          )
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

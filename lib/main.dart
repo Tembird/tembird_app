@@ -84,6 +84,7 @@ class MyApp extends StatelessWidget {
           name: PageNames.HELP,
           page: () => const HelpView(),
           binding: HelpBinding(),
+          fullscreenDialog: true,
         ),
         GetPage(
           name: PageNames.HTML,
