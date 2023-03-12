@@ -39,29 +39,32 @@ class HelpController extends RootController {
   }
 
   void showAnnouncement() async {
+    onLoading.value = true;
     try {
       announcementData.value = await helpRepository.readAnnouncement();
       Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '공지사항', data: announcementData.value!));
-    } catch (e) {
-      print(e);
+    } finally {
+      onLoading.value = false;
     }
   }
 
   Future<void> showTerms() async {
+    onLoading.value = true;
     try {
       termsData.value = await helpRepository.readTerms();
       Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '서비스 이용약관', data: termsData.value!));
-    } catch (e) {
-      print(e);
+    } finally {
+      onLoading.value = false;
     }
   }
 
   Future<void> showPrivacyPolicy() async {
+    onLoading.value = true;
     try {
       privacyPolicyData.value = await helpRepository.readPrivacyPolicy();
       Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '개인정보 처리방침', data: privacyPolicyData.value!));
-    } catch (e) {
-      print(e);
+    } finally {
+      onLoading.value = false;
     }
   }
 
@@ -72,8 +75,11 @@ class HelpController extends RootController {
   // Session
   void signOut() async {
     onLoading.value = true;
-    await SessionService.to.quitSession();
-    onLoading.value = false;
+    try {
+      await SessionService.to.quitSession();
+    } finally {
+      onLoading.value = false;
+    }
   }
 
   void removeAccount() async {
