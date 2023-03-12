@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 
-import '../../constant/StyledPalette.dart';
+import '../../../constant/StyledPalette.dart';
 import 'controller/HelpController.dart';
 
 class HelpView extends GetView<HelpController> {
