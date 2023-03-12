@@ -32,8 +32,8 @@ class HelpController extends RootController {
     userId.value = SessionService.to.userId.value;
   }
 
-  void updatePassword() {
-    // TODO : Route to UpdatePasswordView
+  void updatePassword() async {
+    await Get.toNamed(PageNames.UPDATE_PASSWORD);
   }
 
   // AppInfo

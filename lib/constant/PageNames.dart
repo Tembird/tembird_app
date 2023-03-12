@@ -6,5 +6,6 @@ class PageNames {
   static const RESET_PASSWORD = '/auth/reset-password';
   static const HELP = '/help';
   static const UPDATE_ID = '/help/update-id';
+  static const UPDATE_PASSWORD = '/help/update-password';
   static const HTML = '/html';
 }
