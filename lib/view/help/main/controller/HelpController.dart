@@ -86,6 +86,6 @@ class HelpController extends RootController {
   }
 
   void removeAccount() async {
-    // TODO : Route to RemoveAccountPage
+    Get.toNamed(PageNames.REMOVE_ACCOUNT);
   }
 }

@@ -14,6 +14,8 @@ import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
 import 'package:tembird_app/view/common/HtmlView.dart';
 import 'package:tembird_app/view/help/main/HelpView.dart';
 import 'package:tembird_app/view/help/main/binding/HelpBinding.dart';
+import 'package:tembird_app/view/help/removeAccount/RemoveAccountView.dart';
+import 'package:tembird_app/view/help/removeAccount/binding/RemoveAccountBinding.dart';
 import 'package:tembird_app/view/help/updateId/UpdateIdView.dart';
 import 'package:tembird_app/view/help/updateId/binding/UpdateIdBinding.dart';
 import 'package:tembird_app/view/help/updatePassword/UpdatePasswordView.dart';
@@ -101,6 +103,11 @@ class MyApp extends StatelessWidget {
           name: PageNames.UPDATE_PASSWORD,
           page: () => const UpdatePasswordView(),
           binding: UpdatePasswordBinding()
+        ),
+        GetPage(
+          name: PageNames.REMOVE_ACCOUNT,
+          page: () => const RemoveAccountView(),
+          binding: RemoveAccountBinding()
         ),
       ],
     );

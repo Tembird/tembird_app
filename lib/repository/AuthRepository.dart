@@ -106,4 +106,13 @@ class AuthRepository extends RootRepository {
     await Hive.box(Common.session).delete(Common.accessTokenHeader);
     await Hive.box(Common.session).delete(Common.refreshTokenHeader);
   }
+
+  Future<void> removeAccount({required String email, required String password}) async {
+    Map<String, dynamic> data = {'email': email, 'password': password};
+
+    // final Response response = await patch('/users/update-password', jsonEncode(data));
+    // if (response.hasError) {
+    //   errorHandler(response);
+    // }
+  }
 }
