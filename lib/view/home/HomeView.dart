@@ -17,37 +17,37 @@ class HomeView extends GetView<HomeController> {
     final double width = MediaQuery.of(context).size.width;
     const double rowHeaderWidth = 32;
     const double columnHeaderHeight = 20;
-    return Obx(
-      () => controller.onLoading.isTrue
-          ? Container(color: Colors.blue)
-          : Scaffold(
-              appBar: AppBar(
-                leadingWidth: 0,
-                toolbarHeight: 80,
-                titleSpacing: 0,
-                automaticallyImplyLeading: false,
-                title: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          const SizedBox(width: 16),
-                          Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
-                        ],
-                      ),
-                      const HomeTabBar()
-                    ],
-                  ),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 0,
+        toolbarHeight: 80,
+        titleSpacing: 0,
+        automaticallyImplyLeading: false,
+        title: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(width: 16),
+                  Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
+                ],
               ),
-              body: Container(
-                color: StyledPalette.MINERAL,
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: IndexedStack(
+              const HomeTabBar()
+            ],
+          ),
+        ),
+      ),
+      body: Container(
+        color: StyledPalette.MINERAL,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Obx(
+                  () => controller.onLoading.isTrue
+                      ? Container(color: Colors.blue)
+                      : IndexedStack(
                           index: controller.viewIndex.value,
                           children: [
                             Column(
@@ -110,13 +110,13 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ],
                         ),
-                      ),
-                      const HomeBottomBar(),
-                    ],
-                  ),
                 ),
               ),
-            ),
+              const HomeBottomBar(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
