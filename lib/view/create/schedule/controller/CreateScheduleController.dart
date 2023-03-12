@@ -40,9 +40,8 @@ class CreateScheduleController extends RootController {
   @override
   void onInit() async {
     onLoading.value = true;
-    if (schedule.scheduleLocation != null) {
+    if (schedule.scheduleTitle != null) {
       titleController.text = schedule.scheduleTitle!;
-      hasLocation.value = true;
     }
     if (schedule.scheduleMember.isNotEmpty) {
       memberList.addAll(schedule.scheduleMember);
