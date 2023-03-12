@@ -264,7 +264,7 @@ class _ScheduleTableState extends State<ScheduleTable> {
     int columnSpan = 0;
 
     for (int columnIndex = 0; columnIndex < 6; columnIndex++) {
-      if (columnSpan > 0) {
+      if (columnSpan > 1) {
         columnSpan--;
         tableRow.add(SizedBox(width: 0, height: cellHeight));
         continue;
