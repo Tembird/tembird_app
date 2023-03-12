@@ -25,12 +25,15 @@ class UpdateIdView extends GetView<UpdateIdController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                InputTextFormField(
-                  controller: controller.userIdController,
-                  labelText: '아이디',
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => controller.checkPossibleId(),
-                  errorText: controller.userIdError.value,
+                Obx(
+                  () => InputTextFormField(
+                    controller: controller.userIdController,
+                    labelText: '아이디',
+                    hintText: '사용하실 아이디를 설정해주세요',
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => controller.checkPossibleId(),
+                    errorText: controller.userIdError.value,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const SubmitButton()

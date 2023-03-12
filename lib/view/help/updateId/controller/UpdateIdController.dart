@@ -20,15 +20,26 @@ class UpdateIdController extends RootController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    userIdController.dispose();
+    super.onClose();
+  }
+
   void back() {
     Get.back();
   }
 
-  void checkPossibleId() async {
+  Future<void> checkPossibleId() async {
     onLoading.value = true;
     try {
+      if (userIdController.value.text.isEmpty) {
+        isPossible.value = false;
+        userIdError.value = '아이디를 입력해주세요';
+        return;
+      }
 
-      if (userIdController.value.text.isEmpty || userIdController.value.text == currentUserID ) {
+      if (userIdController.value.text == currentUserID ) {
         isPossible.value = false;
         userIdError.value = '현재 사용중인 아이디입니다';
         return;
@@ -50,7 +61,9 @@ class UpdateIdController extends RootController {
   void updateId() async {
     onLoading.value = true;
     try {
-      if (userIdController.value.text.isEmpty || userIdController.value.text == currentUserID ) return;
+      await checkPossibleId();
+      if (isPossible.isFalse) return;
+      onLoading.value = true;
       await authRepository.updateId(userId: userIdController.value.text);
       SessionService.to.updateUserInfo();
       Get.back(
