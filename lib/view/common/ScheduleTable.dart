@@ -32,8 +32,6 @@ class ScheduleTable extends StatefulWidget {
 }
 
 class _ScheduleTableState extends State<ScheduleTable> {
-  bool onLoading = true;
-
   List<int> unselectableIndexList = [];
   List<int> selectedIndexList = [];
   int? startIndex;
@@ -44,7 +42,6 @@ class _ScheduleTableState extends State<ScheduleTable> {
   void initState() {
     setState(() {
       widget.scheduleList.forEach((schedule) => unselectableIndexList.addAll(schedule.scheduleIndexList));
-      onLoading = false;
     });
     super.initState();
   }
@@ -118,150 +115,148 @@ class _ScheduleTableState extends State<ScheduleTable> {
     final double tableWidth = widget.width - rowHeaderWidth;
     final double cellWidth = tableWidth / 6;
     final double cellHeight = tableHeight / 24;
-    return onLoading
-        ? Container(color: Colors.red)
-        : SizedBox(
-            height: height,
-            width: widget.width,
-            child: Column(
-              children: [
-                if (widget.showColumnHeader)
-                  Container(
-                    color: StyledPalette.MINERAL,
-                    child: SizedBox(
-                      width: widget.width,
+    return SizedBox(
+      height: height,
+      width: widget.width,
+      child: Column(
+        children: [
+          if (widget.showColumnHeader)
+            Container(
+              color: StyledPalette.MINERAL,
+              child: SizedBox(
+                width: widget.width,
+                height: columnHeaderHeight,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: rowHeaderWidth,
                       height: columnHeaderHeight,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: rowHeaderWidth,
-                            height: columnHeaderHeight,
-                            child: const Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
-                          ),
-                          SizedBox(
-                            width: tableWidth,
-                            height: columnHeaderHeight,
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 6,
-                              itemBuilder: (context, index) => Container(
-                                width: cellWidth,
-                                height: columnHeaderHeight,
-                                child: Center(
-                                  child: Text(
-                                    '${index * 10}',
-                                    textAlign: TextAlign.center,
-                                    style: StyledFont.FOOTNOTE,
-                                  ),
-                                ),
-                              ),
+                      child: const Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
+                    ),
+                    SizedBox(
+                      width: tableWidth,
+                      height: columnHeaderHeight,
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 6,
+                        itemBuilder: (context, index) => Container(
+                          width: cellWidth,
+                          height: columnHeaderHeight,
+                          child: Center(
+                            child: Text(
+                              '${index * 10}',
+                              textAlign: TextAlign.center,
+                              style: StyledFont.FOOTNOTE,
                             ),
-                          )
-                        ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          SizedBox(
+            width: widget.width,
+            height: tableHeight,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: rowHeaderWidth,
+                  height: tableHeight,
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 24,
+                    itemBuilder: (context, index) => Container(
+                      width: rowHeaderWidth,
+                      height: cellHeight,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            color: index < 14 && index > 1 ? StyledPalette.ACCENT_YELLOW : StyledPalette.ACCENT_LAVENDER,
+                            width: 5,
+                          ),
+                        ),
+                        color: StyledPalette.MINERAL,
+                      ),
+                      child: Center(
+                        child: Text(
+                          hourList[index].toString(),
+                          textAlign: TextAlign.center,
+                          style: StyledFont.FOOTNOTE,
+                        ),
                       ),
                     ),
                   ),
-                SizedBox(
-                  width: widget.width,
-                  height: tableHeight,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: rowHeaderWidth,
-                        height: tableHeight,
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 24,
-                          itemBuilder: (context, index) => Container(
-                            width: rowHeaderWidth,
-                            height: cellHeight,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(
-                                  color: index < 14 && index > 1 ? StyledPalette.ACCENT_YELLOW : StyledPalette.ACCENT_LAVENDER,
-                                  width: 5,
-                                ),
-                              ),
-                              color: StyledPalette.MINERAL,
-                            ),
-                            child: Center(
-                              child: Text(
-                                hourList[index].toString(),
-                                textAlign: TextAlign.center,
-                                style: StyledFont.FOOTNOTE,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTapDown: (TapDownDetails details) {
-                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
-                          if (selectedIndexList.contains(selectedIndex)) {
-                            widget.onTapSelected(selectedIndexList);
-                            return;
-                          }
-                          if (endIndex != null) {
-                            setState(() {
-                              startIndex = null;
-                              endIndex = null;
-                              minUnselectableIndex = 144;
-                              selectedIndexList.clear();
-                            });
-                            return;
-                          }
-                          final int scheduleIndex = widget.scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
-                          if (scheduleIndex == -1) return;
+                ),
+                GestureDetector(
+                  onTapDown: (TapDownDetails details) {
+                    int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                    if (selectedIndexList.contains(selectedIndex)) {
+                      widget.onTapSelected(selectedIndexList);
+                      return;
+                    }
+                    if (endIndex != null) {
+                      setState(() {
+                        startIndex = null;
+                        endIndex = null;
+                        minUnselectableIndex = 144;
+                        selectedIndexList.clear();
+                      });
+                      return;
+                    }
+                    final int scheduleIndex = widget.scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
+                    if (scheduleIndex == -1) return;
 
-                          final Schedule schedule = widget.scheduleList[scheduleIndex];
-                          widget.onTapSchedule(schedule);
-                        },
-                        onLongPressStart: (LongPressStartDetails details) {
-                          selectedIndexList.clear();
-                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
-                          getMinUnselectableIndex(selectedIndex);
-                          if (!isEnableIndex(selectedIndex)) return;
-                          setState(() {
-                            startIndex = selectedIndex;
-                            endIndex = null;
-                          });
-                        },
-                        onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
-                          int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                    final Schedule schedule = widget.scheduleList[scheduleIndex];
+                    widget.onTapSchedule(schedule);
+                  },
+                  onLongPressStart: (LongPressStartDetails details) {
+                    selectedIndexList.clear();
+                    int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
+                    getMinUnselectableIndex(selectedIndex);
+                    if (!isEnableIndex(selectedIndex)) return;
+                    setState(() {
+                      startIndex = selectedIndex;
+                      endIndex = null;
+                    });
+                  },
+                  onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
+                    int selectedIndex = getIndexFromPosition(position: details.localPosition, cellHeight: cellHeight, cellWidth: cellWidth);
 
-                          setState(() {
-                            if (startIndex == null || !isEnableIndex(selectedIndex)) {
-                              return;
-                            }
-                            endIndex = selectedIndex;
-                          });
-                        },
-                        onLongPressEnd: (LongPressEndDetails details) {
-                          setState(() {
-                            minUnselectableIndex = 144;
-                            if (startIndex == null || endIndex == null) return;
-                            setSelectedIndexList();
-                          });
-                        },
-                        child: SizedBox(
-                          width: tableWidth,
-                          height: tableHeight,
-                          child: Column(
-                            children: List.generate(24, (rowIndex) {
-                              return Row(
-                                children: _buildTableRow(rowIndex: rowIndex, cellWidth: cellWidth, cellHeight: cellHeight),
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                    ],
+                    setState(() {
+                      if (startIndex == null || !isEnableIndex(selectedIndex)) {
+                        return;
+                      }
+                      endIndex = selectedIndex;
+                    });
+                  },
+                  onLongPressEnd: (LongPressEndDetails details) {
+                    setState(() {
+                      minUnselectableIndex = 144;
+                      if (startIndex == null || endIndex == null) return;
+                      setSelectedIndexList();
+                    });
+                  },
+                  child: SizedBox(
+                    width: tableWidth,
+                    height: tableHeight,
+                    child: Column(
+                      children: List.generate(24, (rowIndex) {
+                        return Row(
+                          children: _buildTableRow(rowIndex: rowIndex, cellWidth: cellWidth, cellHeight: cellHeight),
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ],
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   List<Widget> _buildTableRow({required int rowIndex, required double cellWidth, required double cellHeight}) {
