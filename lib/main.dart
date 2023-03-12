@@ -12,6 +12,8 @@ import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding
 import 'package:tembird_app/view/auth/signup/SignupView.dart';
 import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
 import 'package:tembird_app/view/common/HtmlView.dart';
+import 'package:tembird_app/view/help/contact/ContactView.dart';
+import 'package:tembird_app/view/help/contact/binding/ContactBinding.dart';
 import 'package:tembird_app/view/help/main/HelpView.dart';
 import 'package:tembird_app/view/help/main/binding/HelpBinding.dart';
 import 'package:tembird_app/view/help/removeAccount/RemoveAccountView.dart';
@@ -108,6 +110,11 @@ class MyApp extends StatelessWidget {
           name: PageNames.REMOVE_ACCOUNT,
           page: () => const RemoveAccountView(),
           binding: RemoveAccountBinding()
+        ),
+        GetPage(
+          name: PageNames.CONTACT,
+          page: () => const ContactView(),
+          binding: ContactBinding()
         ),
       ],
     );

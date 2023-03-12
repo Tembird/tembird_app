@@ -69,5 +69,7 @@ class HelpRepository extends RootRepository {
     return privacyPolicy;
   }
 
-
+  Future<void> submitFeedback() async {
+    // TODO : Create Feedback on DB
+  }
 }

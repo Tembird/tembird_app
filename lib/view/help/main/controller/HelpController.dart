@@ -71,8 +71,8 @@ class HelpController extends RootController {
     }
   }
 
-  void contactDeveloper() {
-    // TODO : Route to ContactDeveloperView
+  void contact() {
+    Get.toNamed(PageNames.CONTACT);
   }
 
   // Session

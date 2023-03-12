@@ -163,8 +163,8 @@ class AppInfoCard extends GetView<HelpController> {
             title: '개인정보 처리방침',
           ),
           CardItem(
-            onTap: controller.contactDeveloper,
-            title: '개발자 문의',
+            onTap: controller.contact,
+            title: '이용 문의',
           ),
         ],
       ),

@@ -8,5 +8,6 @@ class PageNames {
   static const UPDATE_ID = '/help/update-id';
   static const UPDATE_PASSWORD = '/help/update-password';
   static const REMOVE_ACCOUNT = '/help/remove-account';
+  static const CONTACT = '/help/contact';
   static const HTML = '/html';
 }
