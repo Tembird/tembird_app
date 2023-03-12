@@ -189,7 +189,7 @@ class SubmitButton extends GetView<SignupController> {
         child: const Center(
           child: Text(
             '완료',
-            style: StyledFont.TITLE_2_700_WHITE,
+            style: StyledFont.TITLE_2_WHITE,
           ),
         ),
       ),

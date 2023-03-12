@@ -7,9 +7,9 @@ class StyledFont {
   static const TextStyle TITLE_1 = TextStyle(fontWeight: FontWeight.w400, fontSize: 28, height: 34 / 28, color: StyledPalette.BLACK);
   static const TextStyle TITLE_2 = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
   static const TextStyle TITLE_2_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.GRAY);
+  static const TextStyle TITLE_2_WHITE = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.WHITE);
+  static const TextStyle TITLE_2_SKY = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.PRIMARY_SKY_DARK);
   static const TextStyle TITLE_2_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
-  static const TextStyle TITLE_2_700_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 22, height: 28 / 22, color: StyledPalette.WHITE);
-  static const TextStyle TITLE_2_700_SKY = TextStyle(fontWeight: FontWeight.w700, fontSize: 22, height: 28 / 22, color: StyledPalette.PRIMARY_SKY_DARK);
   static const TextStyle TITLE_3 = TextStyle(fontWeight: FontWeight.w400, fontSize: 20, height: 25 / 20, color: StyledPalette.BLACK);
   static const TextStyle HEADLINE = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.BLACK);
   static const TextStyle HEADLINE_GRAY = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.GRAY);

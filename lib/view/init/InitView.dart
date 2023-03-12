@@ -71,7 +71,7 @@ class LoginButton extends GetView<InitController> {
         child: const Center(
           child: Text(
             '로그인',
-            style: StyledFont.TITLE_2_700_WHITE,
+            style: StyledFont.TITLE_2_WHITE,
           ),
         ),
       ),
@@ -98,7 +98,7 @@ class SignUpButton extends GetView<InitController> {
         child: const Center(
           child: Text(
             '계정 만들기',
-            style: StyledFont.TITLE_2_700_SKY,
+            style: StyledFont.TITLE_2_SKY,
           ),
         ),
       ),
