@@ -143,12 +143,10 @@ class AppInfoCard extends GetView<HelpController> {
         children: [
           const Text('이용 안내', style: StyledFont.HEADLINE),
           const SizedBox(height: 8),
-          Obx(
-            () => CardItem(
-              onTap: controller.checkRecentVersion,
-              title: '앱 버전',
-              content: controller.appVersion.value,
-            ),
+          CardItem(
+            onTap: controller.checkRecentVersion,
+            title: '앱 버전',
+            content: controller.appVersion,
           ),
           CardItem(
             onTap: controller.showAnnouncement,

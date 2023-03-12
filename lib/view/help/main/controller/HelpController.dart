@@ -13,8 +13,8 @@ class HelpController extends RootController {
 
   final RxBool onLoading = RxBool(true);
   final String email = SessionService.to.email;
+  final String appVersion = '${SessionService.to.appVersion} (${SessionService.to.appBuildNum})';
   final RxString userId = RxString(SessionService.to.userId.value);
-  final RxString appVersion = RxString(SessionService.to.appVersion);
 
   final RxnString announcementData = RxnString(null);
   final RxnString termsData = RxnString(null);
