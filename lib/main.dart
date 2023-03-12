@@ -6,6 +6,10 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/view/auth/login/LoginView.dart';
+import 'package:tembird_app/view/auth/login/binding/LoginBinding.dart';
+import 'package:tembird_app/view/auth/signup/SignupView.dart';
+import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
 import 'package:tembird_app/view/create/schedule/CreateScheduleView.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
@@ -32,7 +36,7 @@ class MyApp extends StatelessWidget {
       title: 'Tembird',
       theme: ThemeData(
         backgroundColor: StyledPalette.MINERAL,
-        scaffoldBackgroundColor: StyledPalette.WHITE,
+        scaffoldBackgroundColor: StyledPalette.MINERAL,
         dialogBackgroundColor: StyledPalette.MINERAL,
         appBarTheme: const AppBarTheme(
           backgroundColor: StyledPalette.MINERAL,
@@ -50,6 +54,16 @@ class MyApp extends StatelessWidget {
           name: PageNames.INIT,
           page: () => const InitView(),
           binding: InitBinding(),
+        ),
+        GetPage(
+          name: PageNames.LOGIN,
+          page: () => const LoginView(),
+          binding: LoginBinding(),
+        ),
+        GetPage(
+          name: PageNames.SIGN_UP,
+          page: () => const SignupView(),
+          binding: SignupBinding(),
         ),
         GetPage(
           name: PageNames.HOME,

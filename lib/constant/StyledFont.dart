@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'StyledPalette.dart';
 
 class StyledFont {
-  static const TextStyle LARGE_TITLE = TextStyle(fontWeight: FontWeight.w400, fontSize: 34, height: 41 / 34, color: StyledPalette.BLACK);
+  static const TextStyle LARGE_TITLE = TextStyle(fontWeight: FontWeight.w700, fontSize: 34, height: 41 / 34, color: StyledPalette.BLACK);
   static const TextStyle TITLE_1 = TextStyle(fontWeight: FontWeight.w400, fontSize: 28, height: 34 / 28, color: StyledPalette.BLACK);
   static const TextStyle TITLE_2 = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
   static const TextStyle TITLE_2_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.GRAY);
@@ -26,6 +26,8 @@ class StyledFont {
   static const TextStyle CALLOUT_700_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.WHITE);
   static const TextStyle SUBHEAD = TextStyle(fontWeight: FontWeight.w400, fontSize: 15, height: 20 / 15, color: StyledPalette.BLACK);
   static const TextStyle FOOTNOTE = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.BLACK);
+  static const TextStyle FOOTNOTE_SKY = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.PRIMARY_SKY_DARK);
+  static const TextStyle FOOTNOTE_NEGATIVE = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.STATUS_NEGATIVE);
   static const TextStyle FOOTNOTE_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.GRAY);
   static const TextStyle CAPTION_1 = TextStyle(fontWeight: FontWeight.w400, fontSize: 12, height: 16 / 12, color: StyledPalette.BLACK);
   static const TextStyle CAPTION_1_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 12, height: 16 / 12, color: StyledPalette.GRAY);

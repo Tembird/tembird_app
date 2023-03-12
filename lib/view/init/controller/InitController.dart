@@ -29,18 +29,18 @@ class InitController extends RootController {
   }
 
   void showTerms() {
-    // launchUrlString(Constants.TERMS);
+    // TODO : Show Term Page
   }
 
   void showPrivacyPolicy() {
-    // launchUrlString(Constants.PRIVACY_POLICY);
+    // TODO : Show PrivacyPolicy Page
   }
 
   void routeLogin() {
-    // Get.offAllNamed(PageNames.LOGIN);
+    Get.toNamed(PageNames.LOGIN);
   }
 
   void routeSignUp() {
-    // Get.offAllNamed(PageNames.SIGN_UP);
+    Get.toNamed(PageNames.SIGN_UP);
   }
 }
