@@ -37,7 +37,6 @@ class _TodoListState extends State<TodoList> {
 
   void changeTodoStatus(Schedule schedule) async {
     await widget.changeStatus(schedule);
-    print('======> isChanged');
   }
 
   Widget _buildTodoListItem({required Schedule schedule, required void Function(Schedule) onTapTodo}) {
@@ -64,10 +63,21 @@ class _TodoListState extends State<TodoList> {
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: StyledPalette.GRAY, width: 1))),
-                      child: Text(
-                        schedule.scheduleTitle!,
-                        style: StyledFont.BODY,
-                        maxLines: 1,
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 4,
+                            backgroundColor: Color(int.parse(schedule.scheduleColorHex, radix: 16) + 0xFF000000),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              schedule.scheduleTitle!,
+                              style: StyledFont.BODY,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
