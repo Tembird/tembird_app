@@ -14,7 +14,7 @@ class InitView extends GetView<InitController> {
     return Obx(
       () => controller.onLoading.isTrue
           ? Scaffold(
-              backgroundColor: StyledPalette.PRIMARY_SKY_DARK,
+              backgroundColor: StyledPalette.PRIMARY_BLUE,
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -64,7 +64,7 @@ class LoginButton extends GetView<InitController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: StyledPalette.PRIMARY_SKY_DARK,
+          color: StyledPalette.PRIMARY_BLUE,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,
@@ -91,7 +91,7 @@ class SignUpButton extends GetView<InitController> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: StyledPalette.MINERAL,
-          border: Border.all(color: StyledPalette.PRIMARY_SKY_DARK, width: 1),
+          border: Border.all(color: StyledPalette.PRIMARY_BLUE, width: 1),
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,

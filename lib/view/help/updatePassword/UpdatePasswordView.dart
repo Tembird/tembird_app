@@ -109,7 +109,7 @@ class SubmitButton extends GetView<UpdatePasswordController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: StyledPalette.PRIMARY_SKY_DARK,
+          color: StyledPalette.PRIMARY_BLUE,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,

@@ -58,7 +58,7 @@ class EmailForm extends GetView<SignupController> {
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: StyledPalette.PRIMARY_SKY_DARK, width: 1),
+                    border: Border.all(color: StyledPalette.PRIMARY_BLUE, width: 1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -99,7 +99,7 @@ class VerificationCodeForm extends GetView<SignupController> {
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: StyledPalette.PRIMARY_SKY_DARK, width: 1),
+                      border: Border.all(color: StyledPalette.PRIMARY_BLUE, width: 1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -182,7 +182,7 @@ class SubmitButton extends GetView<SignupController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: StyledPalette.PRIMARY_SKY_DARK,
+          color: StyledPalette.PRIMARY_BLUE,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,

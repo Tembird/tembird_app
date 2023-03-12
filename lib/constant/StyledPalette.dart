@@ -9,9 +9,7 @@ class StyledPalette {
   static const Color WHITE = Color.fromRGBO(255, 255, 255, 1);
   static const Color MINERAL = Color.fromRGBO(249, 249, 249, 1);
 
-  static const Color PRIMARY_SKY_DARK = Color.fromRGBO(148, 191, 255, 1);
-  static const Color PRIMARY_SKY_BRIGHT = Color.fromRGBO(176, 213, 255, 1);
-  static const Color PRIMARY_SKY_BACKGROUND = Color.fromRGBO(229, 240, 254, 1);
+  static const Color PRIMARY_BLUE = Color.fromRGBO(107, 138, 183, 1.0);
 
   static const Color ACCENT_YELLOW = Color.fromRGBO(246, 204, 124, 1);
   static const Color ACCENT_RED= Color.fromRGBO(238, 127, 121, 1);
