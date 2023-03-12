@@ -38,12 +38,11 @@ class _ScheduleTableState extends State<ScheduleTable> {
   int minUnselectableIndex = 144;
   int? endIndex;
 
-  @override
-  void initState() {
+  void updateList() {
     setState(() {
+      unselectableIndexList.clear();
       widget.scheduleList.forEach((schedule) => unselectableIndexList.addAll(schedule.scheduleIndexList));
     });
-    super.initState();
   }
 
   @override
@@ -108,6 +107,7 @@ class _ScheduleTableState extends State<ScheduleTable> {
 
   @override
   Widget build(BuildContext context) {
+    updateList();
     final double height = widget.height ?? 1172;
     final double rowHeaderWidth = widget.rowHeaderWidth ?? 32;
     final double columnHeaderHeight = widget.columnHeaderHeight ?? 20;

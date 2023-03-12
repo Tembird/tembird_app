@@ -88,15 +88,18 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 Expanded(
                                   child: SingleChildScrollView(
-                                    child: ScheduleTable(
-                                      showColumnHeader: false,
-                                      rowHeaderWidth: rowHeaderWidth,
-                                      columnHeaderHeight: columnHeaderHeight,
-                                      width: width,
-                                      scheduleList: controller.scheduleList,
-                                      onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                                      onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
-                                    ),
+                                    child: Obx(() {
+                                      DateTime updatedAt = controller.scheduleListUpdatedAt.value;
+                                      return ScheduleTable(
+                                        showColumnHeader: false,
+                                        rowHeaderWidth: rowHeaderWidth,
+                                        columnHeaderHeight: columnHeaderHeight,
+                                        width: width,
+                                        scheduleList: controller.scheduleList,
+                                        onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                                        onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
+                                      );
+                                    }),
                                   ),
                                 ),
                               ],
