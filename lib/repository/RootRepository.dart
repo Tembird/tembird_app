@@ -2,13 +2,11 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:hive/hive.dart';
+import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 
 class RootRepository extends GetConnect {
   static String? accessToken;
-  final String accessTokenHeader = 'authorization';
-  final String refreshTokenHeader = 'refresh_token';
-  final String session = 'session';
 
   void initialization() {
     httpClient.baseUrl = FlutterConfig.get('API');
@@ -16,16 +14,16 @@ class RootRepository extends GetConnect {
     httpClient.timeout = const Duration(milliseconds: 3000);
 
     httpClient.addResponseModifier<dynamic>((request, response) async {
-      String? tempAccessToken = response.headers![accessTokenHeader];
-      String? tempRefreshToken = response.headers![refreshTokenHeader];
+      String? tempAccessToken = response.headers![Common.accessTokenHeader];
+      String? tempRefreshToken = response.headers![Common.refreshTokenHeader];
 
       if (tempAccessToken != null) {
         accessToken = tempAccessToken;
-        await Hive.box(session).put(accessTokenHeader, tempAccessToken);
+        await Hive.box(Common.session).put(Common.accessTokenHeader, tempAccessToken);
       }
 
       if (tempRefreshToken != null) {
-        await Hive.box(session).put(refreshTokenHeader, tempRefreshToken);
+        await Hive.box(Common.session).put(Common.refreshTokenHeader, tempRefreshToken);
       }
 
       return response;
@@ -33,13 +31,13 @@ class RootRepository extends GetConnect {
 
     httpClient.addRequestModifier((Request request) async {
       if (accessToken != null) {
-        request.headers[accessTokenHeader] = accessToken!;
+        request.headers[Common.accessTokenHeader] = accessToken!;
       }
       return request;
     });
 
     httpClient.addAuthenticator((Request request) async {
-      String? refreshToken = Hive.box(session).get(refreshTokenHeader);
+      String? refreshToken = Hive.box(Common.session).get(Common.refreshTokenHeader);
       if (refreshToken != null) {
         // TODO : Connect API to Get New Authenticator with RefreshToken
       }
