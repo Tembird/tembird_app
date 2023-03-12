@@ -8,6 +8,10 @@ enum SessionStatus { active, empty }
 
 class SessionService extends GetxService {
   static SessionService to = Get.find();
+  // TODO : Save UserInfo
+  String email = 'rjsgy0815@naver.com';
+  String userId = 'Tembird';
+  String appVersion = '1.0.0';
 
   final AuthRepository authRepository = AuthRepository();
   final Rx<SessionStatus> sessionStatus = Rx(SessionStatus.empty);

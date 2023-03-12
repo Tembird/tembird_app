@@ -12,6 +12,8 @@ import 'package:tembird_app/view/auth/resetPassword/ResetPasswordView.dart';
 import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding.dart';
 import 'package:tembird_app/view/auth/signup/SignupView.dart';
 import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
+import 'package:tembird_app/view/help/HelpView.dart';
+import 'package:tembird_app/view/help/binding/HelpBinding.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
 import 'package:tembird_app/view/init/InitView.dart';
@@ -75,6 +77,11 @@ class MyApp extends StatelessWidget {
           name: PageNames.HOME,
           page: () => const HomeView(),
           binding: HomeBinding(),
+        ),
+        GetPage(
+          name: PageNames.HELP,
+          page: () => const HelpView(),
+          binding: HelpBinding(),
         ),
       ],
     );

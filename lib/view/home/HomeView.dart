@@ -37,6 +37,16 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
         ),
+        actions: [
+          Container(
+            alignment: Alignment.topRight,
+            padding: const EdgeInsets.only(right: 16, top: 16),
+            child: InkWell(
+              onTap: controller.openHelpView,
+              child: Image.asset(AssetNames.account, width: 32, fit: BoxFit.contain),
+            ),
+          ),
+        ],
       ),
       body: Container(
         color: StyledPalette.MINERAL,

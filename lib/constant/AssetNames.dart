@@ -6,4 +6,5 @@ class AssetNames {
   /// Icons
   static const menuDown = 'assets/icons/menu-down.png';
   static const menuUp = 'assets/icons/menu-up.png';
+  static const account = 'assets/icons/account.png';
 }

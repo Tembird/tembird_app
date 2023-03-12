@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
@@ -135,5 +136,9 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     await getScheduleList(newDate);
     selectedDate.value = newDate;
     selectedDateText.value = dateToString(date: newDate);
+  }
+
+  void openHelpView() {
+    Get.toNamed(PageNames.HELP);
   }
 }
