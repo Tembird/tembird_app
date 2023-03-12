@@ -39,12 +39,15 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   Future<void> getScheduleList(DateTime date) async {
     onLoading.value = true;
-    scheduleList.clear();
-    List<Schedule> list = await scheduleRepository.getScheduleOnDate(dateTime: date);
-    scheduleList.addAll(list);
-    scheduleList.refresh();
-    updateEditedAt();
-    onLoading.value = false;
+    try {
+      List<Schedule> list = await scheduleRepository.readScheduleListOnDate(dateTime: date);
+      scheduleList.clear();
+      scheduleList.addAll(list);
+      updateEditedAt();
+    } finally {
+      scheduleList.refresh();
+      onLoading.value = false;
+    }
   }
 
   void selectView(int index) {
@@ -69,8 +72,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       enableDrag: false,
     ) as ScheduleAction?;
 
-    if (scheduleAction == null) return;
-    // TODO : Create New Schedule in ScheduleList
+    if (scheduleAction == null || scheduleAction.action != ActionType.created) return;
     addSchedule(add: scheduleAction.schedule!);
   }
 
@@ -86,15 +88,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     switch (scheduleAction.action) {
       case ActionType.created:
-        // TODO : Add New Schedule in ScheduleList
         addSchedule(add: scheduleAction.schedule!);
         return;
       case ActionType.updated:
-        // TODO : Update Schedule in ScheduleList
         updateSchedule(previous: schedule, update: scheduleAction.schedule!);
         return;
       case ActionType.removed:
-        // TODO : Remove Schedule from ScheduleList
         removeSchedule(removed: schedule);
         return;
     }
@@ -122,11 +121,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void updateEditedAt() {
     scheduleListUpdatedAt.value = DateTime.now();
   }
-
-  // void changeScheduleStatus(Schedule schedule) async {
-  //   // TODO : Connect Repository to Change Status of Schedule
-  //   await getScheduleList(selectedDate.value);
-  // }
 
   /// BottomSheet
   void showCalendar() async {
