@@ -125,7 +125,7 @@ class ProfileSettingCard extends GetView<HelpController> {
           const Text('계정 설정', style: StyledFont.HEADLINE),
           const SizedBox(height: 8),
           CardItem(onTap: controller.updateId, title: '아이디 설정'),
-          CardItem(onTap: controller.updatePassword, title: '비밀번호 설정'),
+          CardItem(onTap: controller.updatePassword, title: '비밀번호 변경'),
         ],
       ),
     );
