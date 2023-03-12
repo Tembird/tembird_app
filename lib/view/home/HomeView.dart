@@ -23,24 +23,24 @@ class HomeView extends GetView<HomeController> {
         toolbarHeight: 80,
         titleSpacing: 0,
         automaticallyImplyLeading: false,
-        title: IntrinsicHeight(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  const SizedBox(width: 16),
-                  Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
-                ],
-              ),
-              const HomeTabBar()
-            ],
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 16),
+                Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const HomeTabBar()
+          ],
         ),
         actions: [
           Container(
             alignment: Alignment.topRight,
-            padding: const EdgeInsets.only(right: 16, top: 16),
+            padding: const EdgeInsets.only(right: 16),
             child: InkWell(
               onTap: controller.openHelpView,
               child: Image.asset(AssetNames.account, width: 32, fit: BoxFit.contain),
@@ -156,7 +156,7 @@ class HomeTabBar extends GetView<HomeController> {
           onTap: controller.selectView,
           labelStyle: StyledFont.CALLOUT_700,
           labelColor: StyledPalette.BLACK,
-          unselectedLabelStyle: StyledFont.FOOTNOTE_GRAY,
+          unselectedLabelStyle: StyledFont.CALLOUT_GRAY,
           unselectedLabelColor: StyledPalette.GRAY,
         ),
       ),
