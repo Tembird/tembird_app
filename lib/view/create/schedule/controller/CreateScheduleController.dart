@@ -14,6 +14,8 @@ class CreateScheduleController extends RootController {
   final ScheduleRepository scheduleRepository = ScheduleRepository();
   final List<String> scheduleColorHexList = HomeController.to.scheduleColorHexList;
   final Schedule schedule;
+  late final String selectedDateText;
+  late final String selectedScheduleTimeText;
   final bool isNew;
   static CreateScheduleController to = Get.find();
 
@@ -30,13 +32,6 @@ class CreateScheduleController extends RootController {
   final RxnString detail = RxnString(null);
   final RxList<String> memberList = RxList([]);
 
-  /// Uneditable Fields - DateTime
-  String get selectedDateText => dateToString(date: schedule.scheduleDate);
-
-  String get selectedScheduleTimeText => '${schedule.scheduleIndexList.first ~/ 6 + 4}시 ${schedule.scheduleIndexList.first % 6 * 10}분 ~ '
-      '${schedule.scheduleIndexList.last ~/ 6 + 4}시 ${schedule.scheduleIndexList.last % 6 * 10 + 10}분 '
-      '(${schedule.scheduleIndexList.length * 10}분)';
-
   /// Editable Fields - Title, Location, MemberList, Detail
   final TextEditingController titleController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
@@ -51,6 +46,10 @@ class CreateScheduleController extends RootController {
   @override
   void onInit() async {
     onLoading.value = true;
+    selectedDateText = dateToString(date: schedule.scheduleDate);
+    selectedScheduleTimeText = '${schedule.scheduleIndexList.first ~/ 6 + 4}시 ${schedule.scheduleIndexList.first % 6 * 10}분 ~ '
+        '${schedule.scheduleIndexList.last ~/ 6 + 4}시 ${schedule.scheduleIndexList.last % 6 * 10 + 10}분 '
+        '(${schedule.scheduleIndexList.length * 10}분)';
     scheduleDone.value = schedule.scheduleDone;
     scheduleColorHex.value = schedule.scheduleColorHex;
     if (schedule.scheduleTitle != null) {

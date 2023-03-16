@@ -39,10 +39,12 @@ class _ScheduleTableState extends State<ScheduleTable> {
   int? endIndex;
 
   void updateList() {
+    print("======> updateList");
     setState(() {
       unselectableIndexList.clear();
       widget.scheduleList.forEach((schedule) => unselectableIndexList.addAll(schedule.scheduleIndexList));
     });
+    print(unselectableIndexList);
   }
 
   @override
