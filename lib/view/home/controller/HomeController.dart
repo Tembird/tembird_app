@@ -83,7 +83,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       scheduleId: 0,
       scheduleDate: selectedDate.value,
       scheduleIndexList: indexList,
-      scheduleColorHex: '000000',
+      scheduleColorHex: StyledPalette.DEFAULT_SCHEDULE_COLOR,
       scheduleMember: [],
       scheduleDone: false,
     );
