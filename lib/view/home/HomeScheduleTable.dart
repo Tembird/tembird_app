@@ -89,38 +89,45 @@ class HomeScheduleTable extends GetView<HomeController> {
                                     ),
                                   )
                                 : Stack(
-                                    children: [
-                                      Row(
-                                        children: List.generate(
-                                          cellStyle.length,
-                                          (index) => Container(
-                                            width: cellWidth,
-                                            height: cellHeight,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: StyledPalette.MINERAL,
-                                                width: 0.5,
-                                                strokeAlign: StrokeAlign.center,
-                                              ),
-                                              color: cellStyle.color,
-                                            ),
-                                          ),
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                    cellStyle.length,
+                                        (index) => Container(
+                                      width: cellWidth,
+                                      height: cellHeight,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: StyledPalette.MINERAL,
+                                          width: 0.5,
+                                          strokeAlign: StrokeAlign.center,
                                         ),
+                                        color: cellStyle.color,
                                       ),
-                                      if (cellStyle.text != null)
-                                        SizedBox(
-                                          width: cellWidth * cellStyle.length,
-                                          height: cellHeight,
-                                          child: Center(
-                                            child: Text(
-                                              cellStyle.text!,
-                                              style: StyledFont.CALLOUT_700_WHITE,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        )
-                                    ],
-                                  );
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        color: StyledPalette.MINERAL,
+                                        width: 5,
+                                      )
+                                    )
+                                  ),
+                                  width: cellWidth * cellStyle.length,
+                                  height: cellHeight,
+                                  child: Center(
+                                    child: Text(
+                                      cellStyle.text!,
+                                      style: StyledFont.CALLOUT_700_WHITE,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
                           },
                         ),
                       ),
@@ -128,13 +135,6 @@ class HomeScheduleTable extends GetView<HomeController> {
                   ),
                 ),
               ),
-              // child: Column(
-              //   children: List.generate(24, (rowIndex) {
-              //     return Obx(() => Row(
-              //       children: _buildTableRow(rowIndex: rowIndex, cellWidth: cellWidth, cellHeight: cellHeight),
-              //     ));
-              //   }),
-              // ),
             ),
           ),
         ],
