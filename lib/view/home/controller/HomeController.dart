@@ -49,14 +49,16 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       List<Schedule> list = await scheduleRepository.readScheduleListOnDate(dateTime: date);
       scheduleList.clear();
       scheduleList.addAll(list);
-      updateEditedAt();
+      unselectableIndexList.clear();
+      for (var schedule in scheduleList) {
+        unselectableIndexList.addAll(schedule.scheduleIndexList);
+      }
+      refreshCellStyleList();
     } finally {
       scheduleList.refresh();
       onLoading.value = false;
     }
   }
-
-
 
   Future<void> getScheduleHexList() async {
     try {
@@ -78,12 +80,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void createSchedule(List<int> indexList) async {
     final Schedule schedule = Schedule(
-        scheduleId: 0,
-        scheduleDate: selectedDate.value,
-        scheduleIndexList: indexList,
-        scheduleColorHex: '000000',
-        scheduleMember: [],
-        scheduleDone: false,
+      scheduleId: 0,
+      scheduleDate: selectedDate.value,
+      scheduleIndexList: indexList,
+      scheduleColorHex: '000000',
+      scheduleMember: [],
+      scheduleDone: false,
     );
 
     ScheduleAction? scheduleAction = await Get.bottomSheet(
@@ -121,26 +123,39 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void addSchedule({required Schedule add}) {
-    scheduleList.add(add);
-    scheduleList.refresh();
-    updateEditedAt();
+    scheduleList.add(Schedule(
+      scheduleId: add.scheduleId,
+      scheduleDate: add.scheduleDate,
+      scheduleIndexList: add.scheduleIndexList.toList(),
+      scheduleColorHex: add.scheduleColorHex,
+      scheduleMember: add.scheduleMember.toList(),
+      scheduleDone: add.scheduleDone,
+      scheduleLocation: add.scheduleLocation,
+      scheduleDetail: add.scheduleDetail,
+      scheduleTitle: add.scheduleTitle,
+    ));
+    scheduleList.sort((a,b) => a.scheduleIndexList.first.compareTo(b.scheduleIndexList.first));
+    selectedIndexList.clear();
+    unselectableIndexList.clear();
+    for (var schedule in scheduleList) {
+      unselectableIndexList.addAll(schedule.scheduleIndexList);
+    }
+    startIndex = null;
+    endIndex = null;
+    minUnselectableIndex = 144;
+    refreshCellStyleList();
   }
 
   void updateSchedule({required Schedule previous, required Schedule update}) {
     scheduleList.remove(previous);
     scheduleList.add(update);
-    scheduleList.refresh();
-    updateEditedAt();
+    refreshCellStyleList();
   }
 
   void removeSchedule({required Schedule removed}) {
-    scheduleList.remove(removed);
-    scheduleList.refresh();
-    updateEditedAt();
-  }
-
-  void updateEditedAt() {
-    scheduleListUpdatedAt.value = DateTime.now();
+    unselectableIndexList.removeWhere((index) => removed.scheduleIndexList.contains(index));
+    scheduleList.removeWhere((schedule) => schedule.scheduleId == removed.scheduleId);
+    refreshCellStyleList();
   }
 
   Future<void> changeScheduleStatus({required Schedule schedule}) async {
@@ -150,14 +165,13 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
         scheduleIndexList: schedule.scheduleIndexList,
         scheduleColorHex: schedule.scheduleColorHex,
         scheduleMember: schedule.scheduleMember,
-        scheduleDone: !schedule.scheduleDone
-    );
+        scheduleDone: !schedule.scheduleDone);
     try {
       await scheduleRepository.updateSchedule(schedule: changedSchedule);
       scheduleList.firstWhere((e) => e == schedule).scheduleDone = changedSchedule.scheduleDone;
     } finally {
       scheduleList.refresh();
-      updateEditedAt();
+      refreshCellStyleList();
     }
   }
 
@@ -179,4 +193,155 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void openHelpView() {
     Get.toNamed(PageNames.HELP);
   }
+
+  // TODD : ScheduleTable
+  final List<int> hourList = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3];
+  List<int> unselectableIndexList = [];
+  List<int> selectedIndexList = [];
+  int? startIndex;
+  int? endIndex;
+  int minUnselectableIndex = 144;
+  final double cellWidth = (Get.width - 32) / 6;
+  final double cellHeight = 45;
+  final RxList<CellStyle> cellStyleList = RxList([]);
+
+  void onTableTapDown(TapDownDetails details) async {
+    int selectedIndex = getIndexFromPosition(details.localPosition);
+    if (selectedIndexList.contains(selectedIndex)) {
+      createSchedule(selectedIndexList);
+      return;
+    }
+    if (endIndex != null) {
+      startIndex = null;
+      endIndex = null;
+      minUnselectableIndex = 144;
+      selectedIndexList.clear();
+      refreshCellStyleList();
+      return;
+    }
+    final int scheduleIndex = scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
+    if (scheduleIndex == -1) return;
+
+    final Schedule schedule = scheduleList[scheduleIndex];
+    showScheduleDetail(schedule);
+    refreshCellStyleList();
+  }
+
+  void onTableLongPressStart(LongPressStartDetails details) {
+    selectedIndexList.clear();
+    int selectedIndex = getIndexFromPosition(details.localPosition);
+    getMinUnselectableIndex(selectedIndex);
+    if (!isEnableIndex(selectedIndex)) return;
+    startIndex = selectedIndex;
+    endIndex = null;
+    refreshCellStyleList();
+  }
+
+  void onTableLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    int selectedIndex = getIndexFromPosition(details.localPosition);
+    if (startIndex == null || !isEnableIndex(selectedIndex)) {
+      return;
+    }
+    endIndex = selectedIndex;
+    refreshCellStyleList();
+  }
+
+  void onTableLongPressEnd(LongPressEndDetails details) {
+    minUnselectableIndex = 144;
+    if (startIndex == null || endIndex == null) return;
+    setSelectedIndexList();
+  }
+
+  void getMinUnselectableIndex(int currentIndex) {
+    if (unselectableIndexList.contains(currentIndex)) {
+      minUnselectableIndex = currentIndex;
+      return;
+    }
+    int minDistance = 144;
+    for (int i = 0; i < unselectableIndexList.length; i++) {
+      int unselectableIndex = unselectableIndexList[i];
+      int distance = unselectableIndex - currentIndex;
+      if (distance > 0 && distance < minDistance) {
+        minDistance = distance;
+        minUnselectableIndex = unselectableIndex;
+      }
+    }
+  }
+
+  bool isEnableIndex(int index) {
+    return (minUnselectableIndex - index) > 0;
+  }
+
+  Color? getIndexColor(int index) {
+    if (unselectableIndexList.contains(index)) {
+      String colorHex = scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.contains(index)).scheduleColorHex;
+      return Color(int.parse(colorHex, radix: 16) + 0xFF000000);
+    }
+    return null;
+  }
+
+  Schedule? getIndexSchedule(int index) {
+    try {
+      return scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.first == index);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  bool isSelectedIndex(int index) {
+    if (startIndex == null || endIndex == null) {
+      return false;
+    }
+    return !(index - startIndex!).isNegative && !(endIndex! - index).isNegative;
+  }
+
+  int getIndexFromPosition(Offset position) {
+    final int x = position.dx ~/ cellWidth;
+    final int y = position.dy ~/ cellHeight;
+    return (x + 6 * y);
+  }
+
+  void setSelectedIndexList() {
+    for (int index = startIndex!; index < endIndex! + 1; index++) {
+      selectedIndexList.add(index);
+    }
+  }
+
+  void refreshCellStyleList() async {
+    cellStyleList.clear();
+
+    int columnSpan = 0;
+    for (int index = 0; index < 144; index++) {
+      if (columnSpan > 1) {
+        cellStyleList.add(CellStyle(length: 0));
+        columnSpan--;
+        continue;
+      }
+
+      Schedule? schedule = getIndexSchedule(index);
+      if (schedule == null) {
+        cellStyleList.add(CellStyle(
+          length: 1,
+          color: getIndexColor(index) ?? (isSelectedIndex(index) ? Colors.blue : null),
+        ));
+        continue;
+      }
+
+      columnSpan = schedule.scheduleIndexList.where((schedule) => schedule ~/ 6 == index ~/ 6).length;
+      Color scheduleColor = Color(int.parse(schedule.scheduleColorHex, radix: 16) + 0xFF000000);
+      cellStyleList.add(CellStyle(length: columnSpan, text: schedule.scheduleTitle ?? '제목 없음', color: scheduleColor));
+    }
+  }
+}
+
+class CellStyle {
+  final int length;
+  final String? text;
+  final Color? color;
+
+  CellStyle({
+    required this.length,
+    this.text,
+    this.color,
+  });
 }

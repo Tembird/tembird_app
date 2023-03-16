@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/AssetNames.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/view/home/HomeScheduleTable.dart';
 import 'package:tembird_app/view/home/TodoList.dart';
 
 import '../../model/Schedule.dart';
-import '../common/ScheduleTable.dart';
 import 'controller/HomeController.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -96,20 +96,9 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                   ),
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: SingleChildScrollView(
-                                    child: Obx(() {
-                                      DateTime updatedAt = controller.scheduleListUpdatedAt.value;
-                                      return ScheduleTable(
-                                        showColumnHeader: false,
-                                        rowHeaderWidth: rowHeaderWidth,
-                                        columnHeaderHeight: columnHeaderHeight,
-                                        width: width,
-                                        scheduleList: controller.scheduleList,
-                                        onTapSchedule: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                                        onTapSelected: (List<int> indexList) => controller.createSchedule(indexList),
-                                      );
-                                    }),
+                                    child: HomeScheduleTable(),
                                   ),
                                 ),
                               ],
