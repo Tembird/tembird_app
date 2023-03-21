@@ -16,6 +16,7 @@ class InputTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
   final int? maxLines;
+  final bool? autofocus;
 
   const InputTextFormField({
     Key? key,
@@ -32,6 +33,7 @@ class InputTextFormField extends StatelessWidget {
     this.onFieldSubmitted,
     this.maxLength,
     this.maxLines,
+    this.autofocus,
   }) : super(key: key);
 
   @override
@@ -43,6 +45,7 @@ class InputTextFormField extends StatelessWidget {
         if (controller.value.text.isNotEmpty)
           Text(labelText, style: StyledFont.CALLOUT_700_BLACK50),
         TextFormField(
+          autofocus: autofocus ?? false,
           controller: controller,
           decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never,

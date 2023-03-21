@@ -24,7 +24,7 @@ class AuthRepository extends RootRepository {
     }
   }
 
-  Future<bool> checkVerificationCode({required String email, required String code}) async {
+  Future<void> checkVerificationCode({required String email, required String code}) async {
     Map<String, dynamic> data = {
       'email': email,
       'code': int.parse(code),
@@ -33,9 +33,7 @@ class AuthRepository extends RootRepository {
     final response = await post('/verification/check', jsonEncode(data));
     if (response.hasError) {
       errorHandler(response);
-      return false;
     }
-    return true;
   }
 
   Future<void> signup({required String email, required String password}) async {
