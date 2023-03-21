@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/repository/AuthRepository.dart';
@@ -17,14 +19,17 @@ class ResetPasswordController extends GetxController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
 
-  final RxnString emailError = RxnString('사용하셨던 이메일을 입력해주세요');
+  final RxnString emailError = RxnString(null);
   final RxBool isVerificationEmailSent = RxBool(false);
-  final RxnString verificationCodeError = RxnString('6자리 인증 코드를 입력하세요');
+  final RxBool isVerificationCodeValid = RxBool(false);
   final RxBool isEmailVerified = RxBool(false);
 
-  final RxnString passwordError = RxnString('영문, 숫자, 특수문자 포함 8자 이상으로 새로운 비밀번호를 입력해주세요');
-  final RxnString passwordConfirmError = RxnString('다시 한번 비밀번호를 입력해주세요');
+  final RxnString passwordError = RxnString(null);
+  final RxnString passwordConfirmError = RxnString(null);
   final RxBool isPasswordObscured = RxBool(true);
+
+  Timer? timer;
+  final RxnInt expiredIn = RxnInt(null);
 
   void emailValidator(String? value) {
     isEmailVerified.value = false;
@@ -43,37 +48,68 @@ class ResetPasswordController extends GetxController {
   }
 
   void requestVerificationCodeEmail() async {
+    if (onLoading.isTrue) return;
     onLoading.value = true;
     try {
       emailValidator(emailController.value.text);
       if (emailError.value != null) return;
-      await authRepository.sendVerificationEmail(email: emailController.value.text);
       isVerificationEmailSent.value = true;
+      setTimer();
+      await authRepository.requestVerificationEmail(email: emailController.value.text);
+      authRepository.showAlert(title: 'Tembird', message: '이메일로 인증 번호가 발송되었습니다');
+    } catch(e) {
+      isVerificationEmailSent.value = false;
     } finally {
       onLoading.value = false;
     }
   }
 
+  void setTimer() {
+    cancelTimer();
+    expiredIn.value = 599;
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (expiredIn.value! == 0) {
+        cancelTimer();
+        isVerificationEmailSent.value = false;
+        return;
+      }
+      expiredIn.value = expiredIn.value! - 1;
+    });
+  }
+
+  void cancelTimer() {
+    expiredIn.value = null;
+    timer?.cancel();
+    timer = null;
+  }
+
   void verificationCodeValidator(String? value) {
-    if (value == null || value.length != 6) return;
-    verificationCodeError.value = null;
+    if (value == null || value.length != 6) {
+      isVerificationCodeValid.value = false;
+      return;
+    }
+    isVerificationCodeValid.value = true;
   }
 
   void confirmVerificationCode() async {
+    if (onLoading.isTrue) return;
     onLoading.value = true;
     try {
-      verificationCodeValidator(verificationCodeController.value.text);
-      if (verificationCodeError.value != null) return;
-
       isEmailVerified.value = false;
+      verificationCodeValidator(verificationCodeController.value.text);
+      if (isVerificationCodeValid.isFalse) return;
 
-      bool isVerified = await authRepository.checkVerificationCode(
+      await authRepository.checkVerificationCode(
         email: emailController.value.text,
         code: verificationCodeController.value.text,
       );
-      if (!isVerified) return;
+      cancelTimer();
+      authRepository.showAlert(title: 'Tembird', message: '이메일 인증이 완료되었습니다');
       isEmailVerified.value = true;
-    } finally {
+    } catch (e) {
+      isEmailVerified.value = false;
+    }
+    finally {
       onLoading.value = false;
     }
   }
@@ -113,6 +149,7 @@ class ResetPasswordController extends GetxController {
   }
 
   void updatePassword() async {
+    if (onLoading.isTrue) return;
     onLoading.value = true;
     try {
       if (isEmailVerified.isFalse) return;
@@ -120,10 +157,11 @@ class ResetPasswordController extends GetxController {
       passwordConfirmValidator(passwordConfirmController.value.text);
       if (passwordError.value != null || passwordConfirmError.value != null) return;
 
-      await authRepository.updatePassword(
+      await authRepository.resetPassword(
         email: emailController.value.text,
         password: passwordController.value.text,
       );
+      authRepository.showAlert(title: 'Tembird', message: '비밀번호 초기화가 완료되었습니다');
       Get.offAllNamed(PageNames.INIT);
     } finally {
       onLoading.value = false;

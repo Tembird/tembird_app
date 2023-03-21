@@ -48,13 +48,13 @@ class AuthRepository extends RootRepository {
     }
   }
 
-  Future<void> updatePassword({required String email, required String password}) async {
+  Future<void> resetPassword({required String email, required String password}) async {
     Map<String, dynamic> data = {'email': email, 'password': password};
 
-    // final Response response = await patch('/users/update-password', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await put('/user/reset-password', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> updatePasswordWithCurrentPassword({required String email, required String currentPassword, required String newPassword}) async {
