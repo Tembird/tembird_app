@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:tembird_app/constant/Common.dart';
@@ -16,7 +18,7 @@ class AuthRepository extends RootRepository {
       'email': email,
     };
 
-    // final response = await post('/users/send-verification-code', jsonEncode(data));
+    // final response = await post('/verification/require', jsonEncode(data));
     // if (response.hasError) {
     //   errorHandler(response);
     // }
@@ -28,7 +30,7 @@ class AuthRepository extends RootRepository {
       'code': code,
     };
 
-    // final response = await post('/users/check-verification-code', jsonEncode(data));
+    // final response = await post('/verification/check', jsonEncode(data));
     // if (response.hasError) {
     //   errorHandler(response);
     //   return false;
@@ -42,7 +44,7 @@ class AuthRepository extends RootRepository {
       'password': password,
     };
 
-    // final Response response = await post('/users/signup', jsonEncode(data));
+    // final Response response = await post('/user/sign-up', jsonEncode(data));
     // if (response.hasError) {
     //   errorHandler(response);
     // }
@@ -59,21 +61,20 @@ class AuthRepository extends RootRepository {
 
   Future<void> updatePasswordWithCurrentPassword({required String email, required String currentPassword, required String newPassword}) async {
     Map<String, dynamic> data = {
-      'email': email,
-      'currentPassword': currentPassword,
+      'password': currentPassword,
       'newPassword': newPassword,
     };
 
-    // final Response response = await patch('/users/update-password', jsonEncode(data));
+    // final Response response = await patch('/user/update-password', jsonEncode(data));
     // if (response.hasError) {
     //   errorHandler(response);
     // }
   }
 
   Future<void> updateId({required String userId}) async {
-    Map<String, dynamic> data = {'userId': userId};
+    Map<String, dynamic> data = {'username': userId};
 
-    // final Response response = await patch('/users/update-password', jsonEncode(data));
+    // final Response response = await patch('/user/username', jsonEncode(data));
     // if (response.hasError) {
     //   errorHandler(response);
     // }
@@ -96,10 +97,10 @@ class AuthRepository extends RootRepository {
       'password': password,
     };
 
-    // final Response response = await post('/users/login', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await post('/user/login', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> signOut() async {
