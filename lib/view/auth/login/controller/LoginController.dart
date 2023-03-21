@@ -52,6 +52,7 @@ class LoginController extends GetxController {
   }
 
   void login() async {
+    if (onLoading.isTrue) return;
     onLoading.value = true;
     try {
       emailValidator(emailController.value.text);
@@ -59,6 +60,8 @@ class LoginController extends GetxController {
       if (emailError.value != null || passwordError.value != null) return;
       await authRepository.login(email: emailController.value.text, password: passwordController.value.text);
       Get.offAllNamed(PageNames.HOME);
+    } catch (e) {
+      passwordController.text = '';
     } finally {
       onLoading.value = false;
     }
