@@ -32,9 +32,9 @@ class RootRepository extends GetConnect {
     });
 
     httpClient.addRequestModifier((Request request) async {
-      if (accessToken != null) {
-        request.headers[Common.accessTokenHeader] = accessToken!;
-      }
+      accessToken ??= Hive.box(Common.session).get(Common.accessTokenHeader);
+      if (accessToken == null) return request;
+      request.headers[Common.accessTokenHeader] = accessToken!;
       return request;
     });
 

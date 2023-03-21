@@ -1,5 +1,5 @@
 class Common {
-  static const accessTokenHeader = 'authorization';
-  static const refreshTokenHeader = 'refresh_token';
+  static const accessTokenHeader = 'access-token';
+  static const refreshTokenHeader = 'refresh-token';
   static const session = 'session';
 }

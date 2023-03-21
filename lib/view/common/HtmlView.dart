@@ -39,15 +39,27 @@ class HtmlView extends StatelessWidget {
             style: {
               'html': Style(
                 color: StyledPalette.MINERAL,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
-              'h1': Style(
+              'h2': Style(
                 color: StyledPalette.BLACK,
-                fontSize: const FontSize(18),
+                fontSize: const FontSize(16),
               ),
               'h3': Style(
                 color: StyledPalette.BLACK,
-                fontSize: const FontSize(16),
+                fontSize: const FontSize(14),
+              ),
+              'h4': Style(
+                color: StyledPalette.BLACK,
+                fontWeight: FontWeight.w600,
+                fontSize: const FontSize(12),
+                padding: EdgeInsets.zero,
+              ),
+              'p': Style(
+                color: StyledPalette.BLACK,
+                fontWeight: FontWeight.w400,
+                fontSize: const FontSize(12),
+                padding: EdgeInsets.zero,
               ),
               'li': Style(
                 color: StyledPalette.BLACK,
