@@ -13,28 +13,28 @@ class AuthRepository extends RootRepository {
     initialization();
   }
 
-  Future<void> sendVerificationEmail({required String email}) async {
+  Future<void> requestVerificationEmail({required String email}) async {
     Map<String, dynamic> data = {
       'email': email,
     };
 
-    // final response = await post('/verification/require', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final response = await post('/verification/send', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<bool> checkVerificationCode({required String email, required String code}) async {
     Map<String, dynamic> data = {
       'email': email,
-      'code': code,
+      'code': int.parse(code),
     };
 
-    // final response = await post('/verification/check', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    //   return false;
-    // }
+    final response = await post('/verification/check', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+      return false;
+    }
     return true;
   }
 
@@ -44,10 +44,10 @@ class AuthRepository extends RootRepository {
       'password': password,
     };
 
-    // final Response response = await post('/user/sign-up', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await post('/user/sign-up', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> updatePassword({required String email, required String password}) async {
