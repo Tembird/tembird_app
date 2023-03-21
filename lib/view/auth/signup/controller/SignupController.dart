@@ -71,6 +71,7 @@ class SignupController extends GetxController {
   }
 
   void setTimer() {
+    cancelTimer();
     expiredIn.value = 599;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (expiredIn.value! == 0) {

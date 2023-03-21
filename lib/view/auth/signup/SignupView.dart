@@ -114,11 +114,23 @@ class VerificationCodeForm extends GetView<SignupController> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  if (controller.expiredIn.value != null)
-                    Text(
-                      '남은 시간 ${controller.expiredIn.value! ~/ 60}분 ${controller.expiredIn.value! % 60}초',
-                      style: StyledFont.FOOTNOTE_NEGATIVE,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (controller.expiredIn.value != null)
+                        Text(
+                          '남은 시간 ${controller.expiredIn.value! ~/ 60}분 ${controller.expiredIn.value! % 60}초',
+                          style: StyledFont.FOOTNOTE_NEGATIVE,
+                        ),
+                      GestureDetector(
+                        onTap: controller.requestVerificationCodeEmail,
+                        child: const Text(
+                          '메일을 받지 못하셨나요?',
+                          style: StyledFont.FOOTNOTE_GRAY,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
