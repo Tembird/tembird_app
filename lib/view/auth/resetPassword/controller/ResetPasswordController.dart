@@ -56,7 +56,7 @@ class ResetPasswordController extends GetxController {
       isVerificationEmailSent.value = true;
       setTimer();
       await authRepository.requestVerificationEmail(email: emailController.value.text);
-      authRepository.showAlert(title: 'Tembird', message: '이메일로 인증 번호가 발송되었습니다');
+      authRepository.showAlertSnackbar(message: '이메일로 인증 번호가 발송되었습니다');
     } catch(e) {
       isVerificationEmailSent.value = false;
     } finally {
@@ -104,7 +104,7 @@ class ResetPasswordController extends GetxController {
         code: verificationCodeController.value.text,
       );
       cancelTimer();
-      authRepository.showAlert(title: 'Tembird', message: '이메일 인증이 완료되었습니다');
+      authRepository.showAlertSnackbar(message: '이메일 인증이 완료되었습니다');
       isEmailVerified.value = true;
     } catch (e) {
       isEmailVerified.value = false;
@@ -161,7 +161,7 @@ class ResetPasswordController extends GetxController {
         email: emailController.value.text,
         password: passwordController.value.text,
       );
-      authRepository.showAlert(title: 'Tembird', message: '비밀번호 초기화가 완료되었습니다');
+      authRepository.showAlertSnackbar(message: '비밀번호 초기화가 완료되었습니다');
       Get.offAllNamed(PageNames.INIT);
     } finally {
       onLoading.value = false;
