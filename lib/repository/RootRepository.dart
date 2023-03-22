@@ -40,12 +40,20 @@ class RootRepository extends GetConnect {
 
     httpClient.addAuthenticator((Request request) async {
       String? refreshToken = Hive.box(Common.session).get(Common.refreshTokenHeader);
-      if (refreshToken != null) {
-        // request.headers[Common.refreshTokenHeader] = refreshToken;
-        // final response = await post('/user/refresh',null);
-        // if(response.hasError) {
-        //   errorHandler(response);
-        // }
+      if (refreshToken == null || accessToken == null) return request;
+
+      final response = await post('/user/refresh', null, headers: {
+        Common.accessTokenHeader: accessToken!,
+        Common.refreshTokenHeader: refreshToken,
+      });
+      if(response.hasError) {
+        errorHandler(response);
+      }
+      String? tempAccessToken = response.headers![Common.accessTokenHeader];
+
+      if (tempAccessToken != null) {
+        accessToken = tempAccessToken;
+        await Hive.box(Common.session).put(Common.accessTokenHeader, tempAccessToken);
       }
       return request;
     });
