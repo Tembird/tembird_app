@@ -49,7 +49,8 @@ class HelpController extends RootController {
     onLoading.value = true;
     try {
       termsData.value = await helpRepository.readTerms();
-      Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '서비스 이용약관', data: termsData.value!));
+      await Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '서비스 이용약관', data: termsData.value!));
+      termsData.value = null;
     } finally {
       onLoading.value = false;
     }
@@ -59,7 +60,8 @@ class HelpController extends RootController {
     onLoading.value = true;
     try {
       privacyPolicyData.value = await helpRepository.readPrivacyPolicy();
-      Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '개인정보 처리방침', data: privacyPolicyData.value!));
+      await Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '개인정보 처리방침', data: privacyPolicyData.value!));
+      privacyPolicyData.value = null;
     } finally {
       onLoading.value = false;
     }
