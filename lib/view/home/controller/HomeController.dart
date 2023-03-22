@@ -61,12 +61,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   Future<void> getScheduleHexList() async {
+    scheduleColorHexList.clear();
     try {
-      List<String> list = await initRepository.getScheduleColorHexList();
-      scheduleColorHexList.clear();
+      List<String> list = await initRepository.readScheduleColorHexList();
       scheduleColorHexList.addAll(list);
     } catch (e) {
-      scheduleColorHexList.clear();
+      print(e);
       scheduleColorHexList.addAll(StyledPalette.DEFAULT_SCHEDULE_COLOR_LIST);
     } finally {
       scheduleColorHexList.refresh();

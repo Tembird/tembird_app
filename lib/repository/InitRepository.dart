@@ -1,16 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/repository/RootRepository.dart';
 
 class InitRepository extends RootRepository {
   static InitRepository to = Get.find();
 
-  Future<List<String>> getScheduleColorHexList() async {
-    // TODO : Get ScheduleColorHexList from DB
-    List<String> codeList = [
-      'F9B294', 'ABE874', '8ECAEE', '67C8CF', 'C8D8B4', 'B6C7CF', 'E7A29B', '6ACD95', '979EBA', 'CDA3EF', 'DEB0D9', 'F6CC7C'
-    ];
+  InitRepository() {
+    initialization();
+  }
 
-    return codeList;
+  Future<List<String>> readScheduleColorHexList() async {
+    final response = await get('/color');
+    if(response.hasError) {
+      errorHandler(response);
+    }
+    List<String> list = (response.body['body']['list'] as List).map((e) => e['hex'].toString()).toList();
+    return list;
   }
 }
