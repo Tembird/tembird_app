@@ -12,6 +12,9 @@ import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding
 import 'package:tembird_app/view/auth/signup/SignupView.dart';
 import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
 import 'package:tembird_app/view/common/HtmlView.dart';
+import 'package:tembird_app/view/help/announcement/AnnouncementDetailView.dart';
+import 'package:tembird_app/view/help/announcement/AnnouncementView.dart';
+import 'package:tembird_app/view/help/announcement/binding/AnnouncementBinding.dart';
 import 'package:tembird_app/view/help/contact/ContactView.dart';
 import 'package:tembird_app/view/help/contact/binding/ContactBinding.dart';
 import 'package:tembird_app/view/help/main/HelpView.dart';
@@ -91,6 +94,15 @@ class MyApp extends StatelessWidget {
           page: () => const HelpView(),
           binding: HelpBinding(),
           fullscreenDialog: true,
+        ),
+        GetPage(
+          name: PageNames.ANNOUNCEMENT,
+          page: () => const AnnouncementView(),
+          binding: AnnouncementBinding(),
+        ),
+        GetPage(
+          name: PageNames.ANNOUNCEMENT_DETAIL,
+          page: () => const AnnouncementDetailView(),
         ),
         GetPage(
           name: PageNames.HTML,

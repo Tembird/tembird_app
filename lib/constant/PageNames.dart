@@ -10,4 +10,6 @@ class PageNames {
   static const REMOVE_ACCOUNT = '/help/remove-account';
   static const CONTACT = '/help/contact';
   static const HTML = '/html';
+  static const ANNOUNCEMENT = '/announcement';
+  static const ANNOUNCEMENT_DETAIL = '/announcement/detail';
 }

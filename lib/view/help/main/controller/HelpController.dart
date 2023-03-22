@@ -42,13 +42,7 @@ class HelpController extends RootController {
   }
 
   void showAnnouncement() async {
-    onLoading.value = true;
-    try {
-      announcementData.value = await helpRepository.readAnnouncement();
-      Get.toNamed(PageNames.HTML, arguments: HtmlViewArguments(title: '공지사항', data: announcementData.value!));
-    } finally {
-      onLoading.value = false;
-    }
+    Get.toNamed(PageNames.ANNOUNCEMENT);
   }
 
   Future<void> showTerms() async {

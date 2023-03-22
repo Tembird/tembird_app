@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:tembird_app/model/Announcement.dart';
 import 'package:tembird_app/repository/RootRepository.dart';
 
 class HelpRepository extends RootRepository {
@@ -8,25 +9,12 @@ class HelpRepository extends RootRepository {
     initialization();
   }
 
-  Future<String> readAnnouncement() async {
-    // TODO : Get Announcement from DB
-    String announcement = """<div>
-              <h1>공지사항 입니다</h1>
-              <h3>제 1조</h3>
-              <ul>
-                <li>It actually works</li>
-                <li>It exists</li>
-                <li>It doesn't cost much!</li>
-              </ul>
-              <h3>제 2조</h3>
-              <ul>
-                <li>It actually works</li>
-                <li>It exists</li>
-                <li>It doesn't cost much!</li>
-              </ul>
-              <!--You can pretty much put any html in here!-->
-            </div>""";
-
+  Future<List<Announcement>> readAnnouncementList() async {
+    final Response response = await get('/announcement');
+    if (response.hasError) {
+      errorHandler(response);
+    }
+    List<Announcement> announcement = (response.body['body']['list'] as List).map((e) => Announcement.fromJson(e)).toList();
     return announcement;
   }
 
