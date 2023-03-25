@@ -40,8 +40,9 @@ class ScheduleRepository extends RootRepository {
   }
 
   Future<void> deleteSchedule({required Schedule schedule}) async {
-    print('======> deleteSchedule');
-    await Future.delayed(const Duration(seconds: 2));
-    // TODO : Connect API to Delete Schedule
+    final Response response = await delete('/schedule/${schedule.sid}');
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 }
