@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
+
 class Schedule {
   final String sid;
   final DateTime date;
@@ -44,7 +48,7 @@ class Schedule {
       title: json["title"],
       detail: json["detail"],
       location: json["location"],
-      memberList: (json["member_list"] as String).split(','),
+      memberList: (jsonDecode(json["member_list"]) as List).map((e) => e.toString()).toList(),
       done: json["done"] == 1,
       doneAt: json["done_at"] == null ? null : DateTime.parse(json["done_at"]),
       createdAt: DateTime.parse(json["created_at"]),
@@ -52,17 +56,17 @@ class Schedule {
     );
   }
 
-  // Map<String, dynamic> toJson() => {
-  //   "sid": sid,
-  //   "date": DateFormat('yyMMdd').format(date),
-  //   "colorHex": colorHex,
-  //   "startAt": scheduleIndexList.first,
-  //   "endAt": scheduleIndexList.last,
-  //   "title": title,
-  //   "detail": detail,
-  //   "location": location,
-  //   "memberList": memberList.toString(),
-  //   "done": done,
-  //   "doneAt": doneAt,
-  // };
+  Map<String, dynamic> toJson() => {
+    "sid": sid,
+    "date": DateFormat('yyyyMMdd').format(date),
+    "colorHex": colorHex,
+    "startAt": scheduleIndexList.first,
+    "endAt": scheduleIndexList.last,
+    "title": title,
+    "detail": detail,
+    "location": location,
+    "memberList": jsonEncode(memberList),
+    "done": done,
+    "doneAt": doneAt,
+  };
 }
