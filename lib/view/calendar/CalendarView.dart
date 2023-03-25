@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/calendar/controller/CalendarController.dart';
-import 'package:tembird_app/view/create/schedule/controller/CreateScheduleController.dart';
 
 import '../ads/FloatingBannerAdView.dart';
 
@@ -98,114 +97,6 @@ class CalendarView extends GetView<CalendarController> {
                 ),
               ),
             ),
-    );
-  }
-}
-
-class TextContent extends GetView<CreateScheduleController> {
-  final TextEditingController textEditingController;
-  final String title;
-  final String hintText;
-  final int? maxLines;
-  final void Function(String?)? onFieldSubmitted;
-
-  const TextContent({Key? key, required this.textEditingController, required this.title, required this.hintText, this.maxLines, this.onFieldSubmitted}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: StyledFont.CAPTION_1_GRAY,
-          ),
-          const SizedBox(height: 4),
-          TextFormField(
-            controller: textEditingController,
-            onTap: controller.onEdit,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: hintText,
-              hintStyle: StyledFont.BODY_GRAY,
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 4),
-            ),
-            maxLines: maxLines,
-            style: StyledFont.BODY,
-            textAlign: TextAlign.start,
-            onFieldSubmitted: onFieldSubmitted,
-            textInputAction: maxLines == null ? TextInputAction.newline : TextInputAction.done,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class WidgetContent extends StatelessWidget {
-  final String title;
-  final Widget content;
-
-  const WidgetContent({Key? key, required this.title, required this.content}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: StyledFont.CAPTION_1_GRAY,
-          maxLines: 1,
-        ),
-        const SizedBox(height: 4),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: content,
-        ),
-      ],
-    );
-  }
-}
-
-class MemberItem extends StatelessWidget {
-  final String name;
-  final int index;
-  final void Function() onTap;
-
-  const MemberItem(this.index, {Key? key, required this.name, required this.onTap}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          constraints: const BoxConstraints(
-            maxHeight: 40,
-            maxWidth: 200,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: StyledPalette.GRAY, width: 0.5),
-            color: StyledPalette.WHITE,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(
-            name,
-            style: StyledFont.BODY,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ),
     );
   }
 }

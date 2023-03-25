@@ -30,7 +30,7 @@ class CreateScheduleController extends RootController {
   final Rxn<Schedule> resultSchedule = Rxn(null);
   final RxnString location = RxnString(null);
   final RxnString detail = RxnString(null);
-  final RxList<String> memberList = RxList([]);
+  // final RxList<String> memberList = RxList([]);
 
   /// Editable Fields - Title, Location, MemberList, Detail
   final TextEditingController titleController = TextEditingController();
@@ -39,7 +39,7 @@ class CreateScheduleController extends RootController {
   final TextEditingController detailController = TextEditingController();
 
   final RxBool hasLocation = RxBool(false);
-  final RxBool hasMember = RxBool(false);
+  // final RxBool hasMember = RxBool(false);
   final RxBool hasDetail = RxBool(false);
 
   /// Controller Create / Remove
@@ -55,10 +55,10 @@ class CreateScheduleController extends RootController {
     if (schedule.title != null) {
       titleController.text = schedule.title!;
     }
-    if (schedule.memberList.isNotEmpty) {
-      memberList.addAll(schedule.memberList);
-      hasMember.value = true;
-    }
+    // if (schedule.memberList.isNotEmpty) {
+    //   memberList.addAll(schedule.memberList);
+    //   hasMember.value = true;
+    // }
     if (schedule.location != null) {
       locationController.text = schedule.location!;
       hasLocation.value = true;
@@ -182,7 +182,7 @@ class CreateScheduleController extends RootController {
       title: titleController.value.text.isEmpty ? null : titleController.value.text,
       location: locationController.value.text.isEmpty ? null : locationController.value.text,
       detail: detailController.value.text.isEmpty ? null : detailController.value.text,
-      memberList: memberList.toList(),
+      // memberList: memberList.toList(),
       done: scheduleDone.isTrue,
       createdAt: DateTime.now(),
       editedAt: DateTime.now(),
@@ -190,7 +190,7 @@ class CreateScheduleController extends RootController {
 
     bool isChanged = newSchedule.title != schedule.title ||
         newSchedule.location != schedule.location ||
-        newSchedule.memberList.toString() != schedule.memberList.toString() ||
+        // newSchedule.memberList.toString() != schedule.memberList.toString() ||
         newSchedule.detail != schedule.detail ||
         newSchedule.colorHex != schedule.colorHex ||
         newSchedule.done != schedule.done;
@@ -215,11 +215,12 @@ class CreateScheduleController extends RootController {
   void addContent() async {
     final List<ModalAction> modalActionList = [
       if (hasLocation.isFalse) ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),
-      if (hasMember.isFalse) ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
+      // if (hasMember.isFalse) ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
       if (hasDetail.isFalse) ModalAction(name: '상세 내용 추가', onPressed: addDetailForm, isNegative: false),
     ];
     await showCupertinoActionSheet(
-        modalActionList: modalActionList, title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
+        // modalActionList: modalActionList, title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
+        modalActionList: modalActionList, title: hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
   }
 
   void addLocationForm() {
@@ -227,36 +228,36 @@ class CreateScheduleController extends RootController {
     Get.back();
   }
 
-  void addMemberForm() {
-    hasMember.value = true;
-    Get.back();
-  }
+  // void addMemberForm() {
+  //   hasMember.value = true;
+  //   Get.back();
+  // }
 
   void addDetailForm() {
     hasDetail.value = true;
     Get.back();
   }
 
-  void addMember() {
-    if (memberController.value.text.isEmpty) return;
-    memberList.add(memberController.value.text);
-    memberController.clear();
-  }
+  // void addMember() {
+  //   if (memberController.value.text.isEmpty) return;
+  //   memberList.add(memberController.value.text);
+  //   memberController.clear();
+  // }
 
-  void removeMember(int index) {
-    onEdit();
-    memberList.removeAt(index);
-    memberList.refresh();
-    Get.back();
-  }
+  // void removeMember(int index) {
+  //   onEdit();
+  //   memberList.removeAt(index);
+  //   memberList.refresh();
+  //   Get.back();
+  // }
 
-  void showMemberInfo(int index) async {
-    final List<ModalAction> modalActionList = [
-      ModalAction(name: '삭제', onPressed: () => removeMember(index), isNegative: true),
-    ];
-    await showCupertinoActionSheet(
-      modalActionList: modalActionList,
-      title: memberList[index],
-    );
-  }
+  // void showMemberInfo(int index) async {
+  //   final List<ModalAction> modalActionList = [
+  //     ModalAction(name: '삭제', onPressed: () => removeMember(index), isNegative: true),
+  //   ];
+  //   await showCupertinoActionSheet(
+  //     modalActionList: modalActionList,
+  //     title: memberList[index],
+  //   );
+  // }
 }

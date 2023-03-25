@@ -164,55 +164,53 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                               ),
                                             )
                                           : Container(),
-                                      Obx(
-                                        () => controller.hasMember.isFalse
-                                            ? Container(
-                                                color: Colors.blue,
-                                              )
-                                            : WidgetContent(
-                                                title: '함께하는 사람',
-                                                content: SizedBox(
-                                                  height: 40,
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: List.generate(
-                                                      controller.memberList.length + 1,
-                                                      (index) {
-                                                        if (index == controller.memberList.length) {
-                                                          return Container(
-                                                            constraints: const BoxConstraints(
-                                                              maxHeight: 40,
-                                                              maxWidth: 80,
-                                                            ),
-                                                            alignment: Alignment.center,
-                                                            child: TextFormField(
-                                                              textAlignVertical: TextAlignVertical.center,
-                                                              controller: controller.memberController,
-                                                              onTap: controller.onEdit,
-                                                              decoration: const InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  hintText: '추가 +',
-                                                                  hintStyle: StyledFont.BODY_GRAY,
-                                                                  isDense: true,
-                                                                  contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                                                              style: StyledFont.BODY,
-                                                              textAlign: TextAlign.start,
-                                                              onFieldSubmitted: (_) => controller.addMember(),
-                                                              textInputAction: TextInputAction.done,
-                                                            ),
-                                                          );
-                                                        }
-                                                        return MemberItem(
-                                                          index,
-                                                          name: controller.memberList[index],
-                                                          onTap: () => controller.showMemberInfo(index),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                      ),
+                                      // Obx(
+                                      //   () => controller.hasMember.isFalse
+                                      //       ? Container()
+                                      //       : WidgetContent(
+                                      //           title: '함께하는 사람',
+                                      //           content: SizedBox(
+                                      //             height: 40,
+                                      //             child: Row(
+                                      //               crossAxisAlignment: CrossAxisAlignment.center,
+                                      //               children: List.generate(
+                                      //                 controller.memberList.length + 1,
+                                      //                 (index) {
+                                      //                   if (index == controller.memberList.length) {
+                                      //                     return Container(
+                                      //                       constraints: const BoxConstraints(
+                                      //                         maxHeight: 40,
+                                      //                         maxWidth: 80,
+                                      //                       ),
+                                      //                       alignment: Alignment.center,
+                                      //                       child: TextFormField(
+                                      //                         textAlignVertical: TextAlignVertical.center,
+                                      //                         controller: controller.memberController,
+                                      //                         onTap: controller.onEdit,
+                                      //                         decoration: const InputDecoration(
+                                      //                             border: InputBorder.none,
+                                      //                             hintText: '추가 +',
+                                      //                             hintStyle: StyledFont.BODY_GRAY,
+                                      //                             isDense: true,
+                                      //                             contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                                      //                         style: StyledFont.BODY,
+                                      //                         textAlign: TextAlign.start,
+                                      //                         onFieldSubmitted: (_) => controller.addMember(),
+                                      //                         textInputAction: TextInputAction.done,
+                                      //                       ),
+                                      //                     );
+                                      //                   }
+                                      //                   return MemberItem(
+                                      //                     index,
+                                      //                     name: controller.memberList[index],
+                                      //                     onTap: () => controller.showMemberInfo(index),
+                                      //                   );
+                                      //                 },
+                                      //               ),
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      // ),
                                       Obx(
                                         () => controller.hasLocation.isFalse
                                             ? Container()

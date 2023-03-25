@@ -12,7 +12,7 @@ class Schedule {
   final String? title;
   final String? detail;
   final String? location;
-  final List<String> memberList;
+  // final List<String> memberList;
   final DateTime createdAt;
   DateTime editedAt;
   bool done;
@@ -28,7 +28,7 @@ class Schedule {
     this.title,
     this.detail,
     this.location,
-    required this.memberList,
+    // required this.memberList,
     required this.createdAt,
     required this.editedAt,
     this.done = false,
@@ -48,7 +48,7 @@ class Schedule {
       title: json["title"],
       detail: json["detail"],
       location: json["location"],
-      memberList: (jsonDecode(json["member_list"]) as List).map((e) => e.toString()).toList(),
+      // memberList: (jsonDecode(json["member_list"]) as List).map((e) => e.toString()).toList(),
       done: json["done"] == 1,
       doneAt: json["done_at"] == null ? null : DateTime.parse(json["done_at"]),
       createdAt: DateTime.parse(json["created_at"]),
@@ -65,7 +65,7 @@ class Schedule {
     "title": title,
     "detail": detail,
     "location": location,
-    "memberList": jsonEncode(memberList),
+    // "memberList": jsonEncode(memberList),
     "done": done,
     "doneAt": doneAt,
   };
