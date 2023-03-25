@@ -29,6 +29,13 @@ class RootController extends GetxController {
     );
   }
 
+  Future<void> showAlertDialog({String? title, required String message}) async {
+    return Get.dialog(CupertinoAlertDialog(
+      title: title == null ? null : Text(title),
+      content: Text(message),
+    ));
+  }
+
   void hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
