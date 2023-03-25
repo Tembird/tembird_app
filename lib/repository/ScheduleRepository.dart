@@ -21,16 +21,22 @@ class ScheduleRepository extends RootRepository {
     return scheduleList;
   }
 
-  Future<void> createSchedule({required Schedule schedule}) async {
-    print('======> createSchedule');
-    await Future.delayed(const Duration(seconds: 2));
-    // TODO : Connect API to Create Schedule
+  Future<Schedule> createSchedule({required Schedule schedule}) async {
+    final Response response = await post('/schedule/', schedule.toJson());
+    if (response.hasError) {
+      errorHandler(response);
+    }
+    Schedule result = Schedule.fromJson(response.body['body']);
+    return result;
   }
 
-  Future<void> updateSchedule({required Schedule schedule}) async {
-    print('======> updateSchedule');
-    await Future.delayed(const Duration(seconds: 2));
-    // TODO : Connect API to Update Schedule
+  Future<Schedule> updateSchedule({required Schedule schedule}) async {
+    final Response response = await put('/schedule/', schedule.toJson());
+    if (response.hasError) {
+      errorHandler(response);
+    }
+    Schedule result = Schedule.fromJson(response.body['body']);
+    return result;
   }
 
   Future<void> deleteSchedule({required Schedule schedule}) async {

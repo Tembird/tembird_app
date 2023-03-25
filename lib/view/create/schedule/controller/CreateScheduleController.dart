@@ -46,25 +46,25 @@ class CreateScheduleController extends RootController {
   @override
   void onInit() async {
     onLoading.value = true;
-    selectedDateText = dateToString(date: schedule.scheduleDate);
-    selectedScheduleTimeText = '${schedule.scheduleIndexList.first ~/ 6 + 4}시 ${schedule.scheduleIndexList.first % 6 * 10}분 ~ '
-        '${schedule.scheduleIndexList.last ~/ 6 + 4}시 ${schedule.scheduleIndexList.last % 6 * 10 + 10}분 '
+    selectedDateText = dateToString(date: schedule.date);
+    selectedScheduleTimeText = '${schedule.startAt ~/ 6 + 4}시 ${schedule.startAt % 6 * 10}분 ~ '
+        '${schedule.endAt ~/ 6 + 4}시 ${schedule.endAt % 6 * 10 + 10}분 '
         '(${schedule.scheduleIndexList.length * 10}분)';
-    scheduleDone.value = schedule.scheduleDone;
-    scheduleColorHex.value = schedule.scheduleColorHex;
-    if (schedule.scheduleTitle != null) {
-      titleController.text = schedule.scheduleTitle!;
+    scheduleDone.value = schedule.done;
+    scheduleColorHex.value = schedule.colorHex;
+    if (schedule.title != null) {
+      titleController.text = schedule.title!;
     }
-    if (schedule.scheduleMember.isNotEmpty) {
-      memberList.addAll(schedule.scheduleMember);
+    if (schedule.memberList.isNotEmpty) {
+      memberList.addAll(schedule.memberList);
       hasMember.value = true;
     }
-    if (schedule.scheduleLocation != null) {
-      locationController.text = schedule.scheduleLocation!;
+    if (schedule.location != null) {
+      locationController.text = schedule.location!;
       hasLocation.value = true;
     }
-    if (schedule.scheduleDetail != null) {
-      detailController.text = schedule.scheduleDetail!;
+    if (schedule.detail != null) {
+      detailController.text = schedule.detail!;
       hasDetail.value = true;
     }
     super.onInit();
@@ -151,19 +151,21 @@ class CreateScheduleController extends RootController {
         return;
       }
 
+      Schedule? result;
       if (isNew) {
-        await scheduleRepository.createSchedule(schedule: resultSchedule.value!);
+        result = await scheduleRepository.createSchedule(schedule: resultSchedule.value!);
       } else {
-        await scheduleRepository.updateSchedule(schedule: resultSchedule.value!);
+        result = await scheduleRepository.updateSchedule(schedule: resultSchedule.value!);
       }
 
       Get.back(
         result: ScheduleAction(
           action: isNew ? ActionType.created : ActionType.updated,
-          schedule: resultSchedule.value,
+          schedule: result,
         ),
       );
     } catch (e) {
+      print(e);
       Get.back();
       return;
     }
@@ -171,23 +173,27 @@ class CreateScheduleController extends RootController {
 
   void createResultSchedule() {
     final Schedule newSchedule = Schedule(
-      scheduleId: schedule.scheduleId,
-      scheduleDate: schedule.scheduleDate,
+      sid: schedule.sid,
+      date: schedule.date,
       scheduleIndexList: schedule.scheduleIndexList,
-      scheduleColorHex: scheduleColorHex.value,
-      scheduleTitle: titleController.value.text.isEmpty ? null : titleController.value.text,
-      scheduleLocation: locationController.value.text.isEmpty ? null : locationController.value.text,
-      scheduleDetail: detailController.value.text.isEmpty ? null : detailController.value.text,
-      scheduleMember: memberList.toList(),
-      scheduleDone: scheduleDone.isTrue,
+      startAt: schedule.scheduleIndexList.first,
+      endAt: schedule.scheduleIndexList.last,
+      colorHex: scheduleColorHex.value,
+      title: titleController.value.text.isEmpty ? null : titleController.value.text,
+      location: locationController.value.text.isEmpty ? null : locationController.value.text,
+      detail: detailController.value.text.isEmpty ? null : detailController.value.text,
+      memberList: memberList.toList(),
+      done: scheduleDone.isTrue,
+      createdAt: DateTime.now(),
+      editedAt: DateTime.now(),
     );
 
-    bool isChanged = newSchedule.scheduleTitle != schedule.scheduleTitle ||
-        newSchedule.scheduleLocation != schedule.scheduleLocation ||
-        newSchedule.scheduleMember.toString() != schedule.scheduleMember.toString() ||
-        newSchedule.scheduleDetail != schedule.scheduleDetail ||
-        newSchedule.scheduleColorHex != schedule.scheduleColorHex ||
-        newSchedule.scheduleDone != schedule.scheduleDone;
+    bool isChanged = newSchedule.title != schedule.title ||
+        newSchedule.location != schedule.location ||
+        newSchedule.memberList.toString() != schedule.memberList.toString() ||
+        newSchedule.detail != schedule.detail ||
+        newSchedule.colorHex != schedule.colorHex ||
+        newSchedule.done != schedule.done;
 
     if (!isChanged) {
       resultSchedule.value = null;

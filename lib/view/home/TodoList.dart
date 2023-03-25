@@ -40,7 +40,7 @@ class _TodoListState extends State<TodoList> {
   }
 
   Widget _buildTodoListItem({required Schedule schedule, required void Function(Schedule) onTapTodo}) {
-    return schedule.scheduleTitle == null
+    return schedule.title == null
         ? Container()
         : SizedBox(
             height: 50,
@@ -49,7 +49,7 @@ class _TodoListState extends State<TodoList> {
                 InkWell(
                   onTap: () => changeTodoStatus(schedule),
                   child: Image.asset(
-                    schedule.scheduleDone ? AssetNames.checkboxMarked : AssetNames.checkboxBlank,
+                    schedule.done ? AssetNames.checkboxMarked : AssetNames.checkboxBlank,
                     width: 24,
                     fit: BoxFit.contain,
                   ),
@@ -67,12 +67,12 @@ class _TodoListState extends State<TodoList> {
                         children: [
                           CircleAvatar(
                             radius: 4,
-                            backgroundColor: Color(int.parse(schedule.scheduleColorHex, radix: 16) + 0xFF000000),
+                            backgroundColor: Color(int.parse(schedule.colorHex, radix: 16) + 0xFF000000),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              schedule.scheduleTitle!,
+                              schedule.title!,
                               style: StyledFont.BODY,
                               maxLines: 1,
                             ),
