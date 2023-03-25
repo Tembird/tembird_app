@@ -102,18 +102,15 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void showScheduleDetail(Schedule schedule) async {
-    print('======> showScheduleDetail 1');
     ScheduleAction? scheduleAction = await Get.bottomSheet(
       CreateScheduleView.route(schedule, false),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
     ) as ScheduleAction?;
-    print('======> showScheduleDetail 2');
 
     if (scheduleAction == null) return;
 
-    print('======> showScheduleDetail 3');
     switch (scheduleAction.action) {
       case ActionType.created:
         return;
@@ -155,7 +152,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void updateSchedule({required Schedule previous, required Schedule update}) {
-    print('======> updateSchedule');
     scheduleList.removeWhere((schedule) => schedule.sid == previous.sid);
     scheduleList.add(update);
     refreshCellStyleList();
@@ -206,8 +202,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     await getScheduleList(newDate);
     selectedDate.value = newDate;
     selectedDateText.value = dateToString(date: newDate);
-    print('========> selectedDateText.value');
-    print(selectedDateText.value);
   }
 
   void openHelpView() {
@@ -343,7 +337,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   // }
 
   void refreshCellStyleList() async {
-    print('====> refreshCellStyleList');
     cellStyleList.clear();
 
     int columnSpan = 0;
