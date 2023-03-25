@@ -27,6 +27,7 @@ class StyledFont {
   static const TextStyle CALLOUT_700_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.WHITE);
   static const TextStyle SUBHEAD = TextStyle(fontWeight: FontWeight.w400, fontSize: 15, height: 20 / 15, color: StyledPalette.BLACK);
   static const TextStyle FOOTNOTE = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.BLACK);
+  static const TextStyle FOOTNOTE_500 = TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 18 / 13, color: StyledPalette.BLACK);
   static const TextStyle FOOTNOTE_SKY = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.PRIMARY_BLUE);
   static const TextStyle FOOTNOTE_NEGATIVE = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.STATUS_NEGATIVE);
   static const TextStyle FOOTNOTE_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.GRAY);

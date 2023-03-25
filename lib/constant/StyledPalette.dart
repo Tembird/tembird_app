@@ -17,6 +17,7 @@ class StyledPalette {
   static const Color ACCENT_GREEN= Color.fromRGBO(119, 221, 119, 1);
 
   static const Color STATUS_INFO= Color.fromRGBO(37, 128, 235, 1);
+  static const Color STATUS_INFO_50= Color.fromRGBO(37, 128, 235, 0.3);
   static const Color STATUS_NEGATIVE= Color.fromRGBO(227, 72, 80, 1);
   static const Color STATUS_NOTICE= Color.fromRGBO(230, 134, 22, 1);
   static const Color STATUS_POSITIVE= Color.fromRGBO(46, 157, 119, 1);

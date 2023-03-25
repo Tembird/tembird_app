@@ -54,68 +54,43 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             children: [
               Expanded(
-                child: Obx(
-                  () => controller.onLoading.isTrue
-                      ? Container(color: Colors.blue)
-                      : IndexedStack(
-                          index: controller.viewIndex.value,
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  color: StyledPalette.MINERAL,
-                                  child: SizedBox(
-                                    height: 20,
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 32,
-                                          height: columnHeaderHeight,
-                                          child: Center(child: Text('시/분', style: StyledFont.CAPTION_2)),
-                                        ),
-                                        SizedBox(
-                                          width: width - rowHeaderWidth,
-                                          height: columnHeaderHeight,
-                                          child: ListView.builder(
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: 6,
-                                            itemBuilder: (context, index) => SizedBox(
-                                              width: (width - rowHeaderWidth) / 6,
-                                              child: Center(
-                                                child: Text(
-                                                  '${index * 10}',
-                                                  textAlign: TextAlign.center,
-                                                  style: StyledFont.FOOTNOTE,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const Expanded(
-                                  child: SingleChildScrollView(
-                                    child: HomeScheduleTable(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SingleChildScrollView(
-                              child: Obx(() {
-                                DateTime updatedAt = controller.scheduleListUpdatedAt.value;
-                                return TodoList(
-                                  scheduleList: controller.scheduleList,
-                                  changeStatus: (Schedule schedule) => controller.changeScheduleStatus(schedule: schedule),
-                                  onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                                );
-                              }),
-                            ),
-                          ],
+                child: Obx(() => IndexedStack(
+                  index: controller.viewIndex.value,
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          width: controller.tableWidth,
+                          height: 20,
+                          color: StyledPalette.MINERAL,
+                          padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
+                          child: Row(
+                            children: List.generate(6, (index) => SizedBox(
+                              width: controller.cellWidth,
+                              child: Text(
+                                '${index * 10}',
+                                textAlign: TextAlign.center,
+                                style: StyledFont.FOOTNOTE,
+                              ),
+                            )),
+                          ),
                         ),
-                ),
+                        const Expanded(
+                          child: SingleChildScrollView(
+                            child: HomeScheduleTable(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SingleChildScrollView(
+                      child: TodoList(
+                        scheduleList: controller.scheduleList,
+                        changeStatus: (Schedule schedule) => controller.changeScheduleStatus(schedule: schedule),
+                        onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
+                      ),
+                    ),
+                  ],
+                )),
               ),
               const HomeBottomBar(),
             ],
