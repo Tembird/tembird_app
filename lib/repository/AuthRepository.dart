@@ -79,8 +79,8 @@ class AuthRepository extends RootRepository {
     // }
   }
 
-  Future<void> updateId({required String userId}) async {
-    Map<String, dynamic> data = {'username': userId};
+  Future<void> updateUsername({required String username}) async {
+    Map<String, dynamic> data = {'username': username};
 
     final Response response = await put('/user/username', jsonEncode(data));
     if (response.hasError) {

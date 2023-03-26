@@ -102,7 +102,7 @@ class ProfileInfoCard extends GetView<HelpController> {
             children: [
               const Text('ID', style: StyledFont.HEADLINE),
               const SizedBox(width: 4),
-              Obx(() => Text(controller.userId.value, style: StyledFont.BODY)),
+              Obx(() => Text(controller.username.value, style: StyledFont.BODY)),
             ],
           ),
           const SizedBox(height: 4),
@@ -124,7 +124,7 @@ class ProfileSettingCard extends GetView<HelpController> {
         children: [
           const Text('계정 설정', style: StyledFont.HEADLINE),
           const SizedBox(height: 8),
-          CardItem(onTap: controller.updateId, title: '아이디 설정'),
+          CardItem(onTap: controller.updateUsername, title: '아이디 설정'),
           CardItem(onTap: controller.updatePassword, title: '비밀번호 변경'),
         ],
       ),

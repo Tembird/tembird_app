@@ -4,25 +4,25 @@ import 'package:tembird_app/repository/AuthRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/service/SessionService.dart';
 
-class UpdateIdController extends RootController {
+class UpdateUsernameController extends RootController {
   final AuthRepository authRepository = AuthRepository();
-  static UpdateIdController to = Get.find();
+  static UpdateUsernameController to = Get.find();
 
   final RxBool onLoading = RxBool(false);
-  final String currentUserID = SessionService.to.sessionUser.value!.username;
-  final TextEditingController userIdController = TextEditingController();
+  final String currentUsername = SessionService.to.sessionUser.value!.username;
+  final TextEditingController usernameController = TextEditingController();
   final RxBool isPossible = RxBool(true);
-  final RxnString userIdError = RxnString(null);
+  final RxnString usernameError = RxnString(null);
 
   @override
   void onInit() {
-    userIdController.text = currentUserID;
+    usernameController.text = currentUsername;
     super.onInit();
   }
 
   @override
   void onClose() {
-    userIdController.dispose();
+    usernameController.dispose();
     super.onClose();
   }
 
@@ -30,35 +30,35 @@ class UpdateIdController extends RootController {
     Get.back();
   }
 
-  Future<void> checkPossibleId() async {
+  Future<void> checkPossibleUsername() async {
     onLoading.value = true;
     try {
-      if (userIdController.value.text.isEmpty) {
+      if (usernameController.value.text.isEmpty) {
         isPossible.value = false;
-        userIdError.value = '아이디를 입력해주세요';
+        usernameError.value = '아이디를 입력해주세요';
         return;
       }
 
-      if (userIdController.value.text == currentUserID ) {
+      if (usernameController.value.text == currentUsername ) {
         isPossible.value = false;
-        userIdError.value = '동일한 아이디로 변경할 수 없니다';
+        usernameError.value = '동일한 아이디로 변경할 수 없니다';
         return;
       }
 
       isPossible.value = true;
-      userIdError.value = null;
+      usernameError.value = null;
     } finally {
       onLoading.value = false;
     }
   }
   
-  void updateId() async {
+  void updateUsername() async {
     onLoading.value = true;
     try {
-      await checkPossibleId();
+      await checkPossibleUsername();
       if (isPossible.isFalse) return;
       onLoading.value = true;
-      await authRepository.updateId(userId: userIdController.value.text);
+      await authRepository.updateUsername(username: usernameController.value.text);
       await SessionService.to.getSessionUserInfo();
       Get.back(
         result: true

@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:tembird_app/component/InputTextFormField.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/view/help/updateId/controller/UpdateIdController.dart';
 
-class UpdateIdView extends GetView<UpdateIdController> {
-  const UpdateIdView({Key? key}) : super(key: key);
+import 'controller/UpdateUsernameController.dart';
+
+class UpdateUsernameView extends GetView<UpdateUsernameController> {
+  const UpdateUsernameView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +28,12 @@ class UpdateIdView extends GetView<UpdateIdController> {
               children: [
                 Obx(
                   () => InputTextFormField(
-                    controller: controller.userIdController,
+                    controller: controller.usernameController,
                     labelText: '아이디',
                     hintText: '사용하실 아이디를 설정해주세요',
                     textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => controller.checkPossibleId(),
-                    errorText: controller.userIdError.value,
+                    onFieldSubmitted: (_) => controller.checkPossibleUsername(),
+                    errorText: controller.usernameError.value,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -46,13 +47,13 @@ class UpdateIdView extends GetView<UpdateIdController> {
   }
 }
 
-class SubmitButton extends GetView<UpdateIdController> {
+class SubmitButton extends GetView<UpdateUsernameController> {
   const SubmitButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: controller.updateId,
+      onTap: controller.updateUsername,
       radius: 16,
       child: Container(
         decoration: BoxDecoration(

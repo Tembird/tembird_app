@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:tembird_app/component/InputTextFormField.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/view/help/updateId/controller/UpdateIdController.dart';
 
 import 'controller/UpdatePasswordController.dart';
 
