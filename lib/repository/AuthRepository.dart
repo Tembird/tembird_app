@@ -73,10 +73,10 @@ class AuthRepository extends RootRepository {
       'newPassword': newPassword,
     };
 
-    // final Response response = await patch('/user/update-password', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await put('/user/update-password', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> updateUsername({required String username}) async {

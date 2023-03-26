@@ -132,7 +132,6 @@ class ResetPasswordController extends GetxController {
       }
     } else {
       passwordError.value = '비밀번호를 입력해주세요';
-      passwordConfirmValidator(passwordConfirmController.value.text);
     }
   }
 

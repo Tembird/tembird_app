@@ -17,7 +17,7 @@ class UpdatePasswordController extends RootController {
   final RxnString newPasswordError = RxnString(null);
   final RxnString newPasswordConfirmError = RxnString(null);
 
-  final RxBool isPasswordObscured = RxBool(false);
+  final RxBool isPasswordObscured = RxBool(true);
 
   @override
   void onClose() {
@@ -62,7 +62,6 @@ class UpdatePasswordController extends RootController {
       }
     } else {
       newPasswordError.value = '새로운 비밀번호를 입력해주세요';
-      newPasswordConfirmValidator(newPasswordConfirmController.value.text);
     }
   }
 
