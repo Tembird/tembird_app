@@ -81,6 +81,7 @@ class CalendarView extends GetView<CalendarController> {
                             SizedBox(
                               height: 200,
                               child: CupertinoDatePicker(
+                                initialDateTime: controller.initDate,
                                 mode: CupertinoDatePickerMode.date,
                                 onDateTimeChanged: (DateTime date) => controller.changeDate(date),
                                 minimumDate: DateTime(2023, 01, 01),
