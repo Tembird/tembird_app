@@ -25,30 +25,28 @@ class InitView extends GetView<InitController> {
               ),
             )
           : Scaffold(
-        backgroundColor: StyledPalette.MINERAL,
-        appBar: AppBar(
-          title: Center(child: Image.asset(AssetNames.logoText, width: 100)),
-          automaticallyImplyLeading: false,
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Image.asset(AssetNames.logo, width: 150),
+              backgroundColor: StyledPalette.PRIMARY_BLUE,
+              // appBar: AppBar(
+              //   title: Center(child: Image.asset(AssetNames.logoText, width: 100)),
+              //   automaticallyImplyLeading: false,
+              // ),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      Expanded(child: MainContent()),
+                      SizedBox(height: 8),
+                      LoginButton(),
+                      SizedBox(height: 8),
+                      SignUpButton(),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                const LoginButton(),
-                const SizedBox(height: 8),
-                const SignUpButton(),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -64,14 +62,14 @@ class LoginButton extends GetView<InitController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: StyledPalette.PRIMARY_BLUE,
+          color: StyledPalette.WHITE,
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,
         child: const Center(
           child: Text(
             '로그인',
-            style: StyledFont.TITLE_2_WHITE,
+            style: StyledFont.TITLE_2_PRIMARY_BLUE,
           ),
         ),
       ),
@@ -90,18 +88,43 @@ class SignUpButton extends GetView<InitController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: StyledPalette.MINERAL,
-          border: Border.all(color: StyledPalette.PRIMARY_BLUE, width: 1),
+          border: Border.all(color: StyledPalette.WHITE, width: 1),
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,
         child: const Center(
           child: Text(
             '계정 만들기',
-            style: StyledFont.TITLE_2_SKY,
+            style: StyledFont.TITLE_2_WHITE,
           ),
         ),
       ),
     );
+  }
+}
+
+class MainContent extends StatelessWidget {
+  const MainContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 150,
+              child: Image.asset(AssetNames.logoTextWhite),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 60,
+              height: 4,
+              color: StyledPalette.WHITE,
+            ),
+            const SizedBox(height: 16),
+          ],
+        ));
   }
 }
