@@ -167,15 +167,10 @@ class InitController extends RootController {
   }
 
   void routeAccordingToSessionUserStatus() {
-    switch (SessionService.to.sessionStatus.value) {
-      case SessionStatus.active:
-        Get.offAllNamed(PageNames.HOME);
-        onLoading.value = false;
-        return;
-      case SessionStatus.empty:
-        onLoading.value = false;
-        return;
+    if (SessionService.to.sessionStatus.value == SessionStatus.active) {
+      Get.offAllNamed(PageNames.HOME);
     }
+    onLoading.value = false;
   }
 
   void showTerms() {

@@ -97,6 +97,7 @@ class MyApp extends StatelessWidget {
           binding: HomeBinding(),
           transition: Transition.noTransition,
           popGesture: false,
+          transitionDuration: Duration.zero,
         ),
         GetPage(
           name: PageNames.HELP,
