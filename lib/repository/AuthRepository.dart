@@ -72,21 +72,10 @@ class AuthRepository extends RootRepository {
   Future<void> updateId({required String userId}) async {
     Map<String, dynamic> data = {'username': userId};
 
-    // final Response response = await patch('/user/username', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
-  }
-
-  Future<bool> checkPossibleId({required String userId}) async {
-    Map<String, dynamic> data = {'userId': userId};
-
-    return false;
-
-    // final Response response = await patch('/users/update-password', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await put('/user/username', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> login({required String email, required String password}) async {

@@ -41,16 +41,10 @@ class UpdateIdController extends RootController {
 
       if (userIdController.value.text == currentUserID ) {
         isPossible.value = false;
-        userIdError.value = '현재 사용중인 아이디입니다';
+        userIdError.value = '동일한 아이디로 변경할 수 없니다';
         return;
       }
-      bool isPossibleId = await authRepository.checkPossibleId(userId: userIdController.value.text);
 
-      if (!isPossibleId) {
-        isPossible.value = false;
-        userIdError.value = '이미 존재하는 아이디입니다';
-        return;
-      }
       isPossible.value = true;
       userIdError.value = null;
     } finally {
@@ -70,6 +64,7 @@ class UpdateIdController extends RootController {
         result: true
       );
     } finally {
+      await Future.delayed(const Duration(seconds: 1));
       onLoading.value = false;
     }
   }
