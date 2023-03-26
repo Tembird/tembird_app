@@ -27,6 +27,7 @@ class InitController extends RootController {
     onLoading.value = true;
     await checkUpdatedVersion();
     await SessionService.to.initSession();
+    await Future.delayed(const Duration(milliseconds: 1000));
     routeAccordingToSessionUserStatus();
   }
 
