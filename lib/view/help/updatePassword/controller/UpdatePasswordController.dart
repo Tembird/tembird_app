@@ -86,7 +86,6 @@ class UpdatePasswordController extends RootController {
       newPasswordConfirmValidator(newPasswordConfirmController.value.text);
       if (currentPasswordError.value != null || newPasswordError.value != null || newPasswordConfirmError.value != null) return;
       await authRepository.updatePasswordWithCurrentPassword(
-        email: SessionService.to.email,
         currentPassword: currentPasswordController.value.text,
         newPassword: newPasswordController.value.text,
       );

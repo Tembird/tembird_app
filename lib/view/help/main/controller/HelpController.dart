@@ -12,9 +12,9 @@ class HelpController extends RootController {
   static HelpController to = Get.find();
 
   final RxBool onLoading = RxBool(true);
-  final String email = SessionService.to.email;
+  final String email = SessionService.to.sessionUser.value!.email;
   final String appVersion = '${SessionService.to.appVersion} (${SessionService.to.appBuildNum})';
-  final RxString userId = RxString(SessionService.to.userId.value);
+  final RxString userId = RxString(SessionService.to.sessionUser.value!.username);
 
   final RxnString announcementData = RxnString(null);
   final RxnString termsData = RxnString(null);
@@ -29,7 +29,7 @@ class HelpController extends RootController {
     bool? isUpdated = await Get.toNamed(PageNames.UPDATE_ID) as bool?;
 
     if (isUpdated == null) return;
-    userId.value = SessionService.to.userId.value;
+    userId.value = SessionService.to.sessionUser.value!.username;
   }
 
   void updatePassword() async {

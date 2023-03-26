@@ -58,7 +58,6 @@ class RemoveAccountController extends RootController {
 
       if (isConfirmed == null) return;
       await authRepository.removeAccount(
-        email: SessionService.to.email,
         password: passwordController.value.text,
       );
       SessionService.to.quitSession();

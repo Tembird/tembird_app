@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:tembird_app/constant/Common.dart';
 
+import '../model/User.dart';
 import 'RootRepository.dart';
 
 class AuthRepository extends RootRepository {
@@ -11,6 +12,15 @@ class AuthRepository extends RootRepository {
 
   AuthRepository() {
     initialization();
+  }
+
+  Future<User> getUserInfo() async {
+    final response = await get('/user');
+    if (response.hasError) {
+      errorHandler(response);
+    }
+    User result = User.fromJson(response.body['body']);
+    return result;
   }
 
   Future<void> requestVerificationEmail({required String email}) async {
@@ -57,7 +67,7 @@ class AuthRepository extends RootRepository {
     }
   }
 
-  Future<void> updatePasswordWithCurrentPassword({required String email, required String currentPassword, required String newPassword}) async {
+  Future<void> updatePasswordWithCurrentPassword({required String currentPassword, required String newPassword}) async {
     Map<String, dynamic> data = {
       'password': currentPassword,
       'newPassword': newPassword,
@@ -95,8 +105,8 @@ class AuthRepository extends RootRepository {
     await Hive.box(Common.session).delete(Common.refreshTokenHeader);
   }
 
-  Future<void> removeAccount({required String email, required String password}) async {
-    Map<String, dynamic> data = {'email': email, 'password': password};
+  Future<void> removeAccount({required String password}) async {
+    Map<String, dynamic> data = {'password': password};
 
     // final Response response = await patch('/users/update-password', jsonEncode(data));
     // if (response.hasError) {

@@ -9,7 +9,7 @@ class UpdateIdController extends RootController {
   static UpdateIdController to = Get.find();
 
   final RxBool onLoading = RxBool(false);
-  final String currentUserID = SessionService.to.userId.value;
+  final String currentUserID = SessionService.to.sessionUser.value!.username;
   final TextEditingController userIdController = TextEditingController();
   final RxBool isPossible = RxBool(true);
   final RxnString userIdError = RxnString(null);
@@ -59,7 +59,7 @@ class UpdateIdController extends RootController {
       if (isPossible.isFalse) return;
       onLoading.value = true;
       await authRepository.updateId(userId: userIdController.value.text);
-      SessionService.to.updateUserInfo();
+      await SessionService.to.getSessionUserInfo();
       Get.back(
         result: true
       );
