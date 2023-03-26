@@ -24,7 +24,7 @@ class ContactController extends GetxController {
     try {
       titleValidator();
       if (titleError.value != null) return;
-      await helpRepository.submitFeedback();
+      await helpRepository.submitFeedback(title: titleController.value.text, content: contentController.value.text);
       Get.back();
     } finally {
       onLoading.value = false;

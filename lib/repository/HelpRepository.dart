@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:tembird_app/model/Announcement.dart';
 import 'package:tembird_app/repository/RootRepository.dart';
@@ -36,7 +38,14 @@ class HelpRepository extends RootRepository {
     return privacyPolicy;
   }
 
-  Future<void> submitFeedback() async {
-    // TODO : Create Feedback on DB
+  Future<void> submitFeedback({required String title, required String content}) async {
+    Map<String, dynamic> data = {
+      'title':title,
+      'content':content,
+    };
+    final Response response = await post('/feedback', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 }
