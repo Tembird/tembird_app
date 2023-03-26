@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -29,11 +31,20 @@ class SessionService extends GetxService {
     if (sessionUser.value!.username.startsWith('unknown#')) {
       await Get.toNamed(PageNames.REGISTER_USERNAME);
     }
+    updateUserHistory();
     sessionStatus.value = SessionStatus.active;
   }
 
   Future<void> getSessionUserInfo() async {
-    sessionUser.value = await authRepository.getUserInfo();
+    try {
+      sessionUser.value = await authRepository.getUserInfo();
+    } catch (e) {
+      sessionUser.value = null;
+    }
+  }
+
+  Future<void> updateUserHistory() async {
+    await authRepository.updateUserHistory(platform: Platform.operatingSystem, platformVersion: Platform.operatingSystemVersion, buildNum: int.parse(appBuildNum));
   }
 
   Future<void> quitSession() async {

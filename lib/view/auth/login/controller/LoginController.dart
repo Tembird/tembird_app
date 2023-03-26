@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../constant/PageNames.dart';
 import '../../../../repository/AuthRepository.dart';
+import '../../../../service/SessionService.dart';
 
 class LoginController extends GetxController {
   static LoginController to = Get.find();
@@ -59,6 +60,7 @@ class LoginController extends GetxController {
       passwordValidator(passwordController.value.text);
       if (emailError.value != null || passwordError.value != null) return;
       await authRepository.login(email: emailController.value.text, password: passwordController.value.text);
+      await SessionService.to.initSession();
       Get.offAllNamed(PageNames.HOME);
     } catch (e) {
       passwordController.text = '';

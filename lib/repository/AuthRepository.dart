@@ -113,4 +113,19 @@ class AuthRepository extends RootRepository {
     //   errorHandler(response);
     // }
   }
+
+  Future<void> updateUserHistory({required String platform, required String platformVersion, required int buildNum}) async {
+    Map<String, dynamic> data = {
+      'platform': platform,
+      'platformVersion': platformVersion,
+      'buildNum': buildNum,
+    };
+
+    final Response response = await put('/user/device', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
+  }
+
+
 }
