@@ -23,6 +23,7 @@ import 'package:tembird_app/view/help/removeAccount/RemoveAccountView.dart';
 import 'package:tembird_app/view/help/removeAccount/binding/RemoveAccountBinding.dart';
 import 'package:tembird_app/view/help/updatePassword/UpdatePasswordView.dart';
 import 'package:tembird_app/view/help/updatePassword/binding/UpdatePasswordBinding.dart';
+import 'package:tembird_app/view/help/updateUsername/RegisterUsername.dart';
 import 'package:tembird_app/view/help/updateUsername/UpdateUsernameView.dart';
 import 'package:tembird_app/view/help/updateUsername/binding/UpdateUsernameBinding.dart';
 import 'package:tembird_app/view/home/HomeView.dart';
@@ -85,9 +86,17 @@ class MyApp extends StatelessWidget {
           binding: ResetPasswordBinding(),
         ),
         GetPage(
+          name: PageNames.REGISTER_USERNAME,
+          page: () => const RegisterUsernameView(),
+          binding: UpdateUsernameBinding(),
+          popGesture: false,
+        ),
+        GetPage(
           name: PageNames.HOME,
           page: () => const HomeView(),
           binding: HomeBinding(),
+          transition: Transition.noTransition,
+          popGesture: false,
         ),
         GetPage(
           name: PageNames.HELP,
@@ -108,26 +117,10 @@ class MyApp extends StatelessWidget {
           name: PageNames.HTML,
           page: () => const HtmlView(),
         ),
-        GetPage(
-          name: PageNames.UPDATE_USERNAME,
-          page: () => const UpdateUsernameView(),
-          binding: UpdateUsernameBinding()
-        ),
-        GetPage(
-          name: PageNames.UPDATE_PASSWORD,
-          page: () => const UpdatePasswordView(),
-          binding: UpdatePasswordBinding()
-        ),
-        GetPage(
-          name: PageNames.REMOVE_ACCOUNT,
-          page: () => const RemoveAccountView(),
-          binding: RemoveAccountBinding()
-        ),
-        GetPage(
-          name: PageNames.CONTACT,
-          page: () => const ContactView(),
-          binding: ContactBinding()
-        ),
+        GetPage(name: PageNames.UPDATE_USERNAME, page: () => const UpdateUsernameView(), binding: UpdateUsernameBinding()),
+        GetPage(name: PageNames.UPDATE_PASSWORD, page: () => const UpdatePasswordView(), binding: UpdatePasswordBinding()),
+        GetPage(name: PageNames.REMOVE_ACCOUNT, page: () => const RemoveAccountView(), binding: RemoveAccountBinding()),
+        GetPage(name: PageNames.CONTACT, page: () => const ContactView(), binding: ContactBinding()),
       ],
     );
   }

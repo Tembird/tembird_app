@@ -4,6 +4,7 @@ class PageNames {
   static const LOGIN = '/auth/login';
   static const SIGN_UP = '/auth/sign-up';
   static const RESET_PASSWORD = '/auth/reset-password';
+  static const REGISTER_USERNAME = '/auth/register-username';
   static const HELP = '/help';
   static const UPDATE_USERNAME = '/help/update-username';
   static const UPDATE_PASSWORD = '/help/update-password';

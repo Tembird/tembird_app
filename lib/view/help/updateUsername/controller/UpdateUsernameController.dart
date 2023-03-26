@@ -16,7 +16,9 @@ class UpdateUsernameController extends RootController {
 
   @override
   void onInit() {
-    usernameController.text = currentUsername;
+    if (!currentUsername.startsWith('unknown#')) {
+      usernameController.text = currentUsername;
+    }
     super.onInit();
   }
 

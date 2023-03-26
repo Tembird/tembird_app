@@ -23,11 +23,12 @@ class SessionService extends GetxService {
     appVersion = packageInfo.version;
     appBuildNum = packageInfo.buildNumber;
 
-    if (accessToken == null) {
-      sessionStatus.value = SessionStatus.empty;
-      return;
-    }
+    if (accessToken == null) return;
     await getSessionUserInfo();
+    if (sessionUser.value == null) return;
+    if (sessionUser.value!.username.startsWith('unknown#')) {
+      await Get.toNamed(PageNames.REGISTER_USERNAME);
+    }
     sessionStatus.value = SessionStatus.active;
   }
 
