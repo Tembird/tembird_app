@@ -43,6 +43,7 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_native_splash: ^2.2.0+1
   package_info_plus: ^3.0.3
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
