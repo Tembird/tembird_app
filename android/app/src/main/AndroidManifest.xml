@@ -1,6 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tembird.app.tembird_app">
-   <application
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+    <application
         android:label="tembird_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

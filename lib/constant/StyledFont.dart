@@ -22,6 +22,7 @@ class StyledFont {
   static const TextStyle CALLOUT_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.GRAY);
   static const TextStyle CALLOUT_INFO = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.STATUS_INFO);
   static const TextStyle CALLOUT_NEGATIVE = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.STATUS_NEGATIVE);
+  static const TextStyle CALLOUT_WHITE = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.WHITE);
   static const TextStyle CALLOUT_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK);
   static const TextStyle CALLOUT_700_BLACK50 = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK50);
   static const TextStyle CALLOUT_700_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.WHITE);

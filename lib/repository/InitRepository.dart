@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:tembird_app/model/Update.dart';
 import 'package:tembird_app/repository/RootRepository.dart';
 
 class InitRepository extends RootRepository {
@@ -6,6 +7,15 @@ class InitRepository extends RootRepository {
 
   InitRepository() {
     initialization();
+  }
+
+  Future<Update> readUpdateInfo() async {
+    final response = await get('/update');
+    if(response.hasError) {
+      errorHandler(response);
+    }
+    Update result = Update.fromJson(response.body['body']);
+    return result;
   }
 
   Future<List<String>> readScheduleColorHexList() async {
