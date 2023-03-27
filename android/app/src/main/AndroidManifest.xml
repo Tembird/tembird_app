@@ -7,7 +7,7 @@
         </intent>
     </queries>
     <application
-        android:label="템버드"
+        android:label="Tembird"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
