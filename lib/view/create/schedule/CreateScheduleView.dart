@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/Schedule.dart';
-import 'package:tembird_app/service/SessionService.dart';
 import 'package:tembird_app/view/create/schedule/controller/CreateScheduleController.dart';
 
 import '../../../constant/AssetNames.dart';
+import '../../../model/Todo.dart';
 import '../../ads/FloatingBannerAdView.dart';
 
 class CreateScheduleView extends GetView<CreateScheduleController> {
@@ -124,46 +124,76 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                               Expanded(
                                 child: SingleChildScrollView(
                                   primary: false,
-                                  child: Column(
+                                  child: Obx(() => Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       controller.scheduleColorHexList.isNotEmpty
                                           ? SizedBox(
-                                              height: 45,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.horizontal,
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: controller.scheduleColorHexList
-                                                      .map(
-                                                        (e) => Padding(
-                                                          padding: const EdgeInsets.only(right: 16),
-                                                          child: Column(
-                                                            children: [
-                                                              controller.scheduleColorHex.value == e
-                                                                  ? const CircleAvatar(
-                                                                      radius: 2,
-                                                                      backgroundColor: StyledPalette.STATUS_INFO,
-                                                                    )
-                                                                  : const SizedBox(height: 4),
-                                                              const SizedBox(height: 4),
-                                                              InkWell(
-                                                                onTap: () => controller.changeColorHex(e),
-                                                                radius: 12,
-                                                                child: CircleAvatar(
-                                                                  radius: controller.scheduleColorHex.value == e ? 16 : 12,
-                                                                  backgroundColor: Color(int.parse(e, radix: 16) + 0xFF000000),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                      .toList(),
+                                        height: 45,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: controller.scheduleColorHexList
+                                                .map(
+                                                  (e) => Padding(
+                                                padding: const EdgeInsets.only(right: 16),
+                                                child: Column(
+                                                  children: [
+                                                    controller.scheduleColorHex.value == e
+                                                        ? const CircleAvatar(
+                                                      radius: 2,
+                                                      backgroundColor: StyledPalette.STATUS_INFO,
+                                                    )
+                                                        : const SizedBox(height: 4),
+                                                    const SizedBox(height: 4),
+                                                    InkWell(
+                                                      onTap: () => controller.changeColorHex(e),
+                                                      radius: 12,
+                                                      child: CircleAvatar(
+                                                        radius: controller.scheduleColorHex.value == e ? 16 : 12,
+                                                        backgroundColor: Color(int.parse(e, radix: 16) + 0xFF000000),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             )
+                                                .toList(),
+                                          ),
+                                        ),
+                                      )
                                           : Container(),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        '할 일 목록',
+                                        style: StyledFont.CAPTION_1_GRAY,
+                                        maxLines: 1,
+                                      ),
+                                      ...List.generate(controller.todoList.length, (index) =>
+                                          GestureDetector(
+                                            onTap: () => controller.showTodoInfo(index),
+                                            child: TodoItem(todo: controller.todoList[index]),
+                                          )
+                                      ),
+                                      SizedBox(
+                                        height: 40,
+                                        child: TextFormField(
+                                          textAlignVertical: TextAlignVertical.center,
+                                          controller: controller.todoController,
+                                          onTap: controller.onEdit,
+                                          decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: '할일 추가 +',
+                                              hintStyle: StyledFont.BODY_GRAY,
+                                              isDense: true,
+                                              contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                                          style: StyledFont.BODY,
+                                          textAlign: TextAlign.start,
+                                          onFieldSubmitted: (_) => controller.addTodo(),
+                                          textInputAction: TextInputAction.done,
+                                        ),
+                                      ),
                                       // Obx(
                                       //   () => controller.hasMember.isFalse
                                       //       ? Container()
@@ -212,26 +242,26 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                       //         ),
                                       // ),
                                       Obx(
-                                        () => controller.hasLocation.isFalse
+                                            () => controller.hasLocation.isFalse
                                             ? Container()
                                             : TextContent(
-                                                textEditingController: controller.locationController,
-                                                title: '장소',
-                                                hintText: '장소 추가',
-                                                maxLines: 1,
-                                              ),
+                                          textEditingController: controller.locationController,
+                                          title: '장소',
+                                          hintText: '장소 추가',
+                                          maxLines: 1,
+                                        ),
                                       ),
                                       Obx(
-                                        () => controller.hasDetail.isFalse
+                                            () => controller.hasDetail.isFalse
                                             ? Container()
                                             : TextContent(
-                                                textEditingController: controller.detailController,
-                                                title: '상세',
-                                                hintText: '상세 내용 추가',
-                                              ),
+                                          textEditingController: controller.detailController,
+                                          title: '상세',
+                                          hintText: '상세 내용 추가',
+                                        ),
                                       ),
                                     ],
-                                  ),
+                                  )),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -321,7 +351,7 @@ class WidgetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 8),
         Text(
@@ -339,38 +369,29 @@ class WidgetContent extends StatelessWidget {
   }
 }
 
-class MemberItem extends StatelessWidget {
-  final String name;
-  final int index;
-  final void Function() onTap;
-
-  const MemberItem(this.index, {Key? key, required this.name, required this.onTap}) : super(key: key);
+class TodoItem extends GetView<CreateScheduleController> {
+  final Todo todo;
+  const TodoItem({Key? key, required this.todo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          constraints: const BoxConstraints(
-            maxHeight: 40,
-            maxWidth: 200,
+    return SizedBox(
+      height: 40,
+      child: Row(
+        children: [
+          if (todo.todoStatus == TodoStatus.done)
+            Image.asset(AssetNames.todoDone, width: 24, height: 24,),
+          if (todo.todoStatus == TodoStatus.pass)
+            Image.asset(AssetNames.todoPass, width: 24, height: 24,),
+          if (todo.todoStatus == TodoStatus.notStarted)
+            controller.indexToDateTime(date: controller.schedule.date, index: controller.schedule.endAt).compareTo(DateTime.now()) > 0
+                ? Image.asset(AssetNames.todoNotStarted, width: 24, height: 24,)
+                : Image.asset(AssetNames.todoMiss, width: 24, height: 24,),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(todo.todoTitle, style: StyledFont.BODY),
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: StyledPalette.GRAY, width: 0.5),
-            color: StyledPalette.WHITE,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(
-            name,
-            style: StyledFont.BODY,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        ],
       ),
     );
   }

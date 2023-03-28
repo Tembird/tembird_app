@@ -88,6 +88,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       done: false,
       createdAt: DateTime.now(),
       editedAt: DateTime.now(),
+      todoList: [],
     );
 
     ScheduleAction? scheduleAction = await Get.bottomSheet(
@@ -138,6 +139,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       title: add.title,
       createdAt: add.createdAt,
       editedAt: add.editedAt,
+      todoList: add.todoList,
     ));
     scheduleList.sort((a,b) => a.scheduleIndexList.first.compareTo(b.scheduleIndexList.first));
     selectedIndexList.clear();
@@ -179,9 +181,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       detail: schedule.detail,
       location: schedule.location,
       doneAt: !schedule.done ? DateTime.now() : null,
+      todoList: schedule.todoList,
     );
     try {
-      await scheduleRepository.updateSchedule(schedule: changedSchedule);
+      await scheduleRepository.updateSchedule(schedule: changedSchedule, removedTidList: []);
       scheduleList.firstWhere((e) => e == schedule).done = changedSchedule.done;
     } finally {
       scheduleList.refresh();

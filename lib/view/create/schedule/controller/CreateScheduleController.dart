@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:collection/collection.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
+import 'package:tembird_app/model/Todo.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/service/SessionService.dart';
@@ -30,16 +32,17 @@ class CreateScheduleController extends RootController {
   final Rxn<Schedule> resultSchedule = Rxn(null);
   final RxnString location = RxnString(null);
   final RxnString detail = RxnString(null);
-  // final RxList<String> memberList = RxList([]);
+  final RxList<Todo> todoList = RxList([]);
 
   /// Editable Fields - Title, Location, MemberList, Detail
   final TextEditingController titleController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
-  final TextEditingController memberController = TextEditingController();
+  final TextEditingController todoController = TextEditingController();
   final TextEditingController detailController = TextEditingController();
+  List<String> removedTidList = [];
 
+  // final RxBool hasTodo = RxBool(false);
   final RxBool hasLocation = RxBool(false);
-  // final RxBool hasMember = RxBool(false);
   final RxBool hasDetail = RxBool(false);
 
   /// Controller Create / Remove
@@ -52,12 +55,14 @@ class CreateScheduleController extends RootController {
         '(${schedule.scheduleIndexList.length * 10}분)';
     scheduleDone.value = schedule.done;
     scheduleColorHex.value = schedule.colorHex;
+    todoList.addAll(schedule.todoList);
+
     if (schedule.title != null) {
       titleController.text = schedule.title!;
     }
-    // if (schedule.memberList.isNotEmpty) {
-    //   memberList.addAll(schedule.memberList);
-    //   hasMember.value = true;
+    // if (schedule.todoList.isNotEmpty) {
+    //   todoList.addAll(schedule.todoList);
+    //   hasTodo.value = true;
     // }
     if (schedule.location != null) {
       locationController.text = schedule.location!;
@@ -75,7 +80,7 @@ class CreateScheduleController extends RootController {
   void onClose() {
     titleController.dispose();
     locationController.dispose();
-    memberController.dispose();
+    todoController.dispose();
     detailController.dispose();
     super.onClose();
   }
@@ -155,7 +160,8 @@ class CreateScheduleController extends RootController {
       if (isNew) {
         result = await scheduleRepository.createSchedule(schedule: resultSchedule.value!);
       } else {
-        result = await scheduleRepository.updateSchedule(schedule: resultSchedule.value!);
+        result = await scheduleRepository.updateSchedule(schedule: resultSchedule.value!,removedTidList:removedTidList);
+        removedTidList.clear();
       }
 
       Get.back(
@@ -182,15 +188,17 @@ class CreateScheduleController extends RootController {
       title: titleController.value.text.isEmpty ? null : titleController.value.text,
       location: locationController.value.text.isEmpty ? null : locationController.value.text,
       detail: detailController.value.text.isEmpty ? null : detailController.value.text,
-      // memberList: memberList.toList(),
       done: scheduleDone.isTrue,
       createdAt: DateTime.now(),
       editedAt: DateTime.now(),
+      todoList: todoList,
     );
+
+    Function deepEq = const DeepCollectionEquality().equals;
 
     bool isChanged = newSchedule.title != schedule.title ||
         newSchedule.location != schedule.location ||
-        // newSchedule.memberList.toString() != schedule.memberList.toString() ||
+        !deepEq(newSchedule.todoList, schedule.todoList) ||
         newSchedule.detail != schedule.detail ||
         newSchedule.colorHex != schedule.colorHex ||
         newSchedule.done != schedule.done;
@@ -215,12 +223,12 @@ class CreateScheduleController extends RootController {
   void addContent() async {
     final List<ModalAction> modalActionList = [
       if (hasLocation.isFalse) ModalAction(name: '장소 추가', onPressed: addLocationForm, isNegative: false),
-      // if (hasMember.isFalse) ModalAction(name: '함께하는 사람 추가', onPressed: addMemberForm, isNegative: false),
       if (hasDetail.isFalse) ModalAction(name: '상세 내용 추가', onPressed: addDetailForm, isNegative: false),
     ];
     await showCupertinoActionSheet(
-        // modalActionList: modalActionList, title: hasMember.isFalse || hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
-        modalActionList: modalActionList, title: hasLocation.isFalse || hasDetail.isFalse ? '다음 항목을 추가할 수 있습니다' : '모든 항목이 추가되어 있습니다');
+        modalActionList: modalActionList,
+        title: '다음 항목을 추가할 수 있습니다'
+    );
   }
 
   void addLocationForm() {
@@ -228,36 +236,34 @@ class CreateScheduleController extends RootController {
     Get.back();
   }
 
-  // void addMemberForm() {
-  //   hasMember.value = true;
-  //   Get.back();
-  // }
-
   void addDetailForm() {
     hasDetail.value = true;
     Get.back();
   }
 
-  // void addMember() {
-  //   if (memberController.value.text.isEmpty) return;
-  //   memberList.add(memberController.value.text);
-  //   memberController.clear();
-  // }
+  void addTodo() {
+    if (todoController.value.text.isEmpty) return;
+    todoList.add(Todo(tid: "", todoTitle: todoController.value.text, todoStatus: TodoStatus.notStarted, todoUpdatedAt: DateTime.now()));
+    todoController.clear();
+  }
 
-  // void removeMember(int index) {
-  //   onEdit();
-  //   memberList.removeAt(index);
-  //   memberList.refresh();
-  //   Get.back();
-  // }
+  void removeTodo(int index) {
+    onEdit();
+    if (todoList[index].tid.isNotEmpty) {
+      removedTidList.add(todoList[index].tid);
+    }
+    todoList.removeAt(index);
+    todoList.refresh();
+    Get.back();
+  }
 
-  // void showMemberInfo(int index) async {
-  //   final List<ModalAction> modalActionList = [
-  //     ModalAction(name: '삭제', onPressed: () => removeMember(index), isNegative: true),
-  //   ];
-  //   await showCupertinoActionSheet(
-  //     modalActionList: modalActionList,
-  //     title: memberList[index],
-  //   );
-  // }
+  void showTodoInfo(int index) async {
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '삭제', onPressed: () => removeTodo(index), isNegative: true),
+    ];
+    await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: todoList[index].todoTitle,
+    );
+  }
 }

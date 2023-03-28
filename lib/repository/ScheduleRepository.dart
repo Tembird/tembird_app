@@ -22,7 +22,7 @@ class ScheduleRepository extends RootRepository {
   }
 
   Future<Schedule> createSchedule({required Schedule schedule}) async {
-    final Response response = await post('/schedule/', schedule.toJson());
+    final Response response = await post('/schedule', schedule.toJson());
     if (response.hasError) {
       errorHandler(response);
     }
@@ -30,8 +30,10 @@ class ScheduleRepository extends RootRepository {
     return result;
   }
 
-  Future<Schedule> updateSchedule({required Schedule schedule}) async {
-    final Response response = await put('/schedule/', schedule.toJson());
+  Future<Schedule> updateSchedule({required Schedule schedule, required List<String> removedTidList}) async {
+    Map<String, dynamic> data = schedule.toJson();
+    data.addAll({'removedTidList':removedTidList});
+    final Response response = await put('/schedule', data);
     if (response.hasError) {
       errorHandler(response);
     }
