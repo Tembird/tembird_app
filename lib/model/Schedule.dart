@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 
+import 'Todo.dart';
+
 class Schedule {
   final String sid;
   final DateTime date;
@@ -18,6 +20,8 @@ class Schedule {
   bool done;
   DateTime? doneAt;
 
+  List<Todo> todoList;
+
   Schedule({
     required this.sid,
     required this.date,
@@ -33,6 +37,7 @@ class Schedule {
     required this.editedAt,
     this.done = false,
     this.doneAt,
+    required this.todoList,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
@@ -53,6 +58,7 @@ class Schedule {
       doneAt: json["done_at"] == null ? null : DateTime.parse(json["done_at"]),
       createdAt: DateTime.parse(json["created_at"]),
       editedAt: DateTime.parse(json["edited_at"]),
+      todoList: (json['todo_list'] as List).isEmpty ? [] : (json['todo_list'] as List).map((e) => Todo.fromJson(e)).toList(),
     );
   }
 
@@ -68,5 +74,6 @@ class Schedule {
     // "memberList": jsonEncode(memberList),
     "done": done,
     "doneAt": doneAt,
+    "todoList": todoList.map((e) => e.toJson()).toList(),
   };
 }
