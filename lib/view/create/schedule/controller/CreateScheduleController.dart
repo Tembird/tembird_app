@@ -50,8 +50,7 @@ class CreateScheduleController extends RootController {
   void onInit() async {
     onLoading.value = true;
     selectedDateText = dateToString(date: schedule.date);
-    selectedScheduleTimeText = '${schedule.startAt ~/ 6}시 ${schedule.startAt % 6 * 10}분 ~ '
-        '${schedule.endAt ~/ 6}시 ${schedule.endAt % 6 * 10 + 10}분 '
+    selectedScheduleTimeText = '${indexToTimeString(index: schedule.startAt)} ~ ${indexToTimeString(index: schedule.endAt)} '
         '(${schedule.scheduleIndexList.length * 10}분)';
     scheduleDone.value = schedule.done;
     scheduleColorHex.value = schedule.colorHex;
