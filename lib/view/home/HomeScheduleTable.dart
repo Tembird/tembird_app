@@ -27,21 +27,12 @@ class HomeScheduleTable extends GetView<HomeController> {
             child: ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 24,
-              itemBuilder: (context, index) => Container(
+              itemBuilder: (context, index) => SizedBox(
                 width: rowHeaderWidth,
                 height: cellHeight,
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: index < 14 && index > 1 ? StyledPalette.ACCENT_YELLOW : StyledPalette.ACCENT_LAVENDER,
-                      width: 5,
-                    ),
-                  ),
-                  color: StyledPalette.MINERAL,
-                ),
                 child: Center(
                   child: Text(
-                    controller.hourList[index].toString(),
+                    index.toString(),
                     textAlign: TextAlign.center,
                     style: StyledFont.FOOTNOTE,
                   ),
