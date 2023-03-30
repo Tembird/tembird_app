@@ -48,36 +48,28 @@ class HomeView extends GetView<HomeController> {
         child: SafeArea(
           child: Column(
             children: [
+              Obx(() => controller.viewIndex.value != 0 ? Container() : Container(
+                width: controller.tableWidth,
+                height: 20,
+                color: StyledPalette.MINERAL,
+                padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
+                child: Row(
+                  children: List.generate(6, (index) => SizedBox(
+                    width: controller.cellWidth,
+                    child: Text(
+                      '${index * 10}',
+                      textAlign: TextAlign.center,
+                      style: StyledFont.FOOTNOTE,
+                    ),
+                  )),
+                ),
+              )),
               Expanded(
                 child: Obx(() => IndexedStack(
                   index: controller.viewIndex.value,
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          width: controller.tableWidth,
-                          height: 20,
-                          color: StyledPalette.MINERAL,
-                          padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
-                          child: Row(
-                            children: List.generate(6, (index) => SizedBox(
-                              width: controller.cellWidth,
-                              child: Text(
-                                '${index * 10}',
-                                textAlign: TextAlign.center,
-                                style: StyledFont.FOOTNOTE,
-                              ),
-                            )),
-                          ),
-                        ),
-                        const Expanded(
-                          child: SingleChildScrollView(
-                            child: HomeScheduleTable(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const HomeTodoList(),
+                  children: const [
+                    HomeScheduleTable(),
+                    HomeTodoList(),
                   ],
                 )),
               ),
