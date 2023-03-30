@@ -89,7 +89,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       endAt: indexList.last,
       scheduleIndexList: indexList,
       colorHex: scheduleColorHexList.first,
-      // memberList: [],
       done: false,
       createdAt: DateTime.now(),
       editedAt: DateTime.now(),
@@ -156,7 +155,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       endAt: add.scheduleIndexList.last,
       scheduleIndexList: add.scheduleIndexList,
       colorHex: add.colorHex,
-      // memberList: add.memberList,
       done: add.done,
       location: add.location,
       detail: add.detail,
@@ -173,7 +171,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     }
     startIndex.value = null;
     endIndex.value = null;
-    // minUnselectableIndex = 144;
     refreshCellStyleList();
   }
 
@@ -187,33 +184,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     unselectableIndexList.removeWhere((index) => removed.scheduleIndexList.contains(index));
     scheduleList.removeWhere((schedule) => schedule.sid == removed.sid);
     refreshCellStyleList();
-  }
-
-  Future<void> changeScheduleStatus({required Schedule schedule}) async {
-    Schedule changedSchedule = Schedule(
-      sid: schedule.sid,
-      date: schedule.date,
-      startAt: schedule.scheduleIndexList.first,
-      endAt: schedule.scheduleIndexList.last,
-      scheduleIndexList: schedule.scheduleIndexList,
-      colorHex: schedule.colorHex,
-      // memberList: schedule.memberList,
-      done: !schedule.done,
-      createdAt: schedule.createdAt,
-      editedAt: DateTime.now(),
-      title: schedule.title,
-      detail: schedule.detail,
-      location: schedule.location,
-      doneAt: !schedule.done ? DateTime.now() : null,
-      todoList: schedule.todoList,
-    );
-    try {
-      await scheduleRepository.updateSchedule(schedule: changedSchedule, removedTidList: []);
-      scheduleList.firstWhere((e) => e == schedule).done = changedSchedule.done;
-    } finally {
-      scheduleList.refresh();
-      // refreshCellStyleList();
-    }
   }
 
   /// BottomSheet
@@ -235,14 +205,11 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     Get.toNamed(PageNames.HELP);
   }
 
-  // TODD : ScheduleTable
+  /// ScheduleTable
   List<int> unselectableIndexList = [];
   List<int> selectedIndexList = [];
-  // int? startIndex;
-  // int? endIndex;
   Rxn<int> startIndex = Rxn(null);
   Rxn<int> endIndex = Rxn(null);
-  // int minUnselectableIndex = 144;
 
   final double tableWidth = Get.width < 400 ? Get.width : 400;
   final double cellWidth = ((Get.width < 400 ? Get.width : 400) - 32) / 6;
@@ -258,9 +225,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     if (endIndex.value != null) {
       startIndex.value = null;
       endIndex.value = null;
-      // minUnselectableIndex = 144;
       selectedIndexList.clear();
-      // refreshCellStyleList();
       return;
     }
     final int scheduleIndex = scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
@@ -268,32 +233,22 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     final Schedule schedule = scheduleList[scheduleIndex];
     showScheduleDetail(schedule);
-    // refreshCellStyleList();
   }
 
   void onTableLongPressStart(LongPressStartDetails details) {
     selectedIndexList.clear();
     int selectedIndex = getIndexFromPosition(details.localPosition);
-    // getMinUnselectableIndex(selectedIndex);
-    // if (!isEnableIndex(selectedIndex)) return;
     startIndex.value = selectedIndex;
-    // endIndex = null;
     endIndex.value = selectedIndex;
-    // refreshCellStyleList();
   }
 
   void onTableLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     int selectedIndex = getIndexFromPosition(details.localPosition);
-    // if (startIndex == null || !isEnableIndex(selectedIndex)) {
-    //   return;
-    // }
     if (startIndex.value == null) return;
     endIndex.value = selectedIndex;
-    // refreshCellStyleList();
   }
 
   void onTableLongPressEnd(LongPressEndDetails details) {
-    // minUnselectableIndex = 144;
     if (startIndex.value == null || endIndex.value == null) return;
     if (unselectableIndexList.any((index) => index >= startIndex.value! && index <= endIndex.value!)) {
       startIndex.value = null;
@@ -303,36 +258,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     }
     selectedIndexList.clear();
     selectedIndexList.addAll(List.generate(endIndex.value! - startIndex.value! + 1, (index) => startIndex.value! + index));
-    // TODO : 중복 체크 및 작업 선택 팝업 표시
-    // setSelectedIndexList();
-  }
-
-  // void getMinUnselectableIndex(int currentIndex) {
-  //   if (unselectableIndexList.contains(currentIndex)) {
-  //     minUnselectableIndex = currentIndex;
-  //     return;
-  //   }
-  //   int minDistance = 144;
-  //   for (int i = 0; i < unselectableIndexList.length; i++) {
-  //     int unselectableIndex = unselectableIndexList[i];
-  //     int distance = unselectableIndex - currentIndex;
-  //     if (distance > 0 && distance < minDistance) {
-  //       minDistance = distance;
-  //       minUnselectableIndex = unselectableIndex;
-  //     }
-  //   }
-  // }
-  //
-  // bool isEnableIndex(int index) {
-  //   return (minUnselectableIndex - index) > 0;
-  // }
-
-  Color? getIndexColor(int index) {
-    if (unselectableIndexList.contains(index)) {
-      String colorHex = scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.contains(index)).colorHex;
-      return Color(int.parse(colorHex, radix: 16) + 0xFF000000);
-    }
-    return null;
   }
 
   Schedule? getIndexSchedule(int index) {
@@ -343,24 +268,11 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     }
   }
 
-  bool isSelectedIndex(int index) {
-    if (startIndex.value == null || endIndex.value == null) {
-      return false;
-    }
-    return !(index - startIndex.value!).isNegative && !(endIndex.value! - index).isNegative;
-  }
-
   int getIndexFromPosition(Offset position) {
     final int x = position.dx ~/ cellWidth;
     final int y = position.dy ~/ cellHeight;
     return (x + 6 * y);
   }
-
-  // void setSelectedIndexList() {
-  //   for (int index = startIndex.value!; index < endIndex.value! + 1; index++) {
-  //     selectedIndexList.add(index);
-  //   }
-  // }
 
   void refreshCellStyleList() async {
     cellStyleList.clear();
