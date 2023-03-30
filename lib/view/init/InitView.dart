@@ -19,17 +19,13 @@ class InitView extends GetView<InitController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Image.asset(AssetNames.logoSplash, width: 150),
+                    child: Image.asset(AssetNames.logoSplash, width: 200),
                   ),
                 ],
               ),
             )
           : Scaffold(
               backgroundColor: StyledPalette.PRIMARY_BLUE,
-              // appBar: AppBar(
-              //   title: Center(child: Image.asset(AssetNames.logoText, width: 100)),
-              //   automaticallyImplyLeading: false,
-              // ),
               body: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
