@@ -17,4 +17,11 @@ class TodoRepository extends RootRepository {
     Todo result = Todo.fromJson(response.body['body']);
     return result;
   }
+
+  Future<void> deleteTodo({required String tid}) async {
+    final Response response = await delete('/todo/$tid');
+    if (response.hasError) {
+      errorHandler(response);
+    }
+  }
 }

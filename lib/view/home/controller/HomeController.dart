@@ -357,27 +357,33 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       onLoading.value = false;
     }
   }
-  //
-  // void showTodoActionModal({required Todo todo}) async {
-  //   final List<ModalAction> modalActionList = [
-  //     ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
-  //     ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
-  //   ];
-  //   int? action = await showCupertinoActionSheet(
-  //     modalActionList: modalActionList,
-  //     title: todo.todoTitle,
-  //   );
-  //   if (action == null) return;
-  //   if (action == 0) {
-  //     // showScheduleDetail(schedule);
-  //     return;
-  //   }
-  //   if (action == 1) {
-  //     removeTodo(todo: todo);
-  //   }
-  // }
-  //
-  // void removeTodo({required Todo todo}) async {
-  //
-  // }
+
+  void showTodoActionModal({required Schedule schedule, required Todo todo}) async {
+    final List<ModalAction> modalActionList = [
+      // ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
+      ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
+    ];
+    int? action = await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: todo.todoTitle,
+    );
+    if (action == null) return;
+    // if (action == 0) {
+    //   // showScheduleDetail(schedule);
+    //   return;
+    // }
+    if (action == 1) {
+      removeTodo(schedule: schedule, todo: todo);
+    }
+  }
+
+  void removeTodo({required Schedule schedule, required Todo todo}) async {
+    try {
+      await todoRepository.deleteTodo(tid: todo.tid);
+      scheduleList[scheduleList.indexWhere((e) => e.sid == schedule.sid)].todoList.removeWhere((e) => e.tid == todo.tid);
+      scheduleList.refresh();
+    } catch (e) {
+      return;
+    }
+  }
 }
