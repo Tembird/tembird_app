@@ -121,7 +121,16 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       return;
     }
     if (action == 1) {
-      removeSchedule(removed: schedule);
+      removeSchedule(schedule: schedule);
+    }
+  }
+
+  void removeSchedule({required Schedule schedule}) async {
+    try {
+      await scheduleRepository.deleteSchedule(schedule: schedule);
+      deleteRemovedSchedule(removed: schedule);
+    } catch (e) {
+      return;
     }
   }
 
@@ -142,7 +151,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
         updateSchedule(previous: schedule, update: scheduleAction.schedule!);
         return;
       case ActionType.removed:
-        removeSchedule(removed: schedule);
+        deleteRemovedSchedule(removed: schedule);
         return;
     }
   }
@@ -180,7 +189,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     refreshCellStyleList();
   }
 
-  void removeSchedule({required Schedule removed}) {
+  void deleteRemovedSchedule({required Schedule removed}) {
     unselectableIndexList.removeWhere((index) => removed.scheduleIndexList.contains(index));
     scheduleList.removeWhere((schedule) => schedule.sid == removed.sid);
     refreshCellStyleList();
@@ -348,4 +357,27 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       onLoading.value = false;
     }
   }
+  //
+  // void showTodoActionModal({required Todo todo}) async {
+  //   final List<ModalAction> modalActionList = [
+  //     ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
+  //     ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
+  //   ];
+  //   int? action = await showCupertinoActionSheet(
+  //     modalActionList: modalActionList,
+  //     title: todo.todoTitle,
+  //   );
+  //   if (action == null) return;
+  //   if (action == 0) {
+  //     // showScheduleDetail(schedule);
+  //     return;
+  //   }
+  //   if (action == 1) {
+  //     removeTodo(todo: todo);
+  //   }
+  // }
+  //
+  // void removeTodo({required Todo todo}) async {
+  //
+  // }
 }
