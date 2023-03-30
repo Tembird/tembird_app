@@ -384,9 +384,7 @@ class TodoItem extends GetView<CreateScheduleController> {
           if (todo.todoStatus == TodoStatus.pass)
             Image.asset(AssetNames.todoPass, width: 24, height: 24,),
           if (todo.todoStatus == TodoStatus.notStarted)
-            controller.indexToDateTime(date: controller.schedule.date, index: controller.schedule.endAt).compareTo(DateTime.now()) > 0
-                ? Image.asset(AssetNames.todoNotStarted, width: 24, height: 24,)
-                : Image.asset(AssetNames.todoMiss, width: 24, height: 24,),
+            Image.asset(AssetNames.todoNotStarted, width: 24, height: 24,),
           const SizedBox(width: 8),
           Expanded(
             child: Text(todo.todoTitle, style: StyledFont.BODY),
