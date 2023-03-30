@@ -44,4 +44,5 @@ class RootController extends GetxController {
   String dateTimeToString({required DateTime date}) => '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]}) ${date.hour}시 ${date.minute}분';
   DateTime indexToDateTime({required DateTime date, required int index}) => DateTime(date.year, date.month, date.day, (index + 1) ~/ 6, ((index + 1) % 6) * 10);
   String indexToTimeString({required int index}) => '${index ~/ 6}시 ${index % 6 * 10}분';
+  Color hexToColor({required String colorHex}) => Color(int.parse(colorHex, radix: 16) + 0xFF000000);
 }

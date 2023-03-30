@@ -17,6 +17,7 @@ class StyledFont {
   static const TextStyle HEADLINE_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.WHITE);
   static const TextStyle BODY = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.BLACK);
   static const TextStyle BODY_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.GRAY);
+  static const TextStyle BODY_WHITE = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.WHITE);
   static const TextStyle BODY_NEGATIVE = TextStyle(fontWeight: FontWeight.w400, fontSize: 17, height: 22 / 17, color: StyledPalette.STATUS_NEGATIVE);
   static const TextStyle CALLOUT = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK);
   static const TextStyle CALLOUT_GRAY = TextStyle(fontWeight: FontWeight.w400, fontSize: 16, height: 21 / 16, color: StyledPalette.GRAY);

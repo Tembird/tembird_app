@@ -4,7 +4,7 @@ import 'package:tembird_app/constant/AssetNames.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/home/HomeScheduleTable.dart';
-import 'package:tembird_app/view/home/TodoList.dart';
+import 'package:tembird_app/view/home/HomeTodoList.dart';
 
 import '../../model/Schedule.dart';
 import 'controller/HomeController.dart';
@@ -82,13 +82,7 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ],
                     ),
-                    SingleChildScrollView(
-                      child: TodoList(
-                        scheduleList: controller.scheduleList,
-                        changeStatus: (Schedule schedule) => controller.changeScheduleStatus(schedule: schedule),
-                        onTapTodo: (Schedule schedule) => controller.showScheduleDetail(schedule),
-                      ),
-                    ),
+                    const HomeTodoList(),
                   ],
                 )),
               ),

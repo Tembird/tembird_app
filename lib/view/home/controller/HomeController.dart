@@ -4,15 +4,19 @@ import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
+import 'package:tembird_app/repository/TodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
 import '../../../constant/StyledPalette.dart';
 import '../../../model/CellStyle.dart';
+import '../../../model/ModalAction.dart';
 import '../../../model/Schedule.dart';
+import '../../../model/Todo.dart';
 import '../../create/schedule/CreateScheduleView.dart';
 
 class HomeController extends RootController with GetSingleTickerProviderStateMixin {
   final ScheduleRepository scheduleRepository = ScheduleRepository();
+  final TodoRepository todoRepository = TodoRepository();
   final InitRepository initRepository = InitRepository();
   TabController? tabController;
   static HomeController to = Get.find();
@@ -100,6 +104,25 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     if (scheduleAction == null || scheduleAction.action != ActionType.created) return;
     addSchedule(add: scheduleAction.schedule!);
+  }
+
+  void showScheduleActionModal(Schedule schedule) async {
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
+      ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
+    ];
+    int? action = await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: schedule.title,
+    );
+    if (action == null) return;
+    if (action == 0) {
+      showScheduleDetail(schedule);
+      return;
+    }
+    if (action == 1) {
+      removeSchedule(removed: schedule);
+    }
   }
 
   void showScheduleDetail(Schedule schedule) async {
@@ -379,6 +402,35 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       if (isTitleOnFirstLine) {
         title = null;
       }
+    }
+  }
+
+  /// HomeTodoList
+  void onDone({required Todo todo}) {
+    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.notStarted);
+  }
+
+  void onNotStated({required Todo todo}) {
+    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.notStarted);
+  }
+
+  void onPass({required Todo todo}) {
+    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.pass);
+  }
+
+  void updateTodoStatus({required Todo todo, required int updatedStatus}) async {
+    if (onLoading.value == true) return;
+    try {
+      onLoading.value = true;
+      // Todo updatedTodo = Todo(
+      //   tid: todo.tid,
+      //   todoTitle: todo.todoTitle,
+      //   todoStatus: TodoStatus.notStarted,
+      //   todoUpdatedAt: todo.todoUpdatedAt,
+      // );
+      // await todoRepository.updateTodo(todo: updatedTodo);
+    } finally {
+      onLoading.value = false;
     }
   }
 }
