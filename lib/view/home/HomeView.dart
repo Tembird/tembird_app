@@ -6,7 +6,6 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/home/HomeScheduleTable.dart';
 import 'package:tembird_app/view/home/HomeTodoList.dart';
 
-import '../../model/Schedule.dart';
 import 'controller/HomeController.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -14,23 +13,19 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    const double rowHeaderWidth = 32;
-    const double columnHeaderHeight = 20;
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 0,
-        toolbarHeight: 80,
+        toolbarHeight: 100,
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 16),
-                Image.asset(AssetNames.logoText, width: 100, fit: BoxFit.contain),
+                Image.asset(AssetNames.logoText, height: 36, fit: BoxFit.contain),
               ],
             ),
             const SizedBox(height: 8),
@@ -40,7 +35,7 @@ class HomeView extends GetView<HomeController> {
         actions: [
           Container(
             alignment: Alignment.topRight,
-            padding: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.all(16),
             child: InkWell(
               onTap: controller.openHelpView,
               child: Image.asset(AssetNames.account, width: 32, fit: BoxFit.contain),
@@ -111,7 +106,7 @@ class HomeTabBar extends GetView<HomeController> {
           indicatorColor: StyledPalette.BLACK,
           isScrollable: true,
           tabs: const [
-            Tab(text: "Scheduler"),
+            Tab(text: "Daily"),
             Tab(text: "TodoList"),
           ],
           onTap: controller.selectView,
