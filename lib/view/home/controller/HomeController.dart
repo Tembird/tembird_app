@@ -406,29 +406,31 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   /// HomeTodoList
-  void onDone({required Todo todo}) {
-    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.notStarted);
+  void onDone({required Schedule schedule, required Todo todo}) {
+    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.done);
   }
 
-  void onNotStated({required Todo todo}) {
-    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.notStarted);
+  void onNotStated({required Schedule schedule, required Todo todo}) {
+    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.notStarted);
   }
 
-  void onPass({required Todo todo}) {
-    updateTodoStatus(todo: todo, updatedStatus: TodoStatus.pass);
+  void onPass({required Schedule schedule, required Todo todo}) {
+    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.pass);
   }
 
-  void updateTodoStatus({required Todo todo, required int updatedStatus}) async {
+  void updateTodoStatus({required Schedule schedule, required Todo todo, required int updatedStatus}) async {
     if (onLoading.value == true) return;
     try {
       onLoading.value = true;
-      // Todo updatedTodo = Todo(
-      //   tid: todo.tid,
-      //   todoTitle: todo.todoTitle,
-      //   todoStatus: TodoStatus.notStarted,
-      //   todoUpdatedAt: todo.todoUpdatedAt,
-      // );
-      // await todoRepository.updateTodo(todo: updatedTodo);
+      Todo newTodo = Todo(
+        tid: todo.tid,
+        todoTitle: todo.todoTitle,
+        todoStatus: updatedStatus,
+        todoUpdatedAt: todo.todoUpdatedAt,
+      );
+      final Todo updated = await todoRepository.updateTodo(todo: newTodo);
+      scheduleList[scheduleList.indexOf(schedule)].todoList[schedule.todoList.indexOf(todo)] = updated;
+      scheduleList.refresh();
     } finally {
       onLoading.value = false;
     }

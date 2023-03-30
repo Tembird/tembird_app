@@ -69,19 +69,20 @@ class ScheduleItem extends GetView<HomeController> {
                           children: [
                             if (todo.todoStatus == TodoStatus.done)
                               GestureDetector(
-                                onTap: () => controller.onNotStated(todo: todo),
-                                onLongPress: () => controller.onPass(todo: todo),
+                                onTap: () => controller.onNotStated(schedule: schedule, todo: todo),
+                                onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
                                 child: Image.asset(AssetNames.todoDone, width: 24, height: 24),
                               ),
                             if (todo.todoStatus == TodoStatus.pass)
                               GestureDetector(
-                                onLongPress: () => controller.onNotStated(todo: todo),
+                                onTap: () => controller.onDone(schedule: schedule, todo: todo),
+                                onLongPress: () => controller.onNotStated(schedule: schedule, todo: todo),
                                 child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
                               ),
                             if (todo.todoStatus == TodoStatus.notStarted)
                               GestureDetector(
-                                onTap: () => controller.onDone(todo: todo),
-                                onLongPress: () => controller.onPass(todo: todo),
+                                onTap: () => controller.onDone(schedule: schedule, todo: todo),
+                                onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
                                 child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
                               ),
                             const SizedBox(width: 8),
