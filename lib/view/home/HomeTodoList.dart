@@ -38,65 +38,64 @@ class ScheduleItem extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     if (schedule.todoList.isEmpty) return Container();
-    return GestureDetector(
-      onLongPress: () => controller.showScheduleActionModal(schedule),
-      child: SizedBox(
-        height: 45 * (schedule.todoList.length + 1) + 16,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GestureDetector(
-              child: Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: controller.hexToColor(colorHex: schedule.colorHex),
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  schedule.title!,
-                  style: StyledFont.BODY_WHITE,
-                  maxLines: 1,
-                ),
+    return SizedBox(
+      height: 45 * (schedule.todoList.length + 1) + 32,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GestureDetector(
+            onLongPress: () => controller.showScheduleActionModal(schedule),
+            child: Container(
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: controller.hexToColor(colorHex: schedule.colorHex),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                schedule.title!,
+                style: StyledFont.BODY_WHITE,
+                maxLines: 1,
               ),
             ),
-            ...schedule.todoList
-                .map((todo) => GestureDetector(
-                      child: SizedBox(
-                        height: 45,
-                        child: Row(
-                          children: [
-                            if (todo.todoStatus == TodoStatus.done)
-                              GestureDetector(
-                                onTap: () => controller.onNotStated(schedule: schedule, todo: todo),
-                                onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
-                                child: Image.asset(AssetNames.todoDone, width: 24, height: 24),
-                              ),
-                            if (todo.todoStatus == TodoStatus.pass)
-                              GestureDetector(
-                                onTap: () => controller.onDone(schedule: schedule, todo: todo),
-                                onLongPress: () => controller.onNotStated(schedule: schedule, todo: todo),
-                                child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
-                              ),
-                            if (todo.todoStatus == TodoStatus.notStarted)
-                              GestureDetector(
-                                onTap: () => controller.onDone(schedule: schedule, todo: todo),
-                                onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
-                                child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
-                              ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1),
+          ),
+          const SizedBox(height: 16),
+          ...schedule.todoList
+              .map((todo) => GestureDetector(
+                    child: SizedBox(
+                      height: 45,
+                      child: Row(
+                        children: [
+                          if (todo.todoStatus == TodoStatus.done)
+                            GestureDetector(
+                              onTap: () => controller.onNotStated(schedule: schedule, todo: todo),
+                              onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
+                              child: Image.asset(AssetNames.todoDone, width: 24, height: 24),
                             ),
-                          ],
-                        ),
+                          if (todo.todoStatus == TodoStatus.pass)
+                            GestureDetector(
+                              onTap: () => controller.onDone(schedule: schedule, todo: todo),
+                              onLongPress: () => controller.onNotStated(schedule: schedule, todo: todo),
+                              child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
+                            ),
+                          if (todo.todoStatus == TodoStatus.notStarted)
+                            GestureDetector(
+                              onTap: () => controller.onDone(schedule: schedule, todo: todo),
+                              onLongPress: () => controller.onPass(schedule: schedule, todo: todo),
+                              child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
+                            ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1),
+                          ),
+                        ],
                       ),
-                    ))
-                .toList(),
-            const SizedBox(height: 16),
-          ],
-        ),
+                    ),
+                  ))
+              .toList(),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
