@@ -37,9 +37,8 @@ class ScheduleItem extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    if (schedule.todoList.isEmpty) return Container();
     return SizedBox(
-      height: 45 * (schedule.todoList.length + 1) + 32,
+      height: 45 * (schedule.todoList.length + 1) + 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -60,7 +59,7 @@ class ScheduleItem extends GetView<HomeController> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           ...schedule.todoList
               .map(
                 (todo) => SizedBox(
@@ -97,7 +96,7 @@ class ScheduleItem extends GetView<HomeController> {
                 ),
               )
               .toList(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
         ],
       ),
     );
