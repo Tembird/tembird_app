@@ -87,9 +87,7 @@ class ScheduleItem extends GetView<HomeController> {
                       const SizedBox(width: 8),
                       GestureDetector(
                         onTap: () => controller.showTodoActionModal(schedule:schedule, todo: todo),
-                        child: Expanded(
-                          child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1),
-                        ),
+                        child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1),
                       ),
                     ],
                   ),
