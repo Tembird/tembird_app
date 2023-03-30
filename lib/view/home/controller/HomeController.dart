@@ -49,6 +49,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     onLoading.value = true;
     try {
       List<Schedule> list = await scheduleRepository.readScheduleListOnDate(dateTime: date);
+      list.sort((a,b) => a.startAt.compareTo(b.startAt));
       scheduleList.clear();
       scheduleList.addAll(list);
       unselectableIndexList.clear();
@@ -164,7 +165,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       editedAt: add.editedAt,
       todoList: add.todoList,
     ));
-    scheduleList.sort((a,b) => a.scheduleIndexList.first.compareTo(b.scheduleIndexList.first));
+    scheduleList.sort((a,b) => a.startAt.compareTo(b.startAt));
     selectedIndexList.clear();
     unselectableIndexList.clear();
     for (var schedule in scheduleList) {
@@ -177,8 +178,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void updateSchedule({required Schedule previous, required Schedule update}) {
-    scheduleList.removeWhere((schedule) => schedule.sid == previous.sid);
-    scheduleList.add(update);
+    scheduleList[scheduleList.indexWhere((e) => e.sid == previous.sid)] = update;
+    scheduleList.refresh();
     refreshCellStyleList();
   }
 
