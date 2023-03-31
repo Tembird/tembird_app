@@ -5,12 +5,14 @@ import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/model/User.dart';
+import 'package:tembird_app/service/FirebaseMessagingService.dart';
 import '../constant/PageNames.dart';
 import '../repository/AuthRepository.dart';
 
 enum SessionStatus { active, empty }
 
 class SessionService extends GetxService {
+  final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
   static SessionService to = Get.find();
   String appVersion = '';
   String appBuildNum = '';
@@ -49,8 +51,7 @@ class SessionService extends GetxService {
 
   Future<void> quitSession() async {
     await authRepository.signOut();
+    await _firebaseMessagingService.deleteFcmToken();
     await Get.offAllNamed(PageNames.INIT);
-    // TODO : Test Error Exist
-    Get.reset();
   }
 }
