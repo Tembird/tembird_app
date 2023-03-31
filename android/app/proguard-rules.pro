@@ -1,0 +1,1 @@
+-keep class com.tembird.app.tembird_app.BuildConfig { *; }
