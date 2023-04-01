@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
@@ -37,6 +38,7 @@ import 'constant/PageNames.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  MobileAds.instance.initialize();
 
   await FlutterConfig.loadEnvVariables();
   await Hive.initFlutter();
