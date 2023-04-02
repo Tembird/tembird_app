@@ -28,9 +28,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final RxList<String> scheduleColorHexList = RxList([]);
   final Rx<bool> onLoading = RxBool(true);
   final Rx<bool> onBottomSheet = RxBool(true);
+  final RxBool onCreateTodo = RxBool(false);
   final Rxn<int> editingScheduleIndex = Rxn(null);
   final Rxn<int> editingTodoIndex = Rxn(null);
-  final TextEditingController titleEditingController = TextEditingController();
+  final TextEditingController todoEditingController = TextEditingController();
 
 
   @override
@@ -45,8 +46,14 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   @override
   void onClose() {
     tabController!.dispose();
-    titleEditingController.dispose();
+    todoEditingController.dispose();
     super.onClose();
+  }
+
+  void resetTextFormField() {
+    onCreateTodo.value = false;
+    editingScheduleIndex.value = null;
+    editingTodoIndex.value = null;
   }
 
   Future<void> getScheduleList(DateTime date) async {
@@ -83,8 +90,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void selectView(int index) {
     if (viewIndex.value == index) return;
     if (viewIndex.value == 1) {
-      editingScheduleIndex.value = null;
-      editingTodoIndex.value = null;
+      resetTextFormField();
     }
     viewIndex.value = index;
   }
@@ -367,6 +373,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void showTodoActionModal({required Schedule schedule, required Todo todo}) async {
+    resetTextFormField();
     final List<ModalAction> modalActionList = [
       ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
       ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
@@ -399,20 +406,20 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void editTodoTitle({required Schedule schedule, required Todo todo}) async {
     editingScheduleIndex.value = scheduleList.indexOf(schedule);
     editingTodoIndex.value = scheduleList[scheduleList.indexOf(schedule)].todoList.indexOf(todo);
-    titleEditingController.text = todo.todoTitle;
+    todoEditingController.text = todo.todoTitle;
   }
 
   void updateTodoTitle({required Schedule schedule, required Todo todo}) async {
     try {
       onLoading.value = true;
-      if (titleEditingController.value.text == todo.todoTitle) return;
-      if (titleEditingController.value.text.isEmpty) {
+      if (todoEditingController.value.text == todo.todoTitle) return;
+      if (todoEditingController.value.text.isEmpty) {
         removeTodo(schedule: schedule, todo: todo);
         return;
       }
       Todo newTodo = Todo(
           tid: todo.tid,
-          todoTitle: titleEditingController.value.text,
+          todoTitle: todoEditingController.value.text,
           todoStatus: todo.todoStatus,
           todoUpdatedAt: todo.todoUpdatedAt,
       );
@@ -421,9 +428,33 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     } catch (e) {
       return;
     } finally {
-      editingScheduleIndex.value = null;
-      editingTodoIndex.value = null;
+      resetTextFormField();
       scheduleList.refresh();
+      onLoading.value = false;
+    }
+  }
+
+  void showTodoInputForm({required Schedule schedule}) async {
+    onCreateTodo.value = true;
+    editingScheduleIndex.value = scheduleList.indexOf(schedule);
+    todoEditingController.text = "";
+  }
+
+  void createTodo({required Schedule schedule}) async {
+    try {
+      onLoading.value = true;
+      if (todoEditingController.value.text.isEmpty) return;
+      final Todo newTodo = Todo(
+          tid: "",
+          todoTitle: todoEditingController.value.text,
+          todoStatus: TodoStatus.notStarted,
+          todoUpdatedAt: DateTime.now(),
+      );
+      final Todo result = await todoRepository.createTodo(sid: schedule.sid, todo: newTodo);
+      scheduleList[editingScheduleIndex.value!].todoList.add(result);
+      scheduleList.refresh();
+    } finally {
+      resetTextFormField();
       onLoading.value = false;
     }
   }
