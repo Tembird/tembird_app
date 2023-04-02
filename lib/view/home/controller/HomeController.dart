@@ -82,6 +82,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void selectView(int index) {
     if (viewIndex.value == index) return;
+    if (viewIndex.value == 1) {
+      editingScheduleIndex.value = null;
+      editingTodoIndex.value = null;
+    }
     viewIndex.value = index;
   }
 
