@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:collection/collection.dart';
-import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/ModalAction.dart';
 import 'package:tembird_app/model/Schedule.dart';
 import 'package:tembird_app/model/Todo.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
-import 'package:tembird_app/service/SessionService.dart';
 import 'package:tembird_app/view/home/controller/HomeController.dart';
 
 import '../../../../model/ScheduleAction.dart';
@@ -33,6 +31,8 @@ class CreateScheduleController extends RootController {
   final RxnString location = RxnString(null);
   final RxnString detail = RxnString(null);
   final RxList<Todo> todoList = RxList([]);
+  final Rxn<int> editingTodoIndex = Rxn(null);
+  final TextEditingController todoEditingController = TextEditingController();
 
   /// Editable Fields - Title, Location, MemberList, Detail
   final TextEditingController titleController = TextEditingController();
@@ -59,10 +59,6 @@ class CreateScheduleController extends RootController {
     if (schedule.title != null) {
       titleController.text = schedule.title!;
     }
-    // if (schedule.todoList.isNotEmpty) {
-    //   todoList.addAll(schedule.todoList);
-    //   hasTodo.value = true;
-    // }
     if (schedule.location != null) {
       locationController.text = schedule.location!;
       hasLocation.value = true;
@@ -81,6 +77,7 @@ class CreateScheduleController extends RootController {
     locationController.dispose();
     todoController.dispose();
     detailController.dispose();
+    todoEditingController.dispose();
     super.onClose();
   }
 
@@ -177,6 +174,9 @@ class CreateScheduleController extends RootController {
   }
 
   void createResultSchedule() {
+    if (editingTodoIndex.value != null) {
+      updateTodoTitle(index: editingTodoIndex.value!);
+    }
     final Schedule newSchedule = Schedule(
       sid: schedule.sid,
       date: schedule.date,
@@ -279,18 +279,58 @@ class CreateScheduleController extends RootController {
     todoList.refresh();
   }
 
-  void updateTodoTitle({required int index, required String todoTitle}) {
-    Todo previous = todoList[index];
-    todoList[index] = Todo(
-      tid: previous.tid,
-      todoTitle: todoTitle,
-      todoStatus: previous.todoStatus,
-      todoUpdatedAt: previous.todoUpdatedAt,
+  void showTodoActionModal({required int index}) async {
+    onEdit();
+    editingTodoIndex.value = null;
+    final List<ModalAction> modalActionList = [
+      ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
+      ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
+    ];
+    int? action = await showCupertinoActionSheet(
+      modalActionList: modalActionList,
+      title: todoList[index].todoTitle,
     );
-    todoList.refresh();
+    if (action == null) return;
+    if (action == 0) {
+      editTodoTitle(index: index);
+      return;
+    }
+    if (action == 1) {
+      removeTodo(index: index);
+      return;
+    }
   }
 
-  void removeTodo(int index) {
+  void editTodoTitle({required int index}) async {
+    editingTodoIndex.value = index;
+    todoEditingController.text = todoList[index].todoTitle;
+  }
+
+  void updateTodoTitle({required int index}) async {
+    try {
+      onLoading.value = true;
+      Todo todo = todoList[index];
+      if (todoEditingController.value.text == todo.todoTitle) return;
+      if (todoEditingController.value.text.isEmpty) {
+        removeTodo(index: index);
+        return;
+      }
+      Todo newTodo = Todo(
+        tid: todo.tid,
+        todoTitle: todoEditingController.value.text,
+        todoStatus: todo.todoStatus,
+        todoUpdatedAt: todo.todoUpdatedAt,
+      );
+      todoList[index] = newTodo;
+    } catch (e) {
+      return;
+    } finally {
+      editingTodoIndex.value = null;
+      onLoading.value = false;
+    }
+  }
+
+  void removeTodo({required int index}) {
     onEdit();
     if (todoList[index].tid.isNotEmpty) {
       removedTidList.add(todoList[index].tid);

@@ -170,12 +170,7 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                             style: StyledFont.CAPTION_1_GRAY,
                                             maxLines: 1,
                                           ),
-                                          ...List.generate(controller.todoList.length, (index) => TodoItem(index: index)
-                                              // GestureDetector(
-                                              //   onTap: () => controller.showTodoInfo(index),
-                                              //   child: TodoItem(todo: controller.todoList[index]),
-                                              // )
-                                              ),
+                                          ...List.generate(controller.todoList.length, (index) => TodoItem(index: index)),
                                           SizedBox(
                                             height: 40,
                                             child: TextFormField(
@@ -353,17 +348,32 @@ class TodoItem extends GetView<CreateScheduleController> {
               child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
             ),
           const SizedBox(width: 8),
-          Expanded(
-            child: TextFormField(
-              onTap: controller.onEdit,
-              textAlignVertical: TextAlignVertical.center,
-              initialValue: todo.todoTitle,
-              decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 4)),
-              style: StyledFont.BODY,
-              textAlign: TextAlign.start,
-              onFieldSubmitted: (value) => value.isEmpty ? controller.removeTodo(index) : controller.updateTodoTitle(index: index, todoTitle: value),
-              textInputAction: TextInputAction.done,
-            ),
+          Obx(
+            () => controller.todoList.indexOf(todo) != controller.editingTodoIndex.value
+                ? GestureDetector(
+                    onTap: () => controller.showTodoActionModal(index: index),
+                    child: Container(
+                        height: 45,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1)),
+                  )
+                : Expanded(
+                    child: Container(
+                      height: 45,
+                      alignment: Alignment.centerLeft,
+                      child: TextFormField(
+                        autofocus: true,
+                        controller: controller.todoEditingController,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                        style: StyledFont.BODY,
+                        textAlign: TextAlign.start,
+                        onFieldSubmitted: (_) => controller.updateTodoTitle(index: index),
+                        textInputAction: TextInputAction.done,
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),
