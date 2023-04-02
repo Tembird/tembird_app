@@ -140,11 +140,15 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void removeSchedule({required Schedule schedule}) async {
+    if (onLoading.value == true) return;
     try {
+      onLoading.value = true;
       await scheduleRepository.deleteSchedule(schedule: schedule);
       deleteRemovedSchedule(removed: schedule);
     } catch (e) {
       return;
+    } finally {
+      onLoading.value = false;
     }
   }
 
@@ -211,6 +215,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   /// BottomSheet
   void showCalendar() async {
+    resetTextFormField();
     DateTime? newDate = await Get.bottomSheet(
       CalendarView.route(selectedDate.value),
       isScrollControlled: true,
@@ -225,6 +230,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void openHelpView() {
+    resetTextFormField();
     Get.toNamed(PageNames.HELP);
   }
 
@@ -357,6 +363,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void updateTodoStatus({required Schedule schedule, required Todo todo, required int updatedStatus}) async {
     if (onLoading.value == true) return;
     try {
+      resetTextFormField();
       onLoading.value = true;
       Todo newTodo = Todo(
         tid: todo.tid,
@@ -394,12 +401,16 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void removeTodo({required Schedule schedule, required Todo todo}) async {
+    if (onLoading.value == true) return;
     try {
+      onLoading.value = true;
       await todoRepository.deleteTodo(tid: todo.tid);
       scheduleList[scheduleList.indexWhere((e) => e.sid == schedule.sid)].todoList.removeWhere((e) => e.tid == todo.tid);
       scheduleList.refresh();
     } catch (e) {
       return;
+    } finally {
+      onLoading.value = false;
     }
   }
 
@@ -410,6 +421,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void updateTodoTitle({required Schedule schedule, required Todo todo}) async {
+    if (onLoading.value == true) return;
     try {
       onLoading.value = true;
       if (todoEditingController.value.text == todo.todoTitle) return;
@@ -441,6 +453,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void createTodo({required Schedule schedule}) async {
+    if (onLoading.value == true) return;
     try {
       onLoading.value = true;
       if (todoEditingController.value.text.isEmpty) return;
