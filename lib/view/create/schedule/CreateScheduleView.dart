@@ -107,17 +107,6 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                       textInputAction: TextInputAction.done,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  InkWell(
-                                    onTap: controller.changeStatus,
-                                    child: Obx(
-                                      () => Image.asset(
-                                        controller.scheduleDone.isTrue ? AssetNames.checkboxMarked : AssetNames.checkboxBlank,
-                                        width: 24,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                               const Divider(),
