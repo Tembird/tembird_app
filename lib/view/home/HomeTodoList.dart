@@ -85,10 +85,34 @@ class ScheduleItem extends GetView<HomeController> {
                           child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
                         ),
                       const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => controller.showTodoActionModal(schedule:schedule, todo: todo),
-                        child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1),
-                      ),
+                      Obx(
+                        () => controller.scheduleList.indexOf(schedule) != controller.editingScheduleIndex.value ||
+                                controller.scheduleList[controller.scheduleList.indexOf(schedule)].todoList.indexOf(todo) != controller.editingTodoIndex.value
+                            ? GestureDetector(
+                                onTap: () => controller.showTodoActionModal(schedule: schedule, todo: todo),
+                                child: Container(
+                                  height: 45,
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    child: Text(todo.todoTitle, style: StyledFont.BODY, maxLines: 1)),
+                              )
+                            : Expanded(
+                              child: Container(
+                                  height: 45,
+                                  alignment: Alignment.centerLeft,
+                                  child: TextFormField(
+                                    autofocus: true,
+                                    controller: controller.titleEditingController,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                                    style: StyledFont.BODY,
+                                    textAlign: TextAlign.start,
+                                    onFieldSubmitted: (_) => controller.updateTodoTitle(schedule: schedule, todo: todo),
+                                    textInputAction: TextInputAction.done,
+                                  ),
+                                ),
+                            ),
+                      )
                     ],
                   ),
                 ),

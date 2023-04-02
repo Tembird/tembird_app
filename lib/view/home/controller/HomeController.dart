@@ -28,6 +28,9 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final RxList<String> scheduleColorHexList = RxList([]);
   final Rx<bool> onLoading = RxBool(true);
   final Rx<bool> onBottomSheet = RxBool(true);
+  final Rxn<int> editingScheduleIndex = Rxn(null);
+  final Rxn<int> editingTodoIndex = Rxn(null);
+  final TextEditingController titleEditingController = TextEditingController();
 
 
   @override
@@ -42,6 +45,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   @override
   void onClose() {
     tabController!.dispose();
+    titleEditingController.dispose();
     super.onClose();
   }
 
@@ -360,7 +364,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void showTodoActionModal({required Schedule schedule, required Todo todo}) async {
     final List<ModalAction> modalActionList = [
-      // ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
+      ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
       ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
     ];
     int? action = await showCupertinoActionSheet(
@@ -368,12 +372,13 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       title: todo.todoTitle,
     );
     if (action == null) return;
-    // if (action == 0) {
-    //   // showScheduleDetail(schedule);
-    //   return;
-    // }
+    if (action == 0) {
+      editTodoTitle(schedule: schedule, todo: todo);
+      return;
+    }
     if (action == 1) {
       removeTodo(schedule: schedule, todo: todo);
+      return;
     }
   }
 
@@ -384,6 +389,38 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       scheduleList.refresh();
     } catch (e) {
       return;
+    }
+  }
+
+  void editTodoTitle({required Schedule schedule, required Todo todo}) async {
+    editingScheduleIndex.value = scheduleList.indexOf(schedule);
+    editingTodoIndex.value = scheduleList[scheduleList.indexOf(schedule)].todoList.indexOf(todo);
+    titleEditingController.text = todo.todoTitle;
+  }
+
+  void updateTodoTitle({required Schedule schedule, required Todo todo}) async {
+    try {
+      onLoading.value = true;
+      if (titleEditingController.value.text == todo.todoTitle) return;
+      if (titleEditingController.value.text.isEmpty) {
+        removeTodo(schedule: schedule, todo: todo);
+        return;
+      }
+      Todo newTodo = Todo(
+          tid: todo.tid,
+          todoTitle: titleEditingController.value.text,
+          todoStatus: todo.todoStatus,
+          todoUpdatedAt: todo.todoUpdatedAt,
+      );
+      final Todo updated = await todoRepository.updateTodo(todo: newTodo);
+      scheduleList[editingScheduleIndex.value!].todoList[editingTodoIndex.value!] = updated;
+    } catch (e) {
+      return;
+    } finally {
+      editingScheduleIndex.value = null;
+      editingTodoIndex.value = null;
+      scheduleList.refresh();
+      onLoading.value = false;
     }
   }
 }
