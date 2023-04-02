@@ -125,143 +125,96 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                                 child: SingleChildScrollView(
                                   primary: false,
                                   child: Obx(() => Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      controller.scheduleColorHexList.isNotEmpty
-                                          ? SizedBox(
-                                        height: 45,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: controller.scheduleColorHexList
-                                                .map(
-                                                  (e) => Padding(
-                                                padding: const EdgeInsets.only(right: 16),
-                                                child: Column(
-                                                  children: [
-                                                    controller.scheduleColorHex.value == e
-                                                        ? const CircleAvatar(
-                                                      radius: 2,
-                                                      backgroundColor: StyledPalette.STATUS_INFO,
-                                                    )
-                                                        : const SizedBox(height: 4),
-                                                    const SizedBox(height: 4),
-                                                    InkWell(
-                                                      onTap: () => controller.changeColorHex(e),
-                                                      radius: 12,
-                                                      child: CircleAvatar(
-                                                        radius: controller.scheduleColorHex.value == e ? 16 : 12,
-                                                        backgroundColor: Color(int.parse(e, radix: 16) + 0xFF000000),
-                                                      ),
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          controller.scheduleColorHexList.isNotEmpty
+                                              ? SizedBox(
+                                                  height: 45,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: controller.scheduleColorHexList
+                                                          .map(
+                                                            (e) => Padding(
+                                                              padding: const EdgeInsets.only(right: 16),
+                                                              child: Column(
+                                                                children: [
+                                                                  controller.scheduleColorHex.value == e
+                                                                      ? const CircleAvatar(
+                                                                          radius: 2,
+                                                                          backgroundColor: StyledPalette.STATUS_INFO,
+                                                                        )
+                                                                      : const SizedBox(height: 4),
+                                                                  const SizedBox(height: 4),
+                                                                  InkWell(
+                                                                    onTap: () => controller.changeColorHex(e),
+                                                                    radius: 12,
+                                                                    child: CircleAvatar(
+                                                                      radius: controller.scheduleColorHex.value == e ? 16 : 12,
+                                                                      backgroundColor: Color(int.parse(e, radix: 16) + 0xFF000000),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
+                                                          .toList(),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                                .toList(),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          const SizedBox(height: 8),
+                                          const Text(
+                                            '할 일 목록',
+                                            style: StyledFont.CAPTION_1_GRAY,
+                                            maxLines: 1,
                                           ),
-                                        ),
-                                      )
-                                          : Container(),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        '할 일 목록',
-                                        style: StyledFont.CAPTION_1_GRAY,
-                                        maxLines: 1,
-                                      ),
-                                      ...List.generate(controller.todoList.length, (index) =>
-                                          GestureDetector(
-                                            onTap: () => controller.showTodoInfo(index),
-                                            child: TodoItem(todo: controller.todoList[index]),
-                                          )
-                                      ),
-                                      SizedBox(
-                                        height: 40,
-                                        child: TextFormField(
-                                          textAlignVertical: TextAlignVertical.center,
-                                          controller: controller.todoController,
-                                          onTap: controller.onEdit,
-                                          decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              hintText: '할일 추가 +',
-                                              hintStyle: StyledFont.BODY_GRAY,
-                                              isDense: true,
-                                              contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                                          style: StyledFont.BODY,
-                                          textAlign: TextAlign.start,
-                                          onFieldSubmitted: (_) => controller.addTodo(),
-                                          textInputAction: TextInputAction.done,
-                                        ),
-                                      ),
-                                      // Obx(
-                                      //   () => controller.hasMember.isFalse
-                                      //       ? Container()
-                                      //       : WidgetContent(
-                                      //           title: '함께하는 사람',
-                                      //           content: SizedBox(
-                                      //             height: 40,
-                                      //             child: Row(
-                                      //               crossAxisAlignment: CrossAxisAlignment.center,
-                                      //               children: List.generate(
-                                      //                 controller.memberList.length + 1,
-                                      //                 (index) {
-                                      //                   if (index == controller.memberList.length) {
-                                      //                     return Container(
-                                      //                       constraints: const BoxConstraints(
-                                      //                         maxHeight: 40,
-                                      //                         maxWidth: 80,
-                                      //                       ),
-                                      //                       alignment: Alignment.center,
-                                      //                       child: TextFormField(
-                                      //                         textAlignVertical: TextAlignVertical.center,
-                                      //                         controller: controller.memberController,
-                                      //                         onTap: controller.onEdit,
-                                      //                         decoration: const InputDecoration(
-                                      //                             border: InputBorder.none,
-                                      //                             hintText: '추가 +',
-                                      //                             hintStyle: StyledFont.BODY_GRAY,
-                                      //                             isDense: true,
-                                      //                             contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                                      //                         style: StyledFont.BODY,
-                                      //                         textAlign: TextAlign.start,
-                                      //                         onFieldSubmitted: (_) => controller.addMember(),
-                                      //                         textInputAction: TextInputAction.done,
-                                      //                       ),
-                                      //                     );
-                                      //                   }
-                                      //                   return MemberItem(
-                                      //                     index,
-                                      //                     name: controller.memberList[index],
-                                      //                     onTap: () => controller.showMemberInfo(index),
-                                      //                   );
-                                      //                 },
-                                      //               ),
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      // ),
-                                      Obx(
+                                          ...List.generate(controller.todoList.length, (index) => TodoItem(index: index)
+                                              // GestureDetector(
+                                              //   onTap: () => controller.showTodoInfo(index),
+                                              //   child: TodoItem(todo: controller.todoList[index]),
+                                              // )
+                                              ),
+                                          SizedBox(
+                                            height: 40,
+                                            child: TextFormField(
+                                              textAlignVertical: TextAlignVertical.center,
+                                              controller: controller.todoController,
+                                              onTap: controller.onEdit,
+                                              decoration: const InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintText: '할일 추가 +',
+                                                  hintStyle: StyledFont.BODY_GRAY,
+                                                  isDense: true,
+                                                  contentPadding: EdgeInsets.symmetric(vertical: 4)),
+                                              style: StyledFont.BODY,
+                                              textAlign: TextAlign.start,
+                                              onFieldSubmitted: (_) => controller.addTodo(),
+                                              textInputAction: TextInputAction.done,
+                                            ),
+                                          ),
+                                          Obx(
                                             () => controller.hasLocation.isFalse
-                                            ? Container()
-                                            : TextContent(
-                                          textEditingController: controller.locationController,
-                                          title: '장소',
-                                          hintText: '장소 추가',
-                                          maxLines: 1,
-                                        ),
-                                      ),
-                                      Obx(
+                                                ? Container()
+                                                : TextContent(
+                                                    textEditingController: controller.locationController,
+                                                    title: '장소',
+                                                    hintText: '장소 추가',
+                                                    maxLines: 1,
+                                                  ),
+                                          ),
+                                          Obx(
                                             () => controller.hasDetail.isFalse
-                                            ? Container()
-                                            : TextContent(
-                                          textEditingController: controller.detailController,
-                                          title: '상세',
-                                          hintText: '상세 내용 추가',
-                                        ),
-                                      ),
-                                    ],
-                                  )),
+                                                ? Container()
+                                                : TextContent(
+                                                    textEditingController: controller.detailController,
+                                                    title: '상세',
+                                                    hintText: '상세 내용 추가',
+                                                  ),
+                                          ),
+                                        ],
+                                      )),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -370,24 +323,47 @@ class WidgetContent extends StatelessWidget {
 }
 
 class TodoItem extends GetView<CreateScheduleController> {
-  final Todo todo;
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  final int index;
+
+  const TodoItem({Key? key, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Todo todo = controller.todoList[index];
     return SizedBox(
       height: 40,
       child: Row(
         children: [
           if (todo.todoStatus == TodoStatus.done)
-            Image.asset(AssetNames.todoDone, width: 24, height: 24,),
+            GestureDetector(
+              onTap: () => controller.onTodoNotStated(index: index),
+              onLongPress: () => controller.onTodoPass(index: index),
+              child: Image.asset(AssetNames.todoDone, width: 24, height: 24),
+            ),
           if (todo.todoStatus == TodoStatus.pass)
-            Image.asset(AssetNames.todoPass, width: 24, height: 24,),
+            GestureDetector(
+              onTap: () => controller.onTodoDone(index: index),
+              onLongPress: () => controller.onTodoNotStated(index: index),
+              child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
+            ),
           if (todo.todoStatus == TodoStatus.notStarted)
-            Image.asset(AssetNames.todoNotStarted, width: 24, height: 24,),
+            GestureDetector(
+              onTap: () => controller.onTodoDone(index: index),
+              onLongPress: () => controller.onTodoPass(index: index),
+              child: Image.asset(AssetNames.todoNotStarted, width: 24, height: 24),
+            ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(todo.todoTitle, style: StyledFont.BODY),
+            child: TextFormField(
+              onTap: controller.onEdit,
+              textAlignVertical: TextAlignVertical.center,
+              initialValue: todo.todoTitle,
+              decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 4)),
+              style: StyledFont.BODY,
+              textAlign: TextAlign.start,
+              onFieldSubmitted: (value) => value.isEmpty ? controller.removeTodo(index) : controller.updateTodoTitle(index: index, todoTitle: value),
+              textInputAction: TextInputAction.done,
+            ),
           ),
         ],
       ),

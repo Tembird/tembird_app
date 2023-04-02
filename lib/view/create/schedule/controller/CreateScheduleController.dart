@@ -246,6 +246,50 @@ class CreateScheduleController extends RootController {
     todoController.clear();
   }
 
+  void onTodoDone({required int index}) {
+    Todo previous = todoList[index];
+    todoList[index] = Todo(
+        tid: previous.tid,
+        todoTitle: previous.todoTitle,
+        todoStatus: TodoStatus.done,
+        todoUpdatedAt: previous.todoUpdatedAt,
+    );
+    todoList.refresh();
+  }
+
+  void onTodoNotStated({required int index}) {
+    Todo previous = todoList[index];
+    todoList[index] = Todo(
+      tid: previous.tid,
+      todoTitle: previous.todoTitle,
+      todoStatus: TodoStatus.notStarted,
+      todoUpdatedAt: previous.todoUpdatedAt,
+    );
+    todoList.refresh();
+  }
+
+  void onTodoPass({required int index}) {
+    Todo previous = todoList[index];
+    todoList[index] = Todo(
+      tid: previous.tid,
+      todoTitle: previous.todoTitle,
+      todoStatus: TodoStatus.pass,
+      todoUpdatedAt: previous.todoUpdatedAt,
+    );
+    todoList.refresh();
+  }
+
+  void updateTodoTitle({required int index, required String todoTitle}) {
+    Todo previous = todoList[index];
+    todoList[index] = Todo(
+      tid: previous.tid,
+      todoTitle: todoTitle,
+      todoStatus: previous.todoStatus,
+      todoUpdatedAt: previous.todoUpdatedAt,
+    );
+    todoList.refresh();
+  }
+
   void removeTodo(int index) {
     onEdit();
     if (todoList[index].tid.isNotEmpty) {
@@ -253,16 +297,5 @@ class CreateScheduleController extends RootController {
     }
     todoList.removeAt(index);
     todoList.refresh();
-    Get.back();
-  }
-
-  void showTodoInfo(int index) async {
-    final List<ModalAction> modalActionList = [
-      ModalAction(name: '삭제', onPressed: () => removeTodo(index), isNegative: true),
-    ];
-    await showCupertinoActionSheet(
-      modalActionList: modalActionList,
-      title: todoList[index].todoTitle,
-    );
   }
 }
