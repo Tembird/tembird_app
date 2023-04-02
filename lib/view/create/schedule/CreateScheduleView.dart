@@ -48,7 +48,7 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                     const SizedBox(height: 16),
                     Expanded(
                       child: GestureDetector(
-                        onTap: controller.hideKeyboard,
+                        onTap: controller.resetTextFormField,
                         child: Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -214,7 +214,7 @@ class CreateScheduleView extends GetView<CreateScheduleController> {
                               ),
                               const SizedBox(height: 8),
                               GestureDetector(
-                                onVerticalDragStart: (_) => controller.hideKeyboard(),
+                                onVerticalDragStart: (_) => controller.resetTextFormField(),
                                 child: Row(
                                   children: [
                                     TextButton(

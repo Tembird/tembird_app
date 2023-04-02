@@ -126,7 +126,9 @@ class CreateScheduleController extends RootController {
   }
 
   void removeSchedule() async {
+    if (onLoading.value == true) return;
     try {
+      onLoading.value = true;
       final List<ModalAction> modalActionList = [
         ModalAction(name: '삭제', onPressed: () => Get.back(result: true), isNegative: true),
       ];
@@ -140,11 +142,15 @@ class CreateScheduleController extends RootController {
     } catch(e) {
       Get.back();
       return;
+    } finally {
+      onLoading.value = false;
     }
   }
 
   void saveSchedule() async {
+    if (onLoading.value == true) return;
     try {
+      onLoading.value = true;
       createResultSchedule();
 
       if (resultSchedule.value == null) {
@@ -170,6 +176,8 @@ class CreateScheduleController extends RootController {
       print(e);
       Get.back();
       return;
+    } finally {
+      onLoading.value = false;
     }
   }
 
@@ -281,7 +289,7 @@ class CreateScheduleController extends RootController {
 
   void showTodoActionModal({required int index}) async {
     onEdit();
-    editingTodoIndex.value = null;
+    resetTextFormField();
     final List<ModalAction> modalActionList = [
       ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
       ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
@@ -325,7 +333,7 @@ class CreateScheduleController extends RootController {
     } catch (e) {
       return;
     } finally {
-      editingTodoIndex.value = null;
+      resetTextFormField();
       onLoading.value = false;
     }
   }
@@ -337,5 +345,11 @@ class CreateScheduleController extends RootController {
     }
     todoList.removeAt(index);
     todoList.refresh();
+  }
+
+  void resetTextFormField() {
+    todoController.text = "";
+    editingTodoIndex.value = null;
+    hideKeyboard();
   }
 }
