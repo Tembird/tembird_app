@@ -157,7 +157,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     ];
     int? action = await showCupertinoActionSheet(
       modalActionList: modalActionList,
-      title: schedule.title,
+      title: schedule.title ?? "제목 없음",
     );
     if (action == null) return;
     if (action == 0) {

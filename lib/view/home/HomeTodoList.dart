@@ -58,7 +58,7 @@ class ScheduleItem extends GetView<HomeController> {
                     child: GestureDetector(
                       onTap: () => controller.showScheduleActionModal(schedule),
                       child: Text(
-                        schedule.title!,
+                        schedule.title ?? "제목 없음",
                         style: StyledFont.BODY_WHITE,
                         maxLines: 1,
                       ),
