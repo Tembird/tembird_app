@@ -19,6 +19,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final TodoRepository todoRepository = TodoRepository();
   final InitRepository initRepository = InitRepository();
   TabController? tabController;
+  double? x;
+
   static HomeController to = Get.find();
   final Rx<DateTime> selectedDate = Rx(DateTime.now());
   final Rx<String> selectedDateText = Rx("");
@@ -54,6 +56,34 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     onCreateTodo.value = false;
     editingScheduleIndex.value = null;
     editingTodoIndex.value = null;
+  }
+
+  void dragHorizontalStart(double start) {
+    x = start;
+  }
+
+  void dragHorizontalCancel() {
+    x = null;
+  }
+
+  void dragHorizontalUpdate(double current) async {
+    if (x == null) return;
+    if (current < (x! + 30) && current > (x! - 30)) {
+      return;
+    }
+    double startX = x!;
+    x = null;
+    DateTime? newDate;
+
+    if (current > (startX + 30)) {
+      newDate = selectedDate.value.subtract(const Duration(days: 1));
+    }
+    if (current < (startX - 30)) {
+      newDate = selectedDate.value.add(const Duration(days: 1));
+    }
+    await getScheduleList(newDate!);
+    selectedDate.value = newDate;
+    selectedDateText.value = dateToString(date: newDate);
   }
 
   Future<void> getScheduleList(DateTime date) async {

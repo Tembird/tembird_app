@@ -65,12 +65,17 @@ class HomeView extends GetView<HomeController> {
                 ),
               )),
               Expanded(
-                child: Obx(() => IndexedStack(
-                  index: controller.viewIndex.value,
-                  children: const [
-                    HomeScheduleTable(),
-                    HomeTodoList(),
-                  ],
+                child: Obx(() => GestureDetector(
+                  onHorizontalDragStart: (DragStartDetails details) => controller.dragHorizontalStart(details.globalPosition.dx),
+                  onHorizontalDragCancel: controller.dragHorizontalCancel,
+                  onHorizontalDragUpdate: (DragUpdateDetails details) => controller.dragHorizontalUpdate(details.globalPosition.dx),
+                  child: IndexedStack(
+                    index: controller.viewIndex.value,
+                    children: const [
+                      HomeScheduleTable(),
+                      HomeTodoList(),
+                    ],
+                  ),
                 )),
               ),
               const HomeBottomBar(),
