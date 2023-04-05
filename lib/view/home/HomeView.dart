@@ -20,35 +20,33 @@ class HomeView extends GetView<HomeController> {
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: 16),
-                Image.asset(AssetNames.logoText, height: 36, fit: BoxFit.contain),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(AssetNames.logoText, height: 36, fit: BoxFit.contain),
+                  InkWell(
+                    onTap: controller.openHelpView,
+                    child: Image.asset(AssetNames.account, width: 32, fit: BoxFit.contain),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             const HomeTabBar()
           ],
         ),
-        actions: [
-          Container(
-            alignment: Alignment.topRight,
-            padding: const EdgeInsets.all(16),
-            child: InkWell(
-              onTap: controller.openHelpView,
-              child: Image.asset(AssetNames.account, width: 32, fit: BoxFit.contain),
-            ),
-          ),
-        ],
       ),
       body: Container(
         color: StyledPalette.MINERAL,
         child: SafeArea(
           child: Column(
             children: [
-              Obx(() => controller.viewIndex.value != 0 ? Container() : Container(
+              Obx(() => controller.viewIndex.value != 1 ? Container() : Container(
                 width: controller.tableWidth,
                 height: 20,
                 color: StyledPalette.MINERAL,
@@ -72,8 +70,8 @@ class HomeView extends GetView<HomeController> {
                   child: IndexedStack(
                     index: controller.viewIndex.value,
                     children: const [
-                      HomeScheduleTable(),
                       HomeTodoList(),
+                      HomeScheduleTable(),
                     ],
                   ),
                 )),
@@ -99,12 +97,12 @@ class HomeTabBar extends GetView<HomeController> {
         alignment: Alignment.bottomLeft,
         child: TabBar(
           controller: controller.tabController!,
-          padding: const EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           indicatorColor: StyledPalette.BLACK,
-          isScrollable: true,
+          isScrollable: false,
           tabs: const [
-            Tab(text: "Daily"),
             Tab(text: "TodoList"),
+            Tab(text: "Daily"),
           ],
           onTap: controller.selectView,
           labelStyle: StyledFont.CALLOUT_700,
