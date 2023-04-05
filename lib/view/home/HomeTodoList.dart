@@ -13,20 +13,40 @@ class HomeTodoList extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: List.generate(
-              controller.scheduleList.length,
-              (index) => ScheduleItem(schedule: controller.scheduleList[index]),
+    return Obx(
+      () => controller.scheduleList.isEmpty
+          ? Center(
+              child: GestureDetector(
+                onTap: controller.showCategorySelectDialog,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.add, size: 24),
+                    SizedBox(height: 8),
+                    Text(
+                      '오늘의 할일',
+                      style: StyledFont.HEADLINE,
+                    )
+                  ],
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                child: Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: List.generate(
+                      controller.scheduleList.length,
+                      (index) => ScheduleItem(schedule: controller.scheduleList[index]),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -40,7 +60,8 @@ class ScheduleItem extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Obx(
       () => SizedBox(
-        height: 45 * (schedule.todoList.length + (controller.onCreateTodo.isFalse || controller.editingScheduleIndex.value != controller.scheduleList.indexOf(schedule) ? 1 : 2)) + 16,
+        height:
+            45 * (schedule.todoList.length + (controller.onCreateTodo.isFalse || controller.editingScheduleIndex.value != controller.scheduleList.indexOf(schedule) ? 1 : 2)) + 16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

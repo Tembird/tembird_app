@@ -501,4 +501,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       onLoading.value = false;
     }
   }
+
+  void showCategorySelectDialog() async {
+
+  }
 }
