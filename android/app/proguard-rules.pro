@@ -1,1 +1,1 @@
--keep class com.tembird.app.tembird_app.BuildConfig { *; }
+-keep class com.tembird.app.tembirdApp.BuildConfig { *; }

@@ -1,4 +1,4 @@
-package com.tembird.app.tembird_app
+package com.tembird.app.tembirdApp
 
 import io.flutter.embedding.android.FlutterActivity
 
