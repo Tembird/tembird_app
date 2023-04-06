@@ -9,6 +9,7 @@ class AssetNames {
   static const account = 'assets/icons/account.png';
   static const checkboxMarked = 'assets/icons/checkbox-marked.png';
   static const checkboxBlank = 'assets/icons/checkbox-blank.png';
+  static const settingGray = 'assets/icons/setting-gray.png';
 
   /// Todo
   static const todoDone = 'assets/icons/todo-done.png';

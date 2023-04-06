@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
+import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/repository/TodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
+import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogView.dart';
 import '../../../constant/StyledPalette.dart';
 import '../../../model/CellStyle.dart';
 import '../../../model/ModalAction.dart';
@@ -503,6 +505,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void showCategorySelectDialog() async {
-
+    // TODO : 카테고리 선택 다이얼로그 열기
+    TodoLabel? todoLabel = await Get.bottomSheet(
+      SelectTodoLabelDialogView.route(),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as TodoLabel?;
   }
 }
