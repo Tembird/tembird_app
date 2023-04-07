@@ -45,4 +45,25 @@ class RootController extends GetxController {
   DateTime indexToDateTime({required DateTime date, required int index}) => DateTime(date.year, date.month, date.day, (index + 1) ~/ 6, ((index + 1) % 6) * 10);
   String indexToTimeString({required int index}) => '${index ~/ 6}시 ${index % 6 * 10}분';
   Color hexToColor({required String colorHex}) => Color(int.parse(colorHex, radix: 16) + 0xFF000000);
+
+  /// Route
+  void close() {
+    Get.back();
+  }
+
+  /// BottomSheet
+  double? y;
+
+  void bottomSheetVerticalDragStart(double start) {
+    y = start;
+  }
+
+  void bottomSheetVerticalDragCancel() {
+    y = null;
+  }
+
+  void bottomSheetVerticalDragUpdate(double current) {
+    if (y == null || current < (y! + 30)) return;
+    close();
+  }
 }

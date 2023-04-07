@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/AssetNames.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
-import 'package:tembird_app/view/dialog/common/CommonDialogView.dart';
 
+import '../../../../component/FloatingBannerAdComponent.dart';
+import '../../../../constant/StyledPalette.dart';
 import 'controller/SelectTodoLabelDialogController.dart';
 
 class SelectTodoLabelDialogView extends GetView<SelectTodoLabelDialogController> {
@@ -13,25 +14,69 @@ class SelectTodoLabelDialogView extends GetView<SelectTodoLabelDialogController>
 
   static route() {
     return GetBuilder(
-      init: SelectTodoLabelDialogController(),
+      init: SelectTodoLabelDialogController(bannerAdWidth: Get.width),
       builder: (_) => const SelectTodoLabelDialogView(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return CommonDialogView(
-      top: Row(
-        children: [
-          const Text('카테고리 선택', style: StyledFont.CALLOUT_700),
-          Expanded(child: Container()),
-          GestureDetector(
-            onTap: controller.routeTodoLabelListView,
-            child: Image.asset(AssetNames.settingGray, width: 18, fit: BoxFit.contain),
-          ),
-        ],
+    return GestureDetector(
+      onVerticalDragStart: (DragStartDetails details) => controller.bottomSheetVerticalDragStart(details.globalPosition.dy),
+      onVerticalDragCancel: controller.bottomSheetVerticalDragCancel,
+      onVerticalDragUpdate: (DragUpdateDetails details) => controller.bottomSheetVerticalDragUpdate(details.globalPosition.dy),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.top,
+        child: Column(
+          children: [
+            SizedBox(
+              height: Get.height / 2,
+              width: double.infinity,
+              child: GestureDetector(
+                onTap: controller.close,
+              ),
+            ),
+            Obx(
+              () => controller.bannerAd.value == null ? const SizedBox(height: 66) : FloatingBannerAdComponent(bannerAd: controller.bannerAd.value!),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: GestureDetector(
+                onTap: controller.hideKeyboard,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                    color: StyledPalette.MINERAL,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          const Text('카테고리 선택', style: StyledFont.CALLOUT_700),
+                          Expanded(child: Container()),
+                          GestureDetector(
+                            onTap: controller.routeTodoLabelListView,
+                            child: Image.asset(AssetNames.settingGray, width: 18, fit: BoxFit.contain),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Expanded(
+                        child: CategoryItemList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      child: const CategoryItemList(),
     );
   }
 }
@@ -41,15 +86,14 @@ class CategoryItemList extends GetView<SelectTodoLabelDialogController> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Obx(
-        () => controller.onLoading.isTrue
-            ? const CategoryItemListSkeleton()
-            : Obx(
-                () => controller.todoLabelList.isEmpty
-                    ? const CategoryItemListEmpty()
-                    : Wrap(
+    return Obx(
+      () => controller.onLoading.isTrue
+          ? const CategoryItemListSkeleton()
+          : Obx(
+              () => controller.todoLabelList.isEmpty
+                  ? const CategoryItemListEmpty()
+                  : SingleChildScrollView(
+                      child: Wrap(
                         spacing: 16,
                         runSpacing: 8,
                         children: List.generate(
@@ -77,8 +121,8 @@ class CategoryItemList extends GetView<SelectTodoLabelDialogController> {
                           },
                         ),
                       ),
-              ),
-      ),
+                    ),
+            ),
     );
   }
 }

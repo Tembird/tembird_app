@@ -8,6 +8,7 @@ import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/repository/TodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
+import 'package:tembird_app/view/dialog/todo/edit/EditTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogView.dart';
 import '../../../constant/StyledPalette.dart';
 import '../../../model/CellStyle.dart';
@@ -36,7 +37,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final Rxn<int> editingScheduleIndex = Rxn(null);
   final Rxn<int> editingTodoIndex = Rxn(null);
   final TextEditingController todoEditingController = TextEditingController();
-
 
   @override
   void onInit() async {
@@ -92,7 +92,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     onLoading.value = true;
     try {
       List<Schedule> list = await scheduleRepository.readScheduleListOnDate(dateTime: date);
-      list.sort((a,b) => a.startAt.compareTo(b.startAt));
+      list.sort((a, b) => a.startAt.compareTo(b.startAt));
       scheduleList.clear();
       scheduleList.addAll(list);
       unselectableIndexList.clear();
@@ -222,7 +222,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       editedAt: add.editedAt,
       todoList: add.todoList,
     ));
-    scheduleList.sort((a,b) => a.startAt.compareTo(b.startAt));
+    scheduleList.sort((a, b) => a.startAt.compareTo(b.startAt));
     selectedIndexList.clear();
     unselectableIndexList.clear();
     for (var schedule in scheduleList) {
@@ -462,10 +462,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
         return;
       }
       Todo newTodo = Todo(
-          tid: todo.tid,
-          todoTitle: todoEditingController.value.text,
-          todoStatus: todo.todoStatus,
-          todoUpdatedAt: todo.todoUpdatedAt,
+        tid: todo.tid,
+        todoTitle: todoEditingController.value.text,
+        todoStatus: todo.todoStatus,
+        todoUpdatedAt: todo.todoUpdatedAt,
       );
       final Todo updated = await todoRepository.updateTodo(todo: newTodo);
       scheduleList[editingScheduleIndex.value!].todoList[editingTodoIndex.value!] = updated;
@@ -490,10 +490,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       onLoading.value = true;
       if (todoEditingController.value.text.isEmpty) return;
       final Todo newTodo = Todo(
-          tid: "",
-          todoTitle: todoEditingController.value.text,
-          todoStatus: TodoStatus.notStarted,
-          todoUpdatedAt: DateTime.now(),
+        tid: "",
+        todoTitle: todoEditingController.value.text,
+        todoStatus: TodoStatus.notStarted,
+        todoUpdatedAt: DateTime.now(),
       );
       final Todo result = await todoRepository.createTodo(sid: schedule.sid, todo: newTodo);
       scheduleList[editingScheduleIndex.value!].todoList.add(result);
@@ -505,12 +505,22 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void showCategorySelectDialog() async {
-    // TODO : 카테고리 선택 다이얼로그 열기
-    TodoLabel? todoLabel = await Get.bottomSheet(
+    TodoLabel? selectedTodoLabel = await Get.bottomSheet(
       SelectTodoLabelDialogView.route(),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
     ) as TodoLabel?;
+
+    if (selectedTodoLabel == null) return;
+
+    await Get.bottomSheet(
+      EditTodoDialogView.route(isNew: true, initTodoLabel: selectedTodoLabel),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as Todo?;
+
+    // TODO : 할일 추가
   }
 }

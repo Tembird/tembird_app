@@ -1,26 +1,37 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/repository/TodoLabelRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 
 class SelectTodoLabelDialogController extends RootController {
+  final double bannerAdWidth;
   static SelectTodoLabelDialogController to = Get.find();
-  SelectTodoLabelDialogController();
+
+  SelectTodoLabelDialogController({required this.bannerAdWidth});
 
   final TodoLabelRepository todoLabelRepository = TodoLabelRepository();
 
   final RxList<TodoLabel> todoLabelList = RxList([]);
   final RxBool onLoading = RxBool(false);
+
   @override
   void onInit() async {
-    await getTodoLabelList();
+    await Future.wait([
+      initializeBannerAds(),
+      getTodoLabelList(),
+    ]);
     super.onInit();
   }
 
   @override
-  void onClose() {
+  void onClose() async {
+    await disposeBannerAds();
     super.onClose();
   }
 
@@ -44,5 +55,43 @@ class SelectTodoLabelDialogController extends RootController {
 
   void selectTodoLabel({required int index}) async {
     Get.back(result: todoLabelList[index]);
+  }
+
+  /// Banner Ad
+  final Rxn<BannerAd> bannerAd = Rxn(null);
+
+  Future<void> initializeBannerAds() async {
+    final iosAppId = kReleaseMode ? FlutterConfig.get('IOS_ADMOB_ID_SELECT_TODO_LABEL_DIALOG') : FlutterConfig.get('DEV_AOS_ADMOB_ID_SELECT_TODO_LABEL_DIALOG');
+    final aosAppId = kReleaseMode ? FlutterConfig.get('AOS_ADMOB_ID_SELECT_TODO_LABEL_DIALOG') : FlutterConfig.get('DEV_AOS_ADMOB_ID_SELECT_TODO_LABEL_DIALOG');
+
+    bannerAd.value = BannerAd(
+      adUnitId: Platform.isIOS ? iosAppId : aosAppId,
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        // Called when an ad request failed.
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose the ad here to free resources.
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+        // Called when an ad opens an overlay that covers the screen.
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+        // Called when an ad removes an overlay that covers the screen.
+        onAdClosed: (Ad ad) => print('Ad closed.'),
+        // Called when an impression occurs on the ad.
+        onAdImpression: (Ad ad) => print('Ad impression.'),
+      ),
+      request: const AdRequest(),
+      size: AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(bannerAdWidth.toInt() - 64),
+    );
+    if (bannerAd.value == null) return;
+    await bannerAd.value!.load();
+  }
+
+  Future<void> disposeBannerAds() async {
+    if (bannerAd.value == null) return;
+    await bannerAd.value!.dispose();
+    bannerAd.value == null;
   }
 }
