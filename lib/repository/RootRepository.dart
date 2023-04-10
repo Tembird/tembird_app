@@ -101,6 +101,7 @@ class RootRepository extends GetConnect {
     Get.snackbar(
       'Tembird',
       message,
+      instantInit: false,
       snackPosition: SnackPosition.TOP,
       backgroundColor: StyledPalette.STATUS_NEGATIVE,
       colorText: StyledPalette.WHITE,
@@ -113,6 +114,7 @@ class RootRepository extends GetConnect {
     Get.snackbar(
       'Tembird',
       message,
+      instantInit: false,
       snackPosition: SnackPosition.TOP,
       backgroundColor: StyledPalette.GRAY,
       duration: const Duration(seconds: 2),

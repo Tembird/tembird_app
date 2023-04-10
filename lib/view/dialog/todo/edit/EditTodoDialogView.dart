@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/component/FloatingBannerAdComponent.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/view/dialog/todo/edit/controller/EditTodoDialogController.dart';
 
@@ -10,9 +11,9 @@ import '../../../../constant/StyledFont.dart';
 class EditTodoDialogView extends GetView<EditTodoDialogController> {
   const EditTodoDialogView({Key? key}) : super(key: key);
 
-  static route({required bool isNew, required TodoLabel initTodoLabel}) {
+  static route({required bool isNew, required DailyTodoLabel initDailyTodoLabel}) {
     return GetBuilder(
-      init: EditTodoDialogController(isNew: isNew, initTodoLabel: initTodoLabel, bannerAdWidth: Get.width),
+      init: EditTodoDialogController(isNew: isNew, initDailyTodoLabel: initDailyTodoLabel, bannerAdWidth: Get.width),
       builder: (_) => const EditTodoDialogView(),
     );
   }
@@ -74,11 +75,11 @@ class EditTodoDialogView extends GetView<EditTodoDialogController> {
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: controller.editTodoLabel,
+                              onTap: controller.isNew ? controller.editDailyTodoLabel : null,
                               child: Obx(
                                 () => Text(
-                                  controller.todoLabel.value!.title,
-                                  style: StyledFont.HEADLINE.copyWith(color: controller.hexToColor(colorHex: controller.todoLabel.value!.colorHex)),
+                                  controller.dailyTodoLabel.value!.title,
+                                  style: StyledFont.HEADLINE.copyWith(color: controller.hexToColor(colorHex: controller.dailyTodoLabel.value!.colorHex)),
                                 ),
                               ),
                             ),
@@ -86,7 +87,7 @@ class EditTodoDialogView extends GetView<EditTodoDialogController> {
                             Expanded(
                               child: TextFormField(
                                 autofocus: true,
-                                controller: controller.titleEditingController,
+                                controller: controller.titleController,
                                 style: StyledFont.BODY,
                                 decoration: const InputDecoration(
                                   hintText: '제목',

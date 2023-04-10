@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../model/ModalAction.dart';
 
@@ -40,6 +41,7 @@ class RootController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
+  int dateToInt({required DateTime date}) => int.parse(DateFormat('yyyyMMdd').format(date));
   String dateToString({required DateTime date}) => '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]})';
   String dateTimeToString({required DateTime date}) => '${date.year}년 ${date.month}월 ${date.day}일 (${dayList[date.weekday % 7]}) ${date.hour}시 ${date.minute}분';
   DateTime indexToDateTime({required DateTime date, required int index}) => DateTime(date.year, date.month, date.day, (index + 1) ~/ 6, ((index + 1) % 6) * 10);

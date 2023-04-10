@@ -17,7 +17,7 @@ class HomeTodoList extends GetView<HomeController> {
       () => controller.scheduleList.isEmpty
           ? Center(
               child: GestureDetector(
-                onTap: controller.showCategorySelectDialog,
+                onTap: controller.createNewDailyTodo,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,

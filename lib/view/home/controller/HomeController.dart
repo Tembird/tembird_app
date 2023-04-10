@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/constant/PageNames.dart';
+import 'package:tembird_app/model/ActionResult.dart';
+import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
@@ -37,6 +39,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final Rxn<int> editingScheduleIndex = Rxn(null);
   final Rxn<int> editingTodoIndex = Rxn(null);
   final TextEditingController todoEditingController = TextEditingController();
+
+  final RxList<DailyTodoLabel> dailyTodoLabelList = RxList([]);
 
   @override
   void onInit() async {
@@ -504,23 +508,25 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     }
   }
 
-  void showCategorySelectDialog() async {
-    TodoLabel? selectedTodoLabel = await Get.bottomSheet(
+  void createNewDailyTodo() async {
+    DailyTodoLabel? dailyTodoLabel = await Get.bottomSheet(
       SelectTodoLabelDialogView.route(),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
-    ) as TodoLabel?;
+    ) as DailyTodoLabel?;
 
-    if (selectedTodoLabel == null) return;
+    if (dailyTodoLabel == null) return;
 
-    await Get.bottomSheet(
-      EditTodoDialogView.route(isNew: true, initTodoLabel: selectedTodoLabel),
+    ActionResult? actionResult = await Get.bottomSheet(
+      EditTodoDialogView.route(isNew: true, initDailyTodoLabel: dailyTodoLabel),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
-    ) as Todo?;
+    ) as ActionResult?;
 
-    // TODO : 할일 추가
+    if (actionResult == null || actionResult.action != ActionResultType.created) return;
+
+    dailyTodoLabelList.add(actionResult.dailyTodoLabel!);
   }
 }

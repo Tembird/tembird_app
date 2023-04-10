@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/repository/TodoLabelRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
@@ -54,7 +55,19 @@ class SelectTodoLabelDialogController extends RootController {
   }
 
   void selectTodoLabel({required int index}) async {
-    Get.back(result: todoLabelList[index]);
+    TodoLabel selectedTodoLabel = todoLabelList[index];
+    DailyTodoLabel dailyTodoLabel = DailyTodoLabel(
+      id: 0,
+      labelId: selectedTodoLabel.id,
+      title: selectedTodoLabel.title,
+      colorHex: selectedTodoLabel.colorHex,
+      date: dateToInt(date: DateTime.now()),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      todoList: [],
+    );
+    print(dailyTodoLabel.date);
+    Get.back(result: dailyTodoLabel);
   }
 
   /// Banner Ad

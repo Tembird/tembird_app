@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -5,9 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:tembird_app/model/Todo.dart';
-import 'package:tembird_app/model/TodoLabel.dart';
-import 'package:tembird_app/repository/TodoRepository.dart';
+import 'package:tembird_app/model/ActionResult.dart';
+import 'package:tembird_app/model/DailyTodo.dart';
+import 'package:tembird_app/model/DailyTodoLabel.dart';
+import 'package:tembird_app/repository/DailyTodoLabelRepository.dart';
+import 'package:tembird_app/repository/DailyTodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 
 import '../../../../../model/ModalAction.dart';
@@ -16,37 +19,53 @@ import '../../../todoLabel/select/SelectTodoLabelDialogView.dart';
 class EditTodoDialogController extends RootController {
   final bool isNew;
   final double bannerAdWidth;
-  final TodoLabel initTodoLabel;
+  final DailyTodoLabel initDailyTodoLabel;
+  final DailyTodo? initDailyTodo;
 
-  EditTodoDialogController({required this.isNew, required this.initTodoLabel, required this.bannerAdWidth});
+  EditTodoDialogController({required this.isNew, required this.initDailyTodoLabel, this.initDailyTodo, required this.bannerAdWidth});
 
   static EditTodoDialogController to = Get.find();
-  final TodoRepository todoRepository = TodoRepository();
-  final RxBool onLoading = RxBool(true);
+  final DailyTodoLabelRepository dailyTodoLabelRepository = DailyTodoLabelRepository();
+  final DailyTodoRepository dailyTodoRepository = DailyTodoRepository();
+  final RxBool onLoading = RxBool(false);
   final RxBool onEditing = RxBool(false);
 
-  final Rxn<TodoLabel> todoLabel = Rxn(null);
+  final Rxn<DailyTodoLabel> dailyTodoLabel = Rxn(null);
+  final Rxn<DailyTodo> dailyTodo = Rxn(null);
 
   final RxBool hasLocation = RxBool(false);
   final RxBool hasDetail = RxBool(false);
 
-  final TextEditingController titleEditingController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController detailController = TextEditingController();
 
-  final Rxn<Todo> resultTodo = Rxn(null);
+  bool isChanged = false;
 
   @override
   void onInit() async {
-    todoLabel.value = initTodoLabel;
-    if (isNew) {
-      await initializeBannerAds();
-      return;
+    dailyTodoLabel.value = initDailyTodoLabel;
+    if (!isNew) {
+      dailyTodo.value = initDailyTodo!;
+      titleController.text = initDailyTodo!.title!;
+      if (initDailyTodo!.location != null) {
+        locationController.text = initDailyTodo!.location!;
+        hasLocation.value = true;
+      }
+      if (initDailyTodo!.detail != null) {
+        detailController.text = initDailyTodo!.detail!;
+        hasDetail.value = true;
+      }
+    } else {
+      dailyTodo.value = DailyTodo(
+        id: 0,
+        title: '',
+        status: 0,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
     }
-    await Future.wait([
-      // Todo : Read TodoDetail to Edit
-      initializeBannerAds(),
-    ]);
+    await initializeBannerAds();
     super.onInit();
   }
 
@@ -56,21 +75,21 @@ class EditTodoDialogController extends RootController {
     super.onClose();
   }
 
-  void editTodoLabel() async {
+  void editDailyTodoLabel() async {
     hideKeyboard();
 
     await Future.delayed(const Duration(milliseconds: 50));
 
-    TodoLabel? selectedTodoLabel = await Get.bottomSheet(
+    DailyTodoLabel? newDailyTodoLabel = await Get.bottomSheet(
       SelectTodoLabelDialogView.route(),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
-    ) as TodoLabel?;
+    ) as DailyTodoLabel?;
 
-    if (selectedTodoLabel == null) return;
+    if (newDailyTodoLabel == null) return;
 
-    todoLabel.value = selectedTodoLabel;
+    dailyTodoLabel.value = newDailyTodoLabel;
   }
 
   void addContent() async {
@@ -104,7 +123,65 @@ class EditTodoDialogController extends RootController {
   }
 
   void onConfirm() async {
-    // TODO : 완료 시 저장 구현
+    if (onLoading.isTrue) return;
+    try {
+      onLoading.value = true;
+      if (titleController.value.text.isEmpty) {
+        showAlertDialog(message: '제목을 입력해주세요');
+        return;
+      }
+
+      isChanged = dailyTodo.value!.title != titleController.value.text ||
+          dailyTodo.value!.location != locationController.value.text ||
+          dailyTodo.value!.detail != detailController.value.text;
+
+      if (!isChanged) return;
+
+      dailyTodo.value!.title = titleController.value.text;
+      dailyTodo.value!.location = locationController.value.text.isEmpty ? null : locationController.value.text;
+      dailyTodo.value!.detail = detailController.value.text.isEmpty ? null : detailController.value.text;
+
+      if (!isChanged) {
+        Get.back();
+        return;
+      }
+
+      DailyTodoLabel? dailyTodoLabelResult;
+      DailyTodo? dailyTodoResult;
+      if (isNew) {
+        dailyTodoLabelResult = await dailyTodoLabelRepository.createDailyTodoLabel(
+          date: dailyTodoLabel.value!.date,
+          labelId: dailyTodoLabel.value!.labelId,
+        );
+        dailyTodoResult = await dailyTodoRepository.createDailyTodo(
+          title: dailyTodo.value!.title,
+          dailyLabelId: dailyTodoLabelResult.id,
+          location: dailyTodo.value!.location,
+          detail: dailyTodo.value!.detail,
+        );
+        dailyTodoLabelResult.todoList.add(dailyTodoResult);
+      } else {
+        dailyTodoResult = await dailyTodoRepository.updateDailyTodoInfo(
+          id: dailyTodo.value!.id,
+          title: dailyTodo.value!.title,
+          location: dailyTodo.value!.location,
+          detail: dailyTodo.value!.detail,
+        );
+      }
+
+      Get.back(
+        result: ActionResult(
+          action: isNew ? ActionResultType.created : ActionResultType.updated,
+          dailyTodoLabel: dailyTodoLabelResult,
+          dailyTodo: dailyTodoResult,
+        ),
+      );
+    } catch (e) {
+      log(e.toString());
+      return;
+    } finally {
+      onLoading.value = false;
+    }
   }
 
   /// Banner Ad
