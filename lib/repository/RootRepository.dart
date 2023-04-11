@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:hive/hive.dart';
 import 'package:tembird_app/constant/Common.dart';
+import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 
 import '../service/SessionService.dart';
@@ -46,7 +48,7 @@ class RootRepository extends GetConnect {
         Common.accessTokenHeader: accessToken!,
         Common.refreshTokenHeader: refreshToken,
       });
-      if(response.hasError) {
+      if (response.hasError) {
         errorHandler(response);
       }
       String? tempAccessToken = response.headers![Common.accessTokenHeader];
@@ -65,48 +67,47 @@ class RootRepository extends GetConnect {
     // TODO : Check Details for Error Handling
     switch (response.statusCode) {
       case 400: // Client Error : Bad Request
-        showErrorSnackbar(message: response.body["message"]);
+        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 401: // Client Error : Unauthenticated
         accessToken = null;
         SessionService.to.quitSession();
-        showErrorSnackbar(message: response.body["message"]);
+        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 403:
         // Client Error : Forbidden
-        showErrorSnackbar(message: response.body["message"]);
+        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 404:
         // Client Error : Not Found
-        showErrorSnackbar(message: response.body["message"]);
+        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 409:
         // Client Error : Conflict
-        showErrorSnackbar(message: response.body["message"]);
+        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 500:
         // throw "Server Error pls retry later";
-        showErrorSnackbar(message: "서버에 문제가 있어요");
+        showErrorDialog(message: "서버에 문제가 있어요");
         throw Error();
       case 503:
-        showErrorSnackbar(message: "요청 시간이 초과되었습니다");
+        showErrorDialog(message: "요청 시간이 초과되었습니다");
         throw Error();
       default:
-        showErrorSnackbar(message: "현재 상황을 개발자 피드백에 남겨주시면 더 좋은 서비스로 보답하겠습니다");
+        showErrorDialog(message: "현재 상황을 개발자 피드백에 남겨주시면 더 좋은 서비스로 보답하겠습니다");
         throw Error();
     }
   }
 
-  void showErrorSnackbar({required String message}) {
-    Get.snackbar(
-      'Tembird',
-      message,
-      instantInit: false,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: StyledPalette.STATUS_NEGATIVE,
-      colorText: StyledPalette.WHITE,
-      duration: const Duration(seconds: 2),
-      onTap: (_) => Get.closeCurrentSnackbar(),
+  void showErrorDialog({required String message}) {
+    Get.dialog(
+      AlertDialog(
+        content: Text(
+          message,
+          style: StyledFont.FOOTNOTE,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 

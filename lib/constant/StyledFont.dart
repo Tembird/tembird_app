@@ -11,6 +11,7 @@ class StyledFont {
   static const TextStyle TITLE_2_PRIMARY_BLUE = TextStyle(fontWeight: FontWeight.w400, fontSize: 22, height: 28 / 22, color: StyledPalette.PRIMARY_BLUE);
   static const TextStyle TITLE_2_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 22, height: 28 / 22, color: StyledPalette.BLACK);
   static const TextStyle TITLE_3 = TextStyle(fontWeight: FontWeight.w400, fontSize: 20, height: 25 / 20, color: StyledPalette.BLACK);
+  static const TextStyle TITLE_3_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 20, height: 25 / 20, color: StyledPalette.BLACK);
   static const TextStyle HEADLINE = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.BLACK);
   static const TextStyle HEADLINE_GRAY = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.GRAY);
   static const TextStyle HEADLINE_INFO = TextStyle(fontWeight: FontWeight.w700, fontSize: 17, height: 22 / 17, color: StyledPalette.STATUS_INFO);

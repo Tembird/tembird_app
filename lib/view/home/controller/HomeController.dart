@@ -4,22 +4,26 @@ import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ActionResult.dart';
 import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/ScheduleAction.dart';
-import 'package:tembird_app/model/TodoLabel.dart';
+import 'package:tembird_app/repository/DailyTodoRepository.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/repository/ScheduleRepository.dart';
 import 'package:tembird_app/repository/TodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
+import 'package:tembird_app/view/dialog/todo/detail/DetailTodoDialogView.dart';
+import 'package:tembird_app/view/dialog/todo/detail/argument/DetailTodoDialogArgument.dart';
 import 'package:tembird_app/view/dialog/todo/edit/EditTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogView.dart';
 import '../../../constant/StyledPalette.dart';
 import '../../../model/CellStyle.dart';
+import '../../../model/DailyTodo.dart';
 import '../../../model/ModalAction.dart';
 import '../../../model/Schedule.dart';
 import '../../../model/Todo.dart';
 import '../../create/schedule/CreateScheduleView.dart';
 
 class HomeController extends RootController with GetSingleTickerProviderStateMixin {
+  final DailyTodoRepository dailyTodoRepository = DailyTodoRepository();
   final ScheduleRepository scheduleRepository = ScheduleRepository();
   final TodoRepository todoRepository = TodoRepository();
   final InitRepository initRepository = InitRepository();
@@ -36,8 +40,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final Rx<bool> onLoading = RxBool(true);
   final Rx<bool> onBottomSheet = RxBool(true);
   final RxBool onCreateTodo = RxBool(false);
-  final Rxn<int> editingScheduleIndex = Rxn(null);
-  final Rxn<int> editingTodoIndex = Rxn(null);
+  final Rxn<int> editingDailyTodoLabelIndex = Rxn(null);
+  final Rxn<int> editingDailyTodoIndex = Rxn(null);
   final TextEditingController todoEditingController = TextEditingController();
 
   final RxList<DailyTodoLabel> dailyTodoLabelList = RxList([]);
@@ -48,6 +52,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     tabController = TabController(vsync: this, length: 2);
     await getScheduleList(selectedDate.value);
     await getScheduleHexList();
+    await getAllDailyTodoList(date: selectedDate.value);
     super.onInit();
   }
 
@@ -60,8 +65,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void resetTextFormField() {
     onCreateTodo.value = false;
-    editingScheduleIndex.value = null;
-    editingTodoIndex.value = null;
+    editingDailyTodoLabelIndex.value = null;
+    editingDailyTodoIndex.value = null;
   }
 
   void dragHorizontalStart(double start) {
@@ -105,6 +110,30 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       }
       refreshCellStyleList();
     } finally {
+      scheduleList.refresh();
+      onLoading.value = false;
+    }
+  }
+
+  Future<void> getAllDailyTodoList({required DateTime date}) async {
+    if (onLoading.isTrue) return;
+    try {
+      onLoading.value = true;
+      dailyTodoLabelList.clear();
+      List<DailyTodoLabel> list = await dailyTodoRepository.readDailyTodoByDate(date: dateToInt(date: date));
+      List<DailyTodo> scheduledDailyTodoList = [];
+      list.map((e) => e.todoList.map((e) => scheduledDailyTodoList.addIf(e.startAt != null, e)));
+      scheduledDailyTodoList.sort((a, b) => a.startAt!.compareTo(b.startAt!));
+      // scheduleList.clear();
+      // scheduleList.addAll(list);
+      // unselectableIndexList.clear();
+      // for (var schedule in scheduleList) {
+      //   unselectableIndexList.addAll(schedule.scheduleIndexList);
+      // }
+      dailyTodoLabelList.addAll(list);
+      refreshCellStyleList();
+    } finally {
+      dailyTodoLabelList.refresh();
       scheduleList.refresh();
       onLoading.value = false;
     }
@@ -384,38 +413,50 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   /// HomeTodoList
-  void onDone({required Schedule schedule, required Todo todo}) {
-    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.done);
+  void onDone({required int dailyTodoLabelIndex, required int dailyTodoIndex}) {
+    updateDailyTodoStatus(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex, updatedStatus: TodoStatus.done);
   }
 
-  void onNotStated({required Schedule schedule, required Todo todo}) {
-    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.notStarted);
+  void onNotStated({required int dailyTodoLabelIndex, required int dailyTodoIndex}) {
+    updateDailyTodoStatus(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex, updatedStatus: TodoStatus.notStarted);
   }
 
-  void onPass({required Schedule schedule, required Todo todo}) {
-    updateTodoStatus(schedule: schedule, todo: todo, updatedStatus: TodoStatus.pass);
+  void onPass({required int dailyTodoLabelIndex, required int dailyTodoIndex}) {
+    updateDailyTodoStatus(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex, updatedStatus: TodoStatus.pass);
   }
 
-  void updateTodoStatus({required Schedule schedule, required Todo todo, required int updatedStatus}) async {
+  void updateDailyTodoStatus({required int dailyTodoLabelIndex, required int dailyTodoIndex, required int updatedStatus}) async {
     if (onLoading.value == true) return;
     try {
-      resetTextFormField();
       onLoading.value = true;
-      Todo newTodo = Todo(
-        tid: todo.tid,
-        todoTitle: todo.todoTitle,
-        todoStatus: updatedStatus,
-        todoUpdatedAt: todo.todoUpdatedAt,
-      );
-      final Todo updated = await todoRepository.updateTodo(todo: newTodo);
-      scheduleList[scheduleList.indexOf(schedule)].todoList[schedule.todoList.indexOf(todo)] = updated;
-      scheduleList.refresh();
+      resetTextFormField();
+      await dailyTodoRepository.updateDailyTodoStatus(id: dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].id, status: updatedStatus);
+      dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].status = updatedStatus;
+      dailyTodoLabelList.refresh();
     } finally {
       onLoading.value = false;
     }
   }
 
-  void showTodoActionModal({required Schedule schedule, required Todo todo}) async {
+  void openDailyTodoDetailDialog({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
+    DailyTodoLabel dailyTodoLabel = dailyTodoLabelList[dailyTodoLabelIndex];
+    DailyTodo dailyTodo = dailyTodoLabel.todoList[dailyTodoIndex];
+    DetailTodoDialogArgument argument = DetailTodoDialogArgument(
+      bannerAdWidth: Get.width,
+      labelTitle: dailyTodoLabel.title,
+      labelColor: hexToColor(colorHex: dailyTodoLabel.colorHex),
+      title: dailyTodo.title,
+      location: dailyTodo.location,
+      detail: dailyTodo.detail,
+    );
+    bool? isShowTodoActionModal = await Get.dialog(
+      DetailTodoDialogView.route(argument: argument),
+    );
+    if (isShowTodoActionModal == null || !isShowTodoActionModal) return;
+    showTodoActionModal(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
+  }
+
+  void showTodoActionModal({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
     resetTextFormField();
     final List<ModalAction> modalActionList = [
       ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
@@ -423,68 +464,67 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     ];
     int? action = await showCupertinoActionSheet(
       modalActionList: modalActionList,
-      title: todo.todoTitle,
+      title: '수정 및 삭제',
     );
     if (action == null) return;
     if (action == 0) {
-      editTodoTitle(schedule: schedule, todo: todo);
+      editDailyTodo(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
       return;
     }
     if (action == 1) {
-      removeTodo(schedule: schedule, todo: todo);
+      removeDailyTodo(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
       return;
     }
   }
 
-  void removeTodo({required Schedule schedule, required Todo todo}) async {
-    if (onLoading.value == true) return;
+  void removeDailyTodo({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
     try {
-      onLoading.value = true;
-      await todoRepository.deleteTodo(tid: todo.tid);
-      scheduleList[scheduleList.indexWhere((e) => e.sid == schedule.sid)].todoList.removeWhere((e) => e.tid == todo.tid);
-      scheduleList.refresh();
+      await dailyTodoRepository.deleteDailyTodo(id: dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].id);
+      dailyTodoLabelList[dailyTodoLabelIndex].todoList.removeAt(dailyTodoIndex);
+      if (dailyTodoLabelList[dailyTodoLabelIndex].todoList.isNotEmpty) return;
+      dailyTodoLabelList.removeAt(dailyTodoLabelIndex);
     } catch (e) {
       return;
     } finally {
-      onLoading.value = false;
+      dailyTodoLabelList.refresh();
     }
   }
 
-  void editTodoTitle({required Schedule schedule, required Todo todo}) async {
-    editingScheduleIndex.value = scheduleList.indexOf(schedule);
-    editingTodoIndex.value = scheduleList[scheduleList.indexOf(schedule)].todoList.indexOf(todo);
-    todoEditingController.text = todo.todoTitle;
+  void editDailyTodoTitle({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
+    editingDailyTodoLabelIndex.value = dailyTodoLabelIndex;
+    editingDailyTodoIndex.value = dailyTodoIndex;
+    todoEditingController.text = dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].title;
   }
 
-  void updateTodoTitle({required Schedule schedule, required Todo todo}) async {
+  void updateDailyTodoTitle({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
     if (onLoading.value == true) return;
     try {
       onLoading.value = true;
-      if (todoEditingController.value.text == todo.todoTitle) return;
+      DailyTodo selectedDailyTodo = dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex];
+      if (todoEditingController.value.text == selectedDailyTodo.title) return;
       if (todoEditingController.value.text.isEmpty) {
-        removeTodo(schedule: schedule, todo: todo);
+        removeDailyTodo(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
         return;
       }
-      Todo newTodo = Todo(
-        tid: todo.tid,
-        todoTitle: todoEditingController.value.text,
-        todoStatus: todo.todoStatus,
-        todoUpdatedAt: todo.todoUpdatedAt,
+      await dailyTodoRepository.updateDailyTodoInfo(
+        id: selectedDailyTodo.id,
+        title: todoEditingController.value.text,
+        location: selectedDailyTodo.location,
+        detail: selectedDailyTodo.detail,
       );
-      final Todo updated = await todoRepository.updateTodo(todo: newTodo);
-      scheduleList[editingScheduleIndex.value!].todoList[editingTodoIndex.value!] = updated;
+      selectedDailyTodo.title = todoEditingController.value.text;
     } catch (e) {
       return;
     } finally {
       resetTextFormField();
-      scheduleList.refresh();
+      dailyTodoLabelList.refresh();
       onLoading.value = false;
     }
   }
 
   void showTodoInputForm({required Schedule schedule}) async {
     onCreateTodo.value = true;
-    editingScheduleIndex.value = scheduleList.indexOf(schedule);
+    editingDailyTodoLabelIndex.value = scheduleList.indexOf(schedule);
     todoEditingController.text = "";
   }
 
@@ -496,11 +536,11 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       final Todo newTodo = Todo(
         tid: "",
         todoTitle: todoEditingController.value.text,
-        todoStatus: TodoStatus.notStarted,
+        todoStatus: TodoStatus1.notStarted,
         todoUpdatedAt: DateTime.now(),
       );
       final Todo result = await todoRepository.createTodo(sid: schedule.sid, todo: newTodo);
-      scheduleList[editingScheduleIndex.value!].todoList.add(result);
+      scheduleList[editingDailyTodoLabelIndex.value!].todoList.add(result);
       scheduleList.refresh();
     } finally {
       resetTextFormField();
@@ -528,5 +568,35 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     if (actionResult == null || actionResult.action != ActionResultType.created) return;
 
     dailyTodoLabelList.add(actionResult.dailyTodoLabel!);
+  }
+
+  void editDailyTodo({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
+    DailyTodoLabel dailyTodoLabel = dailyTodoLabelList[dailyTodoLabelIndex];
+    DailyTodo dailyTodo = dailyTodoLabel.todoList[dailyTodoIndex];
+    ActionResult? actionResult = await Get.bottomSheet(
+      EditTodoDialogView.route(isNew: false, initDailyTodoLabel: dailyTodoLabel, initDailyTodo: dailyTodo),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as ActionResult?;
+
+    if (actionResult == null || actionResult.action == ActionResultType.created) return;
+
+    if (actionResult.action == ActionResultType.updated) {
+      DailyTodo selectedDailyTodo = dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex];
+      selectedDailyTodo.title = actionResult.dailyTodo!.title;
+      selectedDailyTodo.location = actionResult.dailyTodo!.location;
+      selectedDailyTodo.detail = actionResult.dailyTodo!.detail;
+      dailyTodoLabelList.refresh();
+      return;
+    }
+
+    if (actionResult.action == ActionResultType.removed) {
+      dailyTodoLabelList[dailyTodoLabelIndex].todoList.removeAt(dailyTodoIndex);
+      if (dailyTodoLabelList[dailyTodoLabelIndex].todoList.isNotEmpty) return;
+      dailyTodoLabelList.removeAt(dailyTodoLabelIndex);
+      dailyTodoLabelList.refresh();
+      return;
+    }
   }
 }

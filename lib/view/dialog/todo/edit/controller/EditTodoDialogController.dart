@@ -184,6 +184,31 @@ class EditTodoDialogController extends RootController {
     }
   }
 
+  void delete() async {
+    if (onLoading.isTrue) return;
+    try {
+      onLoading.value = true;
+      final List<ModalAction> modalActionList = [
+        ModalAction(name: '삭제', onPressed: () => Get.back(result: true), isNegative: true),
+      ];
+      bool? isConfirmed = await showCupertinoActionSheet(
+        modalActionList: modalActionList,
+        title: '일정이 삭제됩니다',
+      );
+      if (isConfirmed == null) return;
+      await dailyTodoRepository.deleteDailyTodo(id: dailyTodo.value!.id);
+      Get.back(
+        result: ActionResult(action: ActionResultType.removed),
+      );
+    } catch (e) {
+      log(e.toString());
+      Get.back();
+      return;
+    } finally {
+      onLoading.value = false;
+    }
+  }
+
   /// Banner Ad
   final Rxn<BannerAd> bannerAd = Rxn(null);
 

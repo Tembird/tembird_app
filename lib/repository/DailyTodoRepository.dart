@@ -34,12 +34,12 @@ class DailyTodoRepository extends RootRepository {
     return result;
   }
 
-  Future<DailyTodoLabel> readDailyTodoByDate({required int date}) async {
+  Future<List<DailyTodoLabel>> readDailyTodoByDate({required int date}) async {
     final Response response = await get('/daily/todo?date=$date');
     if (response.hasError) {
       errorHandler(response);
     }
-    DailyTodoLabel result = DailyTodoLabel.fromJson(response.body['body']);
+    List<DailyTodoLabel> result = (response.body['body'] as List).map((e) => DailyTodoLabel.fromJson(e)).toList();
     return result;
   }
 

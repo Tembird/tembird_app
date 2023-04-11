@@ -25,7 +25,7 @@ class Todo {
   };
 }
 
-class TodoStatus {
+class TodoStatus1 {
   static const int notStarted = 0;
   static const int done = 1;
   static const int pass = 2;

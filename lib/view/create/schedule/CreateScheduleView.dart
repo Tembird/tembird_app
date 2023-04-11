@@ -318,19 +318,19 @@ class TodoItem extends GetView<CreateScheduleController> {
       height: 40,
       child: Row(
         children: [
-          if (todo.todoStatus == TodoStatus.done)
+          if (todo.todoStatus == TodoStatus1.done)
             GestureDetector(
               onTap: () => controller.onTodoNotStated(index: index),
               onLongPress: () => controller.onTodoPass(index: index),
               child: Image.asset(AssetNames.todoDone, width: 24, height: 24),
             ),
-          if (todo.todoStatus == TodoStatus.pass)
+          if (todo.todoStatus == TodoStatus1.pass)
             GestureDetector(
               onTap: () => controller.onTodoDone(index: index),
               onLongPress: () => controller.onTodoNotStated(index: index),
               child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
             ),
-          if (todo.todoStatus == TodoStatus.notStarted)
+          if (todo.todoStatus == TodoStatus1.notStarted)
             GestureDetector(
               onTap: () => controller.onTodoDone(index: index),
               onLongPress: () => controller.onTodoPass(index: index),

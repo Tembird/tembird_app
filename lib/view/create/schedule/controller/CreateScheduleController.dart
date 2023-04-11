@@ -250,7 +250,7 @@ class CreateScheduleController extends RootController {
 
   void addTodo() {
     if (todoController.value.text.isEmpty) return;
-    todoList.add(Todo(tid: "", todoTitle: todoController.value.text, todoStatus: TodoStatus.notStarted, todoUpdatedAt: DateTime.now()));
+    todoList.add(Todo(tid: "", todoTitle: todoController.value.text, todoStatus: TodoStatus1.notStarted, todoUpdatedAt: DateTime.now()));
     todoController.clear();
   }
 
@@ -259,7 +259,7 @@ class CreateScheduleController extends RootController {
     todoList[index] = Todo(
         tid: previous.tid,
         todoTitle: previous.todoTitle,
-        todoStatus: TodoStatus.done,
+        todoStatus: TodoStatus1.done,
         todoUpdatedAt: previous.todoUpdatedAt,
     );
     todoList.refresh();
@@ -270,7 +270,7 @@ class CreateScheduleController extends RootController {
     todoList[index] = Todo(
       tid: previous.tid,
       todoTitle: previous.todoTitle,
-      todoStatus: TodoStatus.notStarted,
+      todoStatus: TodoStatus1.notStarted,
       todoUpdatedAt: previous.todoUpdatedAt,
     );
     todoList.refresh();
@@ -281,7 +281,7 @@ class CreateScheduleController extends RootController {
     todoList[index] = Todo(
       tid: previous.tid,
       todoTitle: previous.todoTitle,
-      todoStatus: TodoStatus.pass,
+      todoStatus: TodoStatus1.pass,
       todoUpdatedAt: previous.todoUpdatedAt,
     );
     todoList.refresh();

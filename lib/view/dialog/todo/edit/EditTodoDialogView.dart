@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/component/FloatingBannerAdComponent.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/model/DailyTodo.dart';
 import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/view/dialog/todo/edit/controller/EditTodoDialogController.dart';
@@ -11,9 +12,9 @@ import '../../../../constant/StyledFont.dart';
 class EditTodoDialogView extends GetView<EditTodoDialogController> {
   const EditTodoDialogView({Key? key}) : super(key: key);
 
-  static route({required bool isNew, required DailyTodoLabel initDailyTodoLabel}) {
+  static route({required bool isNew, required DailyTodoLabel initDailyTodoLabel, DailyTodo? initDailyTodo}) {
     return GetBuilder(
-      init: EditTodoDialogController(isNew: isNew, initDailyTodoLabel: initDailyTodoLabel, bannerAdWidth: Get.width),
+      init: EditTodoDialogController(isNew: isNew, initDailyTodoLabel: initDailyTodoLabel, bannerAdWidth: Get.width, initDailyTodo: initDailyTodo),
       builder: (_) => const EditTodoDialogView(),
     );
   }
@@ -104,9 +105,19 @@ class EditTodoDialogView extends GetView<EditTodoDialogController> {
                         child: TodoInputForm(),
                       ),
                       const SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: controller.addContent,
-                        child: const Text('+ 내용 추가', style: StyledFont.HEADLINE),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: controller.addContent,
+                              child: const Text('+ 내용 추가', style: StyledFont.HEADLINE),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: controller.delete,
+                            child: const Text('삭제', style: StyledFont.CALLOUT_NEGATIVE),
+                          ),
+                        ],
                       ),
                       SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                     ],
