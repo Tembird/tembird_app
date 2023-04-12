@@ -154,7 +154,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void selectView(int index) {
     if (viewIndex.value == index) return;
-    if (viewIndex.value == 1) {
+    if (viewIndex.value == 0) {
       resetTextFormField();
     }
     viewIndex.value = index;
@@ -548,7 +548,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     }
   }
 
-  void createNewDailyTodo() async {
+  void createDailyTodoAndLabel() async {
     DailyTodoLabel? dailyTodoLabel = await Get.bottomSheet(
       SelectTodoLabelDialogView.route(),
       isScrollControlled: true,
@@ -559,7 +559,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     if (dailyTodoLabel == null) return;
 
     ActionResult? actionResult = await Get.bottomSheet(
-      EditTodoDialogView.route(isNew: true, initDailyTodoLabel: dailyTodoLabel),
+      EditTodoDialogView.route(isNew: true, hasLabel: false, initDailyTodoLabel: dailyTodoLabel),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
@@ -570,11 +570,24 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     dailyTodoLabelList.add(actionResult.dailyTodoLabel!);
   }
 
+  void createDailyTodo({required int index}) async {
+    ActionResult? actionResult = await Get.bottomSheet(
+      EditTodoDialogView.route(isNew: true, hasLabel: true, initDailyTodoLabel: dailyTodoLabelList[index]),
+      isScrollControlled: true,
+      ignoreSafeArea: true,
+      enableDrag: false,
+    ) as ActionResult?;
+
+    if (actionResult == null || actionResult.action != ActionResultType.created) return;
+
+    dailyTodoLabelList.refresh();
+  }
+
   void editDailyTodo({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
     DailyTodoLabel dailyTodoLabel = dailyTodoLabelList[dailyTodoLabelIndex];
     DailyTodo dailyTodo = dailyTodoLabel.todoList[dailyTodoIndex];
     ActionResult? actionResult = await Get.bottomSheet(
-      EditTodoDialogView.route(isNew: false, initDailyTodoLabel: dailyTodoLabel, initDailyTodo: dailyTodo),
+      EditTodoDialogView.route(isNew: false, hasLabel: true, initDailyTodoLabel: dailyTodoLabel, initDailyTodo: dailyTodo),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
@@ -582,21 +595,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     if (actionResult == null || actionResult.action == ActionResultType.created) return;
 
-    if (actionResult.action == ActionResultType.updated) {
-      DailyTodo selectedDailyTodo = dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex];
-      selectedDailyTodo.title = actionResult.dailyTodo!.title;
-      selectedDailyTodo.location = actionResult.dailyTodo!.location;
-      selectedDailyTodo.detail = actionResult.dailyTodo!.detail;
-      dailyTodoLabelList.refresh();
-      return;
-    }
-
-    if (actionResult.action == ActionResultType.removed) {
-      dailyTodoLabelList[dailyTodoLabelIndex].todoList.removeAt(dailyTodoIndex);
-      if (dailyTodoLabelList[dailyTodoLabelIndex].todoList.isNotEmpty) return;
-      dailyTodoLabelList.removeAt(dailyTodoLabelIndex);
-      dailyTodoLabelList.refresh();
-      return;
-    }
+    dailyTodoLabelList.refresh();
   }
 }

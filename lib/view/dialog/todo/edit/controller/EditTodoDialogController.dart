@@ -18,11 +18,12 @@ import '../../../todoLabel/select/SelectTodoLabelDialogView.dart';
 
 class EditTodoDialogController extends RootController {
   final bool isNew;
+  final bool hasLabel;
   final double bannerAdWidth;
   final DailyTodoLabel initDailyTodoLabel;
   final DailyTodo? initDailyTodo;
 
-  EditTodoDialogController({required this.isNew, required this.initDailyTodoLabel, this.initDailyTodo, required this.bannerAdWidth});
+  EditTodoDialogController({required this.isNew, required this.hasLabel, required this.initDailyTodoLabel, this.initDailyTodo, required this.bannerAdWidth});
 
   static EditTodoDialogController to = Get.find();
   final DailyTodoLabelRepository dailyTodoLabelRepository = DailyTodoLabelRepository();
@@ -148,11 +149,15 @@ class EditTodoDialogController extends RootController {
 
       DailyTodoLabel? dailyTodoLabelResult;
       DailyTodo? dailyTodoResult;
-      if (isNew) {
+      if (hasLabel) {
+        dailyTodoLabelResult = initDailyTodoLabel;
+      } else {
         dailyTodoLabelResult = await dailyTodoLabelRepository.createDailyTodoLabel(
           date: dailyTodoLabel.value!.date,
           labelId: dailyTodoLabel.value!.labelId,
         );
+      }
+      if (isNew) {
         dailyTodoResult = await dailyTodoRepository.createDailyTodo(
           title: dailyTodo.value!.title,
           dailyLabelId: dailyTodoLabelResult.id,

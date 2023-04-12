@@ -12,9 +12,9 @@ import '../../../../constant/StyledFont.dart';
 class EditTodoDialogView extends GetView<EditTodoDialogController> {
   const EditTodoDialogView({Key? key}) : super(key: key);
 
-  static route({required bool isNew, required DailyTodoLabel initDailyTodoLabel, DailyTodo? initDailyTodo}) {
+  static route({required bool isNew, required bool hasLabel, required DailyTodoLabel initDailyTodoLabel, DailyTodo? initDailyTodo}) {
     return GetBuilder(
-      init: EditTodoDialogController(isNew: isNew, initDailyTodoLabel: initDailyTodoLabel, bannerAdWidth: Get.width, initDailyTodo: initDailyTodo),
+      init: EditTodoDialogController(isNew: isNew, hasLabel: hasLabel, initDailyTodoLabel: initDailyTodoLabel, bannerAdWidth: Get.width, initDailyTodo: initDailyTodo),
       builder: (_) => const EditTodoDialogView(),
     );
   }
@@ -76,7 +76,7 @@ class EditTodoDialogView extends GetView<EditTodoDialogController> {
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: controller.isNew ? controller.editDailyTodoLabel : null,
+                              onTap: controller.hasLabel ? null : controller.editDailyTodoLabel,
                               child: Obx(
                                 () => Text(
                                   controller.dailyTodoLabel.value!.title,

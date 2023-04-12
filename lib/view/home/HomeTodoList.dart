@@ -22,7 +22,7 @@ class HomeTodoList extends GetView<HomeController> {
                     style: StyledFont.HEADLINE,
                   )
                 : GestureDetector(
-                    onTap: controller.createNewDailyTodo,
+                    onTap: controller.createDailyTodoAndLabel,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -100,7 +100,7 @@ class DailyTodoLabelItem extends GetView<HomeController> {
                       ),
                     ),
                     GestureDetector(
-                      // TODO : 해당 DailyTodoLabel 의 DailyTodo 를 생성하기
+                      onTap: () => controller.createDailyTodo(index: index),
                       child: Icon(
                         Icons.add,
                         color: controller.hexToColor(colorHex: dailyTodoLabel.colorHex),
