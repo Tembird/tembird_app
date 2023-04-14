@@ -130,13 +130,6 @@ class HomeBottomBar extends GetView<HomeController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Obx(() => Text(controller.selectedDateText.value, style: StyledFont.HEADLINE)),
-            controller.onBottomSheet.isFalse
-                ? Image.asset(
-                    AssetNames.menuUp,
-                    width: 24,
-                    fit: BoxFit.contain,
-                  )
-                : Container()
           ],
         ),
       ),

@@ -28,7 +28,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   final Rx<DateTime> selectedDate = Rx(DateTime.now());
   final Rx<String> selectedDateText = Rx("");
   final Rx<bool> onLoading = RxBool(false);
-  final Rx<bool> onBottomSheet = RxBool(true);
 
   final RxList<DailyTodoLabel> dailyTodoLabelList = RxList([]);
 
