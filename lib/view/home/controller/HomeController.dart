@@ -230,6 +230,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void refreshCellStyleList() async {
+    startIndex.value = null;
+    endIndex.value = null;
+    selectedIndexList.clear();
+
     cellStyleList.clear();
 
     int columnSpan = 0;
