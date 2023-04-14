@@ -7,7 +7,6 @@ import 'package:tembird_app/model/ScheduledIndex.dart';
 import 'package:tembird_app/repository/DailyTodoRepository.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
-import 'package:tembird_app/view/calendar/CalendarView.dart';
 import 'package:tembird_app/view/dialog/todo/detail/DetailTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todo/detail/argument/DetailTodoDialogArgument.dart';
 import 'package:tembird_app/view/dialog/todo/edit/EditTodoDialogView.dart';
@@ -15,6 +14,7 @@ import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogVi
 import '../../../model/CellStyle.dart';
 import '../../../model/DailyTodo.dart';
 import '../../../model/ModalAction.dart';
+import '../../dialog/calendar/CalendarView.dart';
 import '../../dialog/todo/select/SelectTodoDialogView.dart';
 
 class HomeController extends RootController with GetSingleTickerProviderStateMixin {

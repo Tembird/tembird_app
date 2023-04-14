@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
-import 'package:tembird_app/view/calendar/controller/CalendarController.dart';
 
-import '../ads/FloatingBannerAdView.dart';
+import 'controller/CalendarController.dart';
 
 class CalendarView extends GetView<CalendarController> {
   const CalendarView({Key? key}) : super(key: key);
 
   static route(DateTime date) {
     return GetBuilder(
-      init: CalendarController(initDate: date),
+      init: CalendarController(initDate: date, bannerAdWidth: Get.width),
       builder: (_) => const CalendarView(),
     );
   }
@@ -23,9 +23,9 @@ class CalendarView extends GetView<CalendarController> {
       () => controller.onLoading.isTrue
           ? Container()
           : GestureDetector(
-              onVerticalDragStart: (DragStartDetails details) => controller.dragStart(details.globalPosition.dy),
-              onVerticalDragCancel: controller.dragCancel,
-              onVerticalDragUpdate: (DragUpdateDetails details) => controller.dragUpdate(details.globalPosition.dy),
+              onVerticalDragStart: (DragStartDetails details) => controller.bottomSheetVerticalDragStart(details.globalPosition.dy),
+              onVerticalDragCancel: controller.bottomSheetVerticalDragCancel,
+              onVerticalDragUpdate: (DragUpdateDetails details) => controller.bottomSheetVerticalDragUpdate(details.globalPosition.dy),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.top,
                 child: Column(
@@ -38,9 +38,21 @@ class CalendarView extends GetView<CalendarController> {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: controller.tapAds,
-                      child: const FloatingBannerAdView(),
+                    Obx(
+                      () => controller.bannerAd.value == null
+                          ? Container()
+                          : Container(
+                              height: 66,
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Material(
+                                borderRadius: BorderRadius.circular(16),
+                                color: StyledPalette.MINERAL,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  child: AdWidget(ad: controller.bannerAd.value!),
+                                ),
+                              ),
+                            ),
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
@@ -65,10 +77,10 @@ class CalendarView extends GetView<CalendarController> {
                                 ),
                                 Expanded(
                                   child: Obx(() => Text(
-                                    controller.selectedDateText.value,
-                                    style: StyledFont.HEADLINE,
-                                    textAlign: TextAlign.center,
-                                  )),
+                                        controller.selectedDateText.value,
+                                        style: StyledFont.HEADLINE,
+                                        textAlign: TextAlign.center,
+                                      )),
                                 ),
                                 TextButton(
                                   onPressed: controller.confirmCalendar,
