@@ -28,6 +28,8 @@ class StyledFont {
   static const TextStyle CALLOUT_700 = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK);
   static const TextStyle CALLOUT_700_BLACK50 = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.BLACK50);
   static const TextStyle CALLOUT_700_WHITE = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.WHITE);
+  static const TextStyle CALLOUT_700_POSITIVE = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.STATUS_POSITIVE);
+  static const TextStyle CALLOUT_700_GRAY = TextStyle(fontWeight: FontWeight.w700, fontSize: 16, height: 21 / 16, color: StyledPalette.GRAY);
   static const TextStyle SUBHEAD = TextStyle(fontWeight: FontWeight.w400, fontSize: 15, height: 20 / 15, color: StyledPalette.BLACK);
   static const TextStyle FOOTNOTE = TextStyle(fontWeight: FontWeight.w400, fontSize: 13, height: 18 / 13, color: StyledPalette.BLACK);
   static const TextStyle FOOTNOTE_500 = TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 18 / 13, color: StyledPalette.BLACK);
