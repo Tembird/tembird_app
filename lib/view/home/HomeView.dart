@@ -41,43 +41,43 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
       ),
-      body: Container(
-        color: StyledPalette.MINERAL,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Obx(() => controller.viewIndex.value != 1 ? Container() : Container(
-                width: controller.tableWidth,
-                height: 20,
-                color: StyledPalette.MINERAL,
-                padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
-                child: Row(
-                  children: List.generate(6, (index) => SizedBox(
-                    width: controller.cellWidth,
-                    child: Text(
-                      '${index * 10}',
-                      textAlign: TextAlign.center,
-                      style: StyledFont.FOOTNOTE,
-                    ),
-                  )),
-                ),
-              )),
-              Expanded(
-                child: Obx(() => GestureDetector(
-                  onHorizontalDragStart: (DragStartDetails details) => controller.dragHorizontalStart(details.globalPosition.dx),
-                  onHorizontalDragCancel: controller.dragHorizontalCancel,
-                  onHorizontalDragUpdate: (DragUpdateDetails details) => controller.dragHorizontalUpdate(details.globalPosition.dx),
-                  child: IndexedStack(
+      body: GestureDetector(
+        onHorizontalDragStart: (DragStartDetails details) => controller.dragHorizontalStart(details.globalPosition.dx),
+        onHorizontalDragCancel: controller.dragHorizontalCancel,
+        onHorizontalDragUpdate: (DragUpdateDetails details) => controller.dragHorizontalUpdate(details.globalPosition.dx),
+        child: Container(
+          color: StyledPalette.MINERAL,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Obx(() => controller.viewIndex.value != 1 ? Container() : Container(
+                  width: controller.tableWidth,
+                  height: 20,
+                  color: StyledPalette.MINERAL,
+                  padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
+                  child: Row(
+                    children: List.generate(6, (index) => SizedBox(
+                      width: controller.cellWidth,
+                      child: Text(
+                        '${index * 10}',
+                        textAlign: TextAlign.center,
+                        style: StyledFont.FOOTNOTE,
+                      ),
+                    )),
+                  ),
+                )),
+                Expanded(
+                  child: Obx(() => IndexedStack(
                     index: controller.viewIndex.value,
                     children: const [
                       HomeTodoList(),
                       HomeScheduleTable(),
                     ],
-                  ),
-                )),
-              ),
-              const HomeBottomBar(),
-            ],
+                  )),
+                ),
+                const HomeBottomBar(),
+              ],
+            ),
           ),
         ),
       ),

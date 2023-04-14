@@ -65,21 +65,23 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void dragHorizontalUpdate(double current) async {
     if (x == null) return;
-    if (current < (x! + 30) && current > (x! - 30)) {
+
+    if (current < (x! + 80) && current > (x! - 80)) {
       return;
     }
     double startX = x!;
     x = null;
     DateTime? newDate;
 
-    if (newDate == null) return;
-
-    if (current > (startX + 30)) {
+    if (current > (startX + 80)) {
       newDate = selectedDate.value.subtract(const Duration(days: 1));
     }
-    if (current < (startX - 30)) {
+    if (current < (startX - 80)) {
       newDate = selectedDate.value.add(const Duration(days: 1));
     }
+
+    if (newDate == null) return;
+
     selectedDate.value = newDate;
     selectedDateText.value = dateToString(date: newDate);
     await getAllDailyTodoList(date: newDate);
