@@ -144,7 +144,7 @@ class DailyTodoLabelItem extends GetView<HomeController> {
                               child: Obx(
                                 () => index != controller.editingDailyTodoLabelIndex.value || tIndex != controller.editingDailyTodoIndex.value
                                     ? GestureDetector(
-                                        onTap: () => controller.editDailyTodoTitle(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
+                                        onTap: () => controller.selectDailyTodoTitle(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
                                         child: Container(
                                           height: 45,
                                           alignment: Alignment.centerLeft,

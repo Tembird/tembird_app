@@ -3,55 +3,43 @@ import 'package:get/get.dart';
 import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ActionResult.dart';
 import 'package:tembird_app/model/DailyTodoLabel.dart';
-import 'package:tembird_app/model/ScheduleAction.dart';
+import 'package:tembird_app/model/ScheduledIndex.dart';
 import 'package:tembird_app/repository/DailyTodoRepository.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
-import 'package:tembird_app/repository/ScheduleRepository.dart';
-import 'package:tembird_app/repository/TodoRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
 import 'package:tembird_app/view/calendar/CalendarView.dart';
 import 'package:tembird_app/view/dialog/todo/detail/DetailTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todo/detail/argument/DetailTodoDialogArgument.dart';
 import 'package:tembird_app/view/dialog/todo/edit/EditTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogView.dart';
-import '../../../constant/StyledPalette.dart';
 import '../../../model/CellStyle.dart';
 import '../../../model/DailyTodo.dart';
 import '../../../model/ModalAction.dart';
-import '../../../model/Schedule.dart';
-import '../../../model/Todo.dart';
-import '../../create/schedule/CreateScheduleView.dart';
+import '../../dialog/todo/select/SelectTodoDialogView.dart';
 
 class HomeController extends RootController with GetSingleTickerProviderStateMixin {
   final DailyTodoRepository dailyTodoRepository = DailyTodoRepository();
-  final ScheduleRepository scheduleRepository = ScheduleRepository();
-  final TodoRepository todoRepository = TodoRepository();
   final InitRepository initRepository = InitRepository();
   TabController? tabController;
   double? x;
 
   static HomeController to = Get.find();
+  final RxInt viewIndex = RxInt(0);
   final Rx<DateTime> selectedDate = Rx(DateTime.now());
   final Rx<String> selectedDateText = Rx("");
-  final RxInt viewIndex = RxInt(0);
-
-  final RxList<Schedule> scheduleList = RxList([]);
-  final RxList<String> scheduleColorHexList = RxList([]);
-  final Rx<bool> onLoading = RxBool(true);
+  final Rx<bool> onLoading = RxBool(false);
   final Rx<bool> onBottomSheet = RxBool(true);
-  final RxBool onCreateTodo = RxBool(false);
+
+  final RxList<DailyTodoLabel> dailyTodoLabelList = RxList([]);
+
   final Rxn<int> editingDailyTodoLabelIndex = Rxn(null);
   final Rxn<int> editingDailyTodoIndex = Rxn(null);
   final TextEditingController todoEditingController = TextEditingController();
-
-  final RxList<DailyTodoLabel> dailyTodoLabelList = RxList([]);
 
   @override
   void onInit() async {
     selectedDateText.value = dateToString(date: selectedDate.value);
     tabController = TabController(vsync: this, length: 2);
-    await getScheduleList(selectedDate.value);
-    await getScheduleHexList();
     await getAllDailyTodoList(date: selectedDate.value);
     super.onInit();
   }
@@ -64,7 +52,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   }
 
   void resetTextFormField() {
-    onCreateTodo.value = false;
     editingDailyTodoLabelIndex.value = null;
     editingDailyTodoIndex.value = null;
   }
@@ -86,33 +73,17 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     x = null;
     DateTime? newDate;
 
+    if (newDate == null) return;
+
     if (current > (startX + 30)) {
       newDate = selectedDate.value.subtract(const Duration(days: 1));
     }
     if (current < (startX - 30)) {
       newDate = selectedDate.value.add(const Duration(days: 1));
     }
-    await getScheduleList(newDate!);
     selectedDate.value = newDate;
     selectedDateText.value = dateToString(date: newDate);
-  }
-
-  Future<void> getScheduleList(DateTime date) async {
-    onLoading.value = true;
-    try {
-      List<Schedule> list = await scheduleRepository.readScheduleListOnDate(dateTime: date);
-      list.sort((a, b) => a.startAt.compareTo(b.startAt));
-      scheduleList.clear();
-      scheduleList.addAll(list);
-      unselectableIndexList.clear();
-      for (var schedule in scheduleList) {
-        unselectableIndexList.addAll(schedule.scheduleIndexList);
-      }
-      refreshCellStyleList();
-    } finally {
-      scheduleList.refresh();
-      onLoading.value = false;
-    }
+    await getAllDailyTodoList(date: newDate);
   }
 
   Future<void> getAllDailyTodoList({required DateTime date}) async {
@@ -121,35 +92,26 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       onLoading.value = true;
       dailyTodoLabelList.clear();
       List<DailyTodoLabel> list = await dailyTodoRepository.readDailyTodoByDate(date: dateToInt(date: date));
-      List<DailyTodo> scheduledDailyTodoList = [];
-      list.map((e) => e.todoList.map((e) => scheduledDailyTodoList.addIf(e.startAt != null, e)));
-      scheduledDailyTodoList.sort((a, b) => a.startAt!.compareTo(b.startAt!));
-      // scheduleList.clear();
-      // scheduleList.addAll(list);
-      // unselectableIndexList.clear();
-      // for (var schedule in scheduleList) {
-      //   unselectableIndexList.addAll(schedule.scheduleIndexList);
-      // }
       dailyTodoLabelList.addAll(list);
+      refreshScheduledIndexList();
       refreshCellStyleList();
     } finally {
       dailyTodoLabelList.refresh();
-      scheduleList.refresh();
       onLoading.value = false;
     }
   }
 
-  Future<void> getScheduleHexList() async {
-    scheduleColorHexList.clear();
-    try {
-      List<String> list = await initRepository.readScheduleColorHexList();
-      scheduleColorHexList.addAll(list);
-    } catch (e) {
-      print(e);
-      scheduleColorHexList.addAll(StyledPalette.DEFAULT_SCHEDULE_COLOR_LIST);
-    } finally {
-      scheduleColorHexList.refresh();
+  void refreshScheduledIndexList() {
+    scheduledIndexList.clear();
+    for (var dailyTodoLabel in dailyTodoLabelList) {
+      for (var dailyTodo in dailyTodoLabel.todoList) {
+        if (dailyTodo.startAt == null || dailyTodo.endAt == null) continue;
+        for (int i = dailyTodo.startAt!; i < dailyTodo.endAt! + 1; i++) {
+          scheduledIndexList.add(ScheduledIndex(index: i, dailyTodoLabelId: dailyTodoLabel.id, dailyTodoId: dailyTodo.id));
+        }
+      }
     }
+    scheduledIndexList.sort((a, b) => a.index.compareTo(b.index));
   }
 
   void selectView(int index) {
@@ -160,122 +122,22 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     viewIndex.value = index;
   }
 
-  void createSchedule(List<int> indexList) async {
-    final Schedule schedule = Schedule(
-      sid: '',
-      date: selectedDate.value,
-      startAt: indexList.first,
-      endAt: indexList.last,
-      scheduleIndexList: indexList,
-      colorHex: scheduleColorHexList.first,
-      done: false,
-      createdAt: DateTime.now(),
-      editedAt: DateTime.now(),
-      todoList: [],
-    );
+  void updateDailyTodoDuration(List<int> indexList) async {
+    ActionResult? updated = await Get.dialog(
+      SelectTodoDialogView.route(dailyTodoLabelList: dailyTodoLabelList, startAt: indexList.first, endAt: indexList.last),
+    ) as ActionResult?;
 
-    ScheduleAction? scheduleAction = await Get.bottomSheet(
-      CreateScheduleView.route(schedule, true),
-      isScrollControlled: true,
-      ignoreSafeArea: true,
-      enableDrag: false,
-    ) as ScheduleAction?;
+    if (updated == null) return;
 
-    if (scheduleAction == null || scheduleAction.action != ActionType.created) return;
-    addSchedule(add: scheduleAction.schedule!);
-  }
+    dailyTodoLabelList[updated.dailyTodoLabelIndex!].todoList[updated.dailyTodoIndex!].startAt = indexList.first;
+    dailyTodoLabelList[updated.dailyTodoLabelIndex!].todoList[updated.dailyTodoIndex!].endAt = indexList.last;
+    dailyTodoLabelList.refresh();
+    refreshScheduledIndexList();
+    refreshCellStyleList();
 
-  void showScheduleActionModal(Schedule schedule) async {
-    final List<ModalAction> modalActionList = [
-      ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
-      ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
-    ];
-    int? action = await showCupertinoActionSheet(
-      modalActionList: modalActionList,
-      title: schedule.title ?? "제목 없음",
-    );
-    if (action == null) return;
-    if (action == 0) {
-      showScheduleDetail(schedule);
-      return;
-    }
-    if (action == 1) {
-      removeSchedule(schedule: schedule);
-    }
-  }
-
-  void removeSchedule({required Schedule schedule}) async {
-    if (onLoading.value == true) return;
-    try {
-      onLoading.value = true;
-      await scheduleRepository.deleteSchedule(schedule: schedule);
-      deleteRemovedSchedule(removed: schedule);
-    } catch (e) {
-      return;
-    } finally {
-      onLoading.value = false;
-    }
-  }
-
-  void showScheduleDetail(Schedule schedule) async {
-    ScheduleAction? scheduleAction = await Get.bottomSheet(
-      CreateScheduleView.route(schedule, false),
-      isScrollControlled: true,
-      ignoreSafeArea: true,
-      enableDrag: false,
-    ) as ScheduleAction?;
-
-    if (scheduleAction == null) return;
-
-    switch (scheduleAction.action) {
-      case ActionType.created:
-        return;
-      case ActionType.updated:
-        updateSchedule(previous: schedule, update: scheduleAction.schedule!);
-        return;
-      case ActionType.removed:
-        deleteRemovedSchedule(removed: schedule);
-        return;
-    }
-  }
-
-  void addSchedule({required Schedule add}) {
-    scheduleList.add(Schedule(
-      sid: add.sid,
-      date: add.date,
-      startAt: add.scheduleIndexList.first,
-      endAt: add.scheduleIndexList.last,
-      scheduleIndexList: add.scheduleIndexList,
-      colorHex: add.colorHex,
-      done: add.done,
-      location: add.location,
-      detail: add.detail,
-      title: add.title,
-      createdAt: add.createdAt,
-      editedAt: add.editedAt,
-      todoList: add.todoList,
-    ));
-    scheduleList.sort((a, b) => a.startAt.compareTo(b.startAt));
-    selectedIndexList.clear();
-    unselectableIndexList.clear();
-    for (var schedule in scheduleList) {
-      unselectableIndexList.addAll(schedule.scheduleIndexList);
-    }
     startIndex.value = null;
     endIndex.value = null;
-    refreshCellStyleList();
-  }
-
-  void updateSchedule({required Schedule previous, required Schedule update}) {
-    scheduleList[scheduleList.indexWhere((e) => e.sid == previous.sid)] = update;
-    scheduleList.refresh();
-    refreshCellStyleList();
-  }
-
-  void deleteRemovedSchedule({required Schedule removed}) {
-    unselectableIndexList.removeWhere((index) => removed.scheduleIndexList.contains(index));
-    scheduleList.removeWhere((schedule) => schedule.sid == removed.sid);
-    refreshCellStyleList();
+    selectedIndexList.clear();
   }
 
   /// BottomSheet
@@ -289,9 +151,9 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     ) as DateTime?;
 
     if (newDate == null) return;
-    await getScheduleList(newDate);
     selectedDate.value = newDate;
     selectedDateText.value = dateToString(date: newDate);
+    await getAllDailyTodoList(date: newDate);
   }
 
   void openHelpView() {
@@ -299,8 +161,9 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     Get.toNamed(PageNames.HELP);
   }
 
-  /// ScheduleTable
-  List<int> unselectableIndexList = [];
+  /// HomeScheduleTable
+  List<ScheduledIndex> scheduledIndexList = [];
+
   List<int> selectedIndexList = [];
   Rxn<int> startIndex = Rxn(null);
   Rxn<int> endIndex = Rxn(null);
@@ -313,7 +176,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   void onTableTapDown(TapDownDetails details) async {
     int selectedIndex = getIndexFromPosition(details.localPosition);
     if (selectedIndexList.contains(selectedIndex)) {
-      createSchedule(selectedIndexList);
+      updateDailyTodoDuration(selectedIndexList);
       return;
     }
     if (endIndex.value != null) {
@@ -322,11 +185,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       selectedIndexList.clear();
       return;
     }
-    final int scheduleIndex = scheduleList.indexWhere((schedule) => schedule.scheduleIndexList.contains(selectedIndex));
-    if (scheduleIndex == -1) return;
+    ScheduledIndex? scheduledIndex = scheduledIndexList.firstWhereOrNull((e) => e.index == selectedIndex);
+    if (scheduledIndex == null) return;
 
-    final Schedule schedule = scheduleList[scheduleIndex];
-    showScheduleDetail(schedule);
+    int dailyTodoLabelIndex = dailyTodoLabelList.indexWhere((e) => e.id == scheduledIndex.dailyTodoLabelId);
+    int dailyTodoIndex = dailyTodoLabelList[dailyTodoLabelIndex].todoList.indexWhere((e) => e.id == scheduledIndex.dailyTodoId);
+    openDailyTodoDetailDialog(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
   }
 
   void onTableLongPressStart(LongPressStartDetails details) {
@@ -344,7 +208,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void onTableLongPressEnd(LongPressEndDetails details) {
     if (startIndex.value == null || endIndex.value == null) return;
-    if (unselectableIndexList.any((index) => index >= startIndex.value! && index <= endIndex.value!)) {
+    if (scheduledIndexList.any((e) => e.index >= startIndex.value! && e.index <= endIndex.value!)) {
       startIndex.value = null;
       endIndex.value = null;
       showAlertDialog(message: '선택하신 시간에 이미 일정이 있습니다\n기존 일정을 삭제하신 후 다시 시도해주세요');
@@ -354,12 +218,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     selectedIndexList.addAll(List.generate(endIndex.value! - startIndex.value! + 1, (index) => startIndex.value! + index));
   }
 
-  Schedule? getIndexSchedule(int index) {
-    try {
-      return scheduleList.firstWhere((schedule) => schedule.scheduleIndexList.contains(index));
-    } catch (e) {
-      return null;
-    }
+  ScheduledIndex? getScheduledIndex(int index) {
+    return scheduledIndexList.firstWhereOrNull((e) => e.index == index);
   }
 
   int getIndexFromPosition(Offset position) {
@@ -392,17 +252,20 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
         continue;
       }
 
-      Schedule? schedule = getIndexSchedule(index);
-      if (schedule == null) {
+      ScheduledIndex? scheduledIndex = getScheduledIndex(index);
+      if (scheduledIndex == null) {
         cellStyleList.add(CellStyle(length: 1));
         continue;
       }
 
-      span = schedule.endAt - schedule.startAt + 1;
-      columnSpan = schedule.endAt ~/ 6 == schedule.startAt ~/ 6 ? span : 6 - schedule.startAt % 6;
-      scheduleColor = Color(int.parse(schedule.colorHex, radix: 16) + 0xFF000000);
+      DailyTodoLabel dailyTodoLabel = dailyTodoLabelList.firstWhere((e) => e.id == scheduledIndex.dailyTodoLabelId);
+      DailyTodo dailyTodo = dailyTodoLabel.todoList.firstWhere((e) => e.id == scheduledIndex.dailyTodoId);
+
+      span = dailyTodo.endAt! - dailyTodo.startAt! + 1;
+      columnSpan = dailyTodo.endAt! ~/ 6 == dailyTodo.startAt! ~/ 6 ? span : 6 - dailyTodo.startAt! % 6;
+      scheduleColor = Color(int.parse(dailyTodoLabel.colorHex, radix: 16) + 0xFF000000);
       bool isTitleOnFirstLine = columnSpan > 3 || columnSpan + 1 > span - columnSpan;
-      title = schedule.title ?? '제목 없음';
+      title = dailyTodo.title;
       cellStyleList.add(CellStyle(length: columnSpan, text: isTitleOnFirstLine ? title : null, color: scheduleColor));
       columnSpan--;
       span--;
@@ -487,10 +350,12 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       return;
     } finally {
       dailyTodoLabelList.refresh();
+      refreshScheduledIndexList();
+      refreshCellStyleList();
     }
   }
 
-  void editDailyTodoTitle({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
+  void selectDailyTodoTitle({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
     editingDailyTodoLabelIndex.value = dailyTodoLabelIndex;
     editingDailyTodoIndex.value = dailyTodoIndex;
     todoEditingController.text = dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].title;
@@ -518,32 +383,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     } finally {
       resetTextFormField();
       dailyTodoLabelList.refresh();
-      onLoading.value = false;
-    }
-  }
-
-  void showTodoInputForm({required Schedule schedule}) async {
-    onCreateTodo.value = true;
-    editingDailyTodoLabelIndex.value = scheduleList.indexOf(schedule);
-    todoEditingController.text = "";
-  }
-
-  void createTodo({required Schedule schedule}) async {
-    if (onLoading.value == true) return;
-    try {
-      onLoading.value = true;
-      if (todoEditingController.value.text.isEmpty) return;
-      final Todo newTodo = Todo(
-        tid: "",
-        todoTitle: todoEditingController.value.text,
-        todoStatus: TodoStatus1.notStarted,
-        todoUpdatedAt: DateTime.now(),
-      );
-      final Todo result = await todoRepository.createTodo(sid: schedule.sid, todo: newTodo);
-      scheduleList[editingDailyTodoLabelIndex.value!].todoList.add(result);
-      scheduleList.refresh();
-    } finally {
-      resetTextFormField();
+      refreshCellStyleList();
       onLoading.value = false;
     }
   }
@@ -596,5 +436,6 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     if (actionResult == null || actionResult.action == ActionResultType.created) return;
 
     dailyTodoLabelList.refresh();
+    refreshCellStyleList();
   }
 }

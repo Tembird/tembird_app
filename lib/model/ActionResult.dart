@@ -13,11 +13,15 @@ class ActionResult {
   final DailyTodoLabel? dailyTodoLabel;
   final DailyTodo? dailyTodo;
   final TodoLabel? todoLabel;
+  final int? dailyTodoLabelIndex;
+  final int? dailyTodoIndex;
 
   ActionResult({
     required this.action,
     this.dailyTodoLabel,
     this.dailyTodo,
     this.todoLabel,
+    this.dailyTodoLabelIndex,
+    this.dailyTodoIndex,
   });
 }
