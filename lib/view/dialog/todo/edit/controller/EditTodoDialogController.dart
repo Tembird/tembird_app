@@ -48,7 +48,7 @@ class EditTodoDialogController extends RootController {
     dailyTodoLabel.value = initDailyTodoLabel;
     if (!isNew) {
       dailyTodo.value = initDailyTodo!;
-      titleController.text = initDailyTodo!.title!;
+      titleController.text = initDailyTodo!.title;
       if (initDailyTodo!.location != null) {
         locationController.text = initDailyTodo!.location!;
         hasLocation.value = true;
@@ -82,7 +82,7 @@ class EditTodoDialogController extends RootController {
     await Future.delayed(const Duration(milliseconds: 50));
 
     DailyTodoLabel? newDailyTodoLabel = await Get.bottomSheet(
-      SelectTodoLabelDialogView.route(),
+      SelectTodoLabelDialogView.route(date: DateTime.parse(initDailyTodoLabel.date.toString())),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,

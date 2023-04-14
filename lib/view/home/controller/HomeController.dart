@@ -389,7 +389,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void createDailyTodoAndLabel() async {
     DailyTodoLabel? dailyTodoLabel = await Get.bottomSheet(
-      SelectTodoLabelDialogView.route(),
+      SelectTodoLabelDialogView.route(date : selectedDate.value),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
@@ -397,8 +397,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     if (dailyTodoLabel == null) return;
 
+    final DailyTodoLabel? existDailyTodoLabel = dailyTodoLabelList.firstWhereOrNull((e) => e.date == dailyTodoLabel.date && e.labelId == dailyTodoLabel.labelId);
+
     ActionResult? actionResult = await Get.bottomSheet(
-      EditTodoDialogView.route(isNew: true, hasLabel: false, initDailyTodoLabel: dailyTodoLabel),
+      EditTodoDialogView.route(isNew: true, hasLabel: existDailyTodoLabel != null, initDailyTodoLabel: existDailyTodoLabel ?? dailyTodoLabel),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,
@@ -406,7 +408,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
     if (actionResult == null || actionResult.action != ActionResultType.created) return;
 
-    dailyTodoLabelList.add(actionResult.dailyTodoLabel!);
+    if (existDailyTodoLabel == null) {
+      dailyTodoLabelList.add(actionResult.dailyTodoLabel!);
+    }
+    dailyTodoLabelList.refresh();
   }
 
   void createDailyTodo({required int index}) async {

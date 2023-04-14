@@ -12,9 +12,9 @@ import 'controller/SelectTodoLabelDialogController.dart';
 class SelectTodoLabelDialogView extends GetView<SelectTodoLabelDialogController> {
   const SelectTodoLabelDialogView({Key? key}) : super(key: key);
 
-  static route() {
+  static route({required DateTime date}) {
     return GetBuilder(
-      init: SelectTodoLabelDialogController(bannerAdWidth: Get.width),
+      init: SelectTodoLabelDialogController(bannerAdWidth: Get.width, date: date),
       builder: (_) => const SelectTodoLabelDialogView(),
     );
   }

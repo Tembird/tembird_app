@@ -31,7 +31,7 @@ class HomeTodoList extends GetView<HomeController> {
                             Icon(Icons.add, size: 24),
                             SizedBox(height: 8),
                             Text(
-                              '오늘의 할일',
+                              '할일 추가',
                               style: StyledFont.HEADLINE,
                             )
                           ],
@@ -43,8 +43,13 @@ class HomeTodoList extends GetView<HomeController> {
               padding: const EdgeInsets.all(16),
               child: Obx(
                 () => ListView.separated(
-                  itemCount: controller.dailyTodoLabelList.length,
-                  itemBuilder: (_, index) => DailyTodoLabelItem(index: index),
+                  itemCount: controller.dailyTodoLabelList.length + 1,
+                  itemBuilder: (_, index) {
+                    if (index == controller.dailyTodoLabelList.length) {
+                      return const AddTodoButton();
+                    }
+                    return DailyTodoLabelItem(index: index);
+                  },
                   separatorBuilder: (_, index) => const SizedBox(height: 16),
                 ),
               ),
@@ -234,6 +239,28 @@ class DailyTodoLabelItem extends GetView<HomeController> {
           ),
         );
       },
+    );
+  }
+}
+
+class AddTodoButton extends GetView<HomeController> {
+  const AddTodoButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: controller.createDailyTodoAndLabel,
+      child: SizedBox(
+        height: 45,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text('할일 추가', style: StyledFont.CALLOUT_700),
+            SizedBox(width: 4),
+            Icon(Icons.add, size: 24, color: StyledPalette.BLACK,)
+          ],
+        ),
+      ),
     );
   }
 }

@@ -12,9 +12,10 @@ import 'package:tembird_app/service/RootController.dart';
 
 class SelectTodoLabelDialogController extends RootController {
   final double bannerAdWidth;
+  final DateTime date;
   static SelectTodoLabelDialogController to = Get.find();
 
-  SelectTodoLabelDialogController({required this.bannerAdWidth});
+  SelectTodoLabelDialogController({required this.bannerAdWidth, required this.date});
 
   final TodoLabelRepository todoLabelRepository = TodoLabelRepository();
 
@@ -61,7 +62,7 @@ class SelectTodoLabelDialogController extends RootController {
       labelId: selectedTodoLabel.id,
       title: selectedTodoLabel.title,
       colorHex: selectedTodoLabel.colorHex,
-      date: dateToInt(date: DateTime.now()),
+      date: dateToInt(date: date),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       todoList: [],
