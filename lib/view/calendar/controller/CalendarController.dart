@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/model/ModalAction.dart';
-import 'package:tembird_app/model/Schedule.dart';
 import 'package:tembird_app/service/RootController.dart';
 
 class CalendarController extends RootController {

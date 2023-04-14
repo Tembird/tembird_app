@@ -7,7 +7,6 @@ import 'package:tembird_app/view/home/controller/HomeController.dart';
 
 import '../../constant/StyledPalette.dart';
 import '../../model/DailyTodoLabel.dart';
-import '../../model/Todo.dart';
 
 class HomeTodoList extends GetView<HomeController> {
   const HomeTodoList({super.key});
@@ -134,7 +133,7 @@ class DailyTodoLabelItem extends GetView<HomeController> {
                                 onLongPress: () => controller.onNotStated(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
                                 child: Image.asset(AssetNames.todoPass, width: 24, height: 24),
                               ),
-                            if (todo.status == TodoStatus1.notStarted)
+                            if (todo.status == TodoStatus.notStarted)
                               GestureDetector(
                                 onTap: () => controller.onDone(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
                                 onLongPress: () => controller.onPass(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
