@@ -196,6 +196,18 @@ class DailyTodoLabelItem extends GetView<HomeController> {
                                       ),
                               ),
                             ),
+                            if (todo.startAt != null && todo.endAt != null)
+                              GestureDetector(
+                                onTap: () => controller.openDailyTodoDetailDialog(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(
+                                    Icons.access_time_outlined,
+                                    size: 18,
+                                    color: StyledPalette.GRAY,
+                                  ),
+                                ),
+                              ),
                             if (todo.location != null)
                               GestureDetector(
                                 onTap: () => controller.openDailyTodoDetailDialog(dailyTodoLabelIndex: index, dailyTodoIndex: tIndex),
