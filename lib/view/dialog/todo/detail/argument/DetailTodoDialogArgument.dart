@@ -1,19 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:tembird_app/model/DailyTodo.dart';
+import 'package:tembird_app/model/DailyTodoLabel.dart';
 
 class DetailTodoDialogArgument {
-  final double bannerAdWidth;
-  final String labelTitle;
-  final Color labelColor;
-  final String title;
-  final String? location;
-  final String? detail;
+  final DateTime date;
+  final DailyTodoLabel todoLabel;
+  final DailyTodo todo;
 
   DetailTodoDialogArgument({
-    required this.bannerAdWidth,
-    required this.labelTitle,
-    required this.labelColor,
-    required this.title,
-    required this.location,
-    required this.detail,
+    required this.date,
+    required this.todoLabel,
+    required this.todo,
   });
 }

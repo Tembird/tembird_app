@@ -310,12 +310,9 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     DailyTodoLabel dailyTodoLabel = dailyTodoLabelList[dailyTodoLabelIndex];
     DailyTodo dailyTodo = dailyTodoLabel.todoList[dailyTodoIndex];
     DetailTodoDialogArgument argument = DetailTodoDialogArgument(
-      bannerAdWidth: Get.width,
-      labelTitle: dailyTodoLabel.title,
-      labelColor: hexToColor(colorHex: dailyTodoLabel.colorHex),
-      title: dailyTodo.title,
-      location: dailyTodo.location,
-      detail: dailyTodo.detail,
+      date: selectedDate.value,
+      todoLabel: dailyTodoLabel,
+      todo: dailyTodo,
     );
     bool? isShowTodoActionModal = await Get.dialog(
       DetailTodoDialogView.route(argument: argument),

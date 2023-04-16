@@ -25,21 +25,7 @@ class DetailTodoDialogView extends GetView<DetailTodoDialogController> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Obx(
-            () => controller.bannerAd.value == null
-                ? const SizedBox(height: 66)
-                : SizedBox(
-                    height: 66,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(16),
-                      color: StyledPalette.MINERAL,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: AdWidget(ad: controller.bannerAd.value!),
-                      ),
-                    ),
-                  ),
-          ),
+          Text(controller.dateToString(date: controller.argument.date), style: StyledFont.TITLE_2_WHITE,),
           const SizedBox(height: 16),
           Material(
             borderRadius: BorderRadius.circular(16),
@@ -52,33 +38,45 @@ class DetailTodoDialogView extends GetView<DetailTodoDialogController> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      controller.argument.labelTitle,
-                      style: StyledFont.CALLOUT_700.copyWith(color: controller.argument.labelColor),
+                      controller.argument.todoLabel.title,
+                      style: StyledFont.FOOTNOTE.copyWith(color: controller.hexToColor(colorHex: controller.argument.todoLabel.colorHex)),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      controller.argument.todo.title,
+                      style: StyledFont.TITLE_3_700,
                     ),
                     const Divider(
                       height: 16,
                       thickness: 0.5,
                     ),
-                    Row(
-                      children: const [
-                        Icon(
-                          Icons.access_time_outlined,
-                          size: 12,
-                          color: StyledPalette.GRAY,
+                    if (controller.argument.todo.startAt != null && controller.argument.todo.endAt != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.access_time_outlined,
+                              size: 12,
+                              color: StyledPalette.GRAY,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              '일시',
+                              style: StyledFont.FOOTNOTE_GRAY,
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 4),
-                        Text(
-                          '제목',
-                          style: StyledFont.FOOTNOTE_GRAY,
+                      ),
+                    if (controller.argument.todo.startAt != null && controller.argument.todo.endAt != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '${controller.indexToTimeString(index: controller.argument.todo.startAt!)} ~ ${controller.indexToTimeString(index: controller.argument.todo.endAt!)}',
+                          style: StyledFont.BODY,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      controller.argument.title,
-                      style: StyledFont.TITLE_3_700,
-                    ),
-                    if (controller.argument.location != null)
+                      ),
+                    if (controller.argument.todo.location != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: Row(
@@ -96,15 +94,15 @@ class DetailTodoDialogView extends GetView<DetailTodoDialogController> {
                           ],
                         ),
                       ),
-                    if (controller.argument.location != null)
+                    if (controller.argument.todo.location != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          controller.argument.location!,
-                          style: StyledFont.CALLOUT,
+                          controller.argument.todo.location!,
+                          style: StyledFont.BODY,
                         ),
                       ),
-                    if (controller.argument.detail != null)
+                    if (controller.argument.todo.detail != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: Row(
@@ -122,12 +120,12 @@ class DetailTodoDialogView extends GetView<DetailTodoDialogController> {
                           ],
                         ),
                       ),
-                    if (controller.argument.detail != null)
+                    if (controller.argument.todo.detail != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          controller.argument.detail!,
-                          style: StyledFont.CALLOUT,
+                          controller.argument.todo.detail!,
+                          style: StyledFont.BODY,
                         ),
                       ),
                   ],
