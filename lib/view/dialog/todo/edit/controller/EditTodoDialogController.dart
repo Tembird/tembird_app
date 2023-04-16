@@ -218,8 +218,8 @@ class EditTodoDialogController extends RootController {
   final Rxn<BannerAd> bannerAd = Rxn(null);
 
   Future<void> initializeBannerAds() async {
-    final iosAppId = kReleaseMode ? FlutterConfig.get('IOS_ADMOB_ID_EDIT_TODO_DIALOG') : FlutterConfig.get('DEV_IOS_ADMOB_ID_EDIT_TODO_DIALOG');
-    final aosAppId = kReleaseMode ? FlutterConfig.get('AOS_ADMOB_ID_EDIT_TODO_DIALOG') : FlutterConfig.get('DEV_AOS_ADMOB_ID_EDIT_TODO_DIALOG');
+    final iosAppId = kReleaseMode ? FlutterConfig.get('IOS_ADMOB_ID_EDIT_TODO_DIALOG') : FlutterConfig.get('DEV_IOS_ADMOB_ID');
+    final aosAppId = kReleaseMode ? FlutterConfig.get('AOS_ADMOB_ID_EDIT_TODO_DIALOG') : FlutterConfig.get('DEV_AOS_ADMOB_ID');
 
     bannerAd.value = BannerAd(
       adUnitId: Platform.isIOS ? iosAppId : aosAppId,
