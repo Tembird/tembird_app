@@ -8,10 +8,12 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/model/Update.dart';
 import 'package:tembird_app/repository/InitRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
+import 'package:tembird_app/view/auth/login/LoginView.dart';
+import 'package:tembird_app/view/auth/signup/SignupView.dart';
+import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../constant/Common.dart';
-import '../../../constant/PageNames.dart';
 import '../../../service/SessionService.dart';
 
 class InitController extends RootController {
@@ -174,7 +176,7 @@ class InitController extends RootController {
 
   void routeAccordingToSessionUserStatus() {
     if (SessionService.to.sessionStatus.value == SessionStatus.active) {
-      Get.offAllNamed(PageNames.HOME);
+      Get.offAllNamed(HomeView.routeName);
     }
     onLoading.value = false;
   }
@@ -188,10 +190,10 @@ class InitController extends RootController {
   }
 
   void routeLogin() {
-    Get.toNamed(PageNames.LOGIN);
+    Get.toNamed(LoginView.routeName);
   }
 
   void routeSignUp() {
-    Get.toNamed(PageNames.SIGN_UP);
+    Get.toNamed(SignupView.routeName);
   }
 }

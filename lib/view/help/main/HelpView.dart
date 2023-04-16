@@ -6,6 +6,7 @@ import '../../../constant/StyledPalette.dart';
 import 'controller/HelpController.dart';
 
 class HelpView extends GetView<HelpController> {
+  static String routeName = '/help';
   const HelpView({Key? key}) : super(key: key);
 
   @override

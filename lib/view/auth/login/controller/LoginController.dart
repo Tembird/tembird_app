@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:tembird_app/view/auth/resetPassword/ResetPasswordView.dart';
+import 'package:tembird_app/view/home/HomeView.dart';
 
-import '../../../../constant/PageNames.dart';
 import '../../../../repository/AuthRepository.dart';
 import '../../../../service/SessionService.dart';
 
@@ -61,7 +62,7 @@ class LoginController extends GetxController {
       if (emailError.value != null || passwordError.value != null) return;
       await authRepository.login(email: emailController.value.text, password: passwordController.value.text);
       await SessionService.to.initSession();
-      Get.offAllNamed(PageNames.HOME);
+      Get.offAllNamed(HomeView.routeName);
     } catch (e) {
       passwordController.text = '';
     } finally {
@@ -70,7 +71,7 @@ class LoginController extends GetxController {
   }
 
   void routeResetPasswordView() {
-    Get.toNamed(PageNames.RESET_PASSWORD);
+    Get.toNamed(ResetPasswordView.routeName);
   }
 
   void back() {

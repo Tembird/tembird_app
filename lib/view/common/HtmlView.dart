@@ -16,6 +16,7 @@ class HtmlViewArguments {
 }
 
 class HtmlView extends StatelessWidget {
+  static String routeName = '/html';
   const HtmlView({Key? key}) : super(key: key);
 
   @override

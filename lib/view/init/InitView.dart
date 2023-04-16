@@ -7,6 +7,7 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'controller/InitController.dart';
 
 class InitView extends GetView<InitController> {
+  static String routeName = '/';
   const InitView({super.key});
 
   @override

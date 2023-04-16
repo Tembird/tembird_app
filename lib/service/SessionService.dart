@@ -6,7 +6,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tembird_app/constant/Common.dart';
 import 'package:tembird_app/model/User.dart';
 import 'package:tembird_app/service/FirebaseMessagingService.dart';
-import '../constant/PageNames.dart';
+import 'package:tembird_app/view/help/updateUsername/RegisterUsername.dart';
+import 'package:tembird_app/view/init/InitView.dart';
 import '../repository/AuthRepository.dart';
 
 enum SessionStatus { active, empty }
@@ -31,7 +32,7 @@ class SessionService extends GetxService {
     await getSessionUserInfo();
     if (sessionUser.value == null) return;
     if (sessionUser.value!.username.startsWith('unknown#')) {
-      await Get.toNamed(PageNames.REGISTER_USERNAME);
+      await Get.toNamed(RegisterUsernameView.routeName);
     }
     updateUserHistory();
     sessionStatus.value = SessionStatus.active;
@@ -52,6 +53,6 @@ class SessionService extends GetxService {
   Future<void> quitSession() async {
     await authRepository.signOut();
     await _firebaseMessagingService.deleteFcmToken();
-    await Get.offAllNamed(PageNames.INIT);
+    await Get.offAllNamed(InitView.routeName);
   }
 }

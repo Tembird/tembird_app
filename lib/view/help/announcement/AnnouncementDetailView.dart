@@ -5,6 +5,7 @@ import 'package:tembird_app/model/Announcement.dart';
 import 'package:tembird_app/view/help/announcement/controller/AnnouncementController.dart';
 
 class AnnouncementDetailView extends GetView<AnnouncementController> {
+  static String routeName = '/announcement/detail';
   const AnnouncementDetailView({Key? key}) : super(key: key);
 
   @override

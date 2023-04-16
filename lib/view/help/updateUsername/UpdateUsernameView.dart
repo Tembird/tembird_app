@@ -7,6 +7,7 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'controller/UpdateUsernameController.dart';
 
 class UpdateUsernameView extends GetView<UpdateUsernameController> {
+  static String routeName = '/help/update-username';
   const UpdateUsernameView({Key? key}) : super(key: key);
 
   @override

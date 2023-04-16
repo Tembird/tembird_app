@@ -6,6 +6,7 @@ import '../../../constant/StyledPalette.dart';
 import 'controller/SignupController.dart';
 
 class SignupView extends GetView<SignupController> {
+  static String routeName = '/auth/sign-up';
   const SignupView({Key? key}) : super(key: key);
 
   @override

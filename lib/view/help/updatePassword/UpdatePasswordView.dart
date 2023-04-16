@@ -7,6 +7,7 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'controller/UpdatePasswordController.dart';
 
 class UpdatePasswordView extends GetView<UpdatePasswordController> {
+  static String routeName = '/help/update-password';
   const UpdatePasswordView({Key? key}) : super(key: key);
 
   @override

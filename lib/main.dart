@@ -38,8 +38,6 @@ import 'package:tembird_app/view/todoLabel/all/AllTodoLabelView.dart';
 import 'package:tembird_app/view/todoLabel/edit/EditTodoLabelView.dart';
 import 'package:tembird_app/view/todoLabel/edit/binding/EditTodoLabelBinding.dart';
 
-import 'constant/PageNames.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -74,36 +72,36 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialBinding: InitBinding(),
-      initialRoute: PageNames.INIT,
+      initialRoute: InitView.routeName,
       getPages: [
         GetPage(
-          name: PageNames.INIT,
+          name: InitView.routeName,
           page: () => const InitView(),
           binding: InitBinding(),
         ),
         GetPage(
-          name: PageNames.LOGIN,
+          name: LoginView.routeName,
           page: () => const LoginView(),
           binding: LoginBinding(),
         ),
         GetPage(
-          name: PageNames.SIGN_UP,
+          name: SignupView.routeName,
           page: () => const SignupView(),
           binding: SignupBinding(),
         ),
         GetPage(
-          name: PageNames.RESET_PASSWORD,
+          name: ResetPasswordView.routeName,
           page: () => const ResetPasswordView(),
           binding: ResetPasswordBinding(),
         ),
         GetPage(
-          name: PageNames.REGISTER_USERNAME,
+          name: RegisterUsernameView.routeName,
           page: () => const RegisterUsernameView(),
           binding: UpdateUsernameBinding(),
           popGesture: false,
         ),
         GetPage(
-          name: PageNames.HOME,
+          name: HomeView.routeName,
           page: () => const HomeView(),
           binding: HomeBinding(),
           transition: Transition.noTransition,
@@ -111,30 +109,54 @@ class MyApp extends StatelessWidget {
           transitionDuration: Duration.zero,
         ),
         GetPage(
-          name: PageNames.HELP,
+          name: HelpView.routeName,
           page: () => const HelpView(),
           binding: HelpBinding(),
           fullscreenDialog: true,
         ),
         GetPage(
-          name: PageNames.ANNOUNCEMENT,
+          name: AnnouncementView.routeName,
           page: () => const AnnouncementView(),
           binding: AnnouncementBinding(),
         ),
         GetPage(
-          name: PageNames.ANNOUNCEMENT_DETAIL,
+          name: AnnouncementDetailView.routeName,
           page: () => const AnnouncementDetailView(),
         ),
         GetPage(
-          name: PageNames.HTML,
+          name: HtmlView.routeName,
           page: () => const HtmlView(),
         ),
-        GetPage(name: PageNames.UPDATE_USERNAME, page: () => const UpdateUsernameView(), binding: UpdateUsernameBinding()),
-        GetPage(name: PageNames.UPDATE_PASSWORD, page: () => const UpdatePasswordView(), binding: UpdatePasswordBinding()),
-        GetPage(name: PageNames.REMOVE_ACCOUNT, page: () => const RemoveAccountView(), binding: RemoveAccountBinding()),
-        GetPage(name: PageNames.CONTACT, page: () => const ContactView(), binding: ContactBinding()),
-        GetPage(name: AllTodoLabelView.routeName, page: () => const AllTodoLabelView(), binding: AllTodoLabelBinding()),
-        GetPage(name: EditTodoLabelView.routeName, page: () => const EditTodoLabelView(), binding: EditTodoLabelBinding()),
+        GetPage(
+          name: UpdateUsernameView.routeName,
+          page: () => const UpdateUsernameView(),
+          binding: UpdateUsernameBinding(),
+        ),
+        GetPage(
+          name: UpdatePasswordView.routeName,
+          page: () => const UpdatePasswordView(),
+          binding: UpdatePasswordBinding(),
+        ),
+        GetPage(
+          name: RemoveAccountView.routeName,
+          page: () => const RemoveAccountView(),
+          binding: RemoveAccountBinding(),
+        ),
+        GetPage(
+          name: ContactView.routeName,
+          page: () => const ContactView(),
+          binding: ContactBinding(),
+        ),
+        GetPage(
+          name: AllTodoLabelView.routeName,
+          page: () => const AllTodoLabelView(),
+          binding: AllTodoLabelBinding(),
+        ),
+        GetPage(
+          name: EditTodoLabelView.routeName,
+          page: () => const EditTodoLabelView(),
+          binding: EditTodoLabelBinding(),
+        ),
       ],
     );
   }

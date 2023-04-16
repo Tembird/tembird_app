@@ -7,6 +7,7 @@ import '../../../constant/StyledPalette.dart';
 import 'controller/LoginController.dart';
 
 class LoginView extends GetView<LoginController> {
+  static String routeName = '/auth/login';
   const LoginView({Key? key}) : super(key: key);
 
   @override

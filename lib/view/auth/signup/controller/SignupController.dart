@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/repository/AuthRepository.dart';
-
-import '../../../../constant/PageNames.dart';
+import 'package:tembird_app/view/init/InitView.dart';
 
 enum SignupProcess { email, verificationCode, password, id }
 
@@ -170,7 +169,7 @@ class SignupController extends GetxController {
         password: passwordController.value.text,
       );
       authRepository.showAlertSnackbar(message: '계정 등록이 완료되었습니다!');
-      Get.offAllNamed(PageNames.INIT);
+      Get.offAllNamed(InitView.routeName);
     } finally {
       onLoading.value = false;
     }

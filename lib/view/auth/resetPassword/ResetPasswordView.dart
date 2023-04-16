@@ -6,6 +6,7 @@ import '../../../constant/StyledPalette.dart';
 import 'controller/ResetPasswordController.dart';
 
 class ResetPasswordView extends GetView<ResetPasswordController> {
+  static String routeName = '/auth/reset-password';
   const ResetPasswordView({Key? key}) : super(key: key);
 
   @override

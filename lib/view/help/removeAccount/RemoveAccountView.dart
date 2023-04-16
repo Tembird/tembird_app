@@ -7,6 +7,7 @@ import 'package:tembird_app/constant/StyledPalette.dart';
 import 'controller/RemoveAccountController.dart';
 
 class RemoveAccountView extends GetView<RemoveAccountController> {
+  static String routeName = '/help/remove-account';
   const RemoveAccountView({Key? key}) : super(key: key);
 
   @override

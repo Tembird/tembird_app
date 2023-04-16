@@ -9,6 +9,7 @@ import 'package:tembird_app/view/home/HomeTodoList.dart';
 import 'controller/HomeController.dart';
 
 class HomeView extends GetView<HomeController> {
+  static String routeName = '/home';
   const HomeView({super.key});
 
   @override

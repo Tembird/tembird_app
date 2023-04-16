@@ -6,6 +6,7 @@ import '../../../component/InputTextFormField.dart';
 import 'controller/ContactController.dart';
 
 class ContactView extends GetView<ContactController> {
+  static String routeName = '/help/contact';
   const ContactView({Key? key}) : super(key: key);
 
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tembird_app/constant/PageNames.dart';
 import 'package:tembird_app/model/ActionResult.dart';
 import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/ScheduledIndex.dart';
@@ -11,6 +10,7 @@ import 'package:tembird_app/view/dialog/todo/detail/DetailTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todo/detail/argument/DetailTodoDialogArgument.dart';
 import 'package:tembird_app/view/dialog/todo/edit/EditTodoDialogView.dart';
 import 'package:tembird_app/view/dialog/todoLabel/select/SelectTodoLabelDialogView.dart';
+import 'package:tembird_app/view/help/main/HelpView.dart';
 import '../../../model/CellStyle.dart';
 import '../../../model/DailyTodo.dart';
 import '../../../model/ModalAction.dart';
@@ -159,7 +159,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void openHelpView() {
     resetTextFormField();
-    Get.toNamed(PageNames.HELP);
+    Get.toNamed(HelpView.routeName);
   }
 
   /// HomeScheduleTable

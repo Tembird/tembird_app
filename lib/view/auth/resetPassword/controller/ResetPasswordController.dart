@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:tembird_app/repository/AuthRepository.dart';
-
-import '../../../../constant/PageNames.dart';
+import 'package:tembird_app/view/init/InitView.dart';
 
 enum UpdatePasswordProcess { email, verificationCode, password, id }
 
@@ -161,7 +160,7 @@ class ResetPasswordController extends GetxController {
         password: passwordController.value.text,
       );
       authRepository.showAlertSnackbar(message: '비밀번호 초기화가 완료되었습니다');
-      Get.offAllNamed(PageNames.INIT);
+      Get.offAllNamed(InitView.routeName);
     } finally {
       onLoading.value = false;
     }
