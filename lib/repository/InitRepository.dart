@@ -17,13 +17,4 @@ class InitRepository extends RootRepository {
     Update result = Update.fromJson(response.body['body']);
     return result;
   }
-
-  Future<List<String>> readScheduleColorHexList() async {
-    final response = await get('/color');
-    if(response.hasError) {
-      errorHandler(response);
-    }
-    List<String> list = (response.body['body']['list'] as List).map((e) => e['hex'].toString()).toList();
-    return list;
-  }
 }

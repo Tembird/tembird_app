@@ -5,10 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tembird_app/model/ActionResult.dart';
 import 'package:tembird_app/model/DailyTodoLabel.dart';
 import 'package:tembird_app/model/TodoLabel.dart';
 import 'package:tembird_app/repository/TodoLabelRepository.dart';
 import 'package:tembird_app/service/RootController.dart';
+import 'package:tembird_app/view/home/controller/HomeController.dart';
+import 'package:tembird_app/view/todoLabel/all/AllTodoLabelView.dart';
 
 class SelectTodoLabelDialogController extends RootController {
   final double bannerAdWidth;
@@ -52,7 +55,11 @@ class SelectTodoLabelDialogController extends RootController {
   }
 
   void routeTodoLabelListView() async {
-    // TODO : 카테고리 목록 페이지로 이동
+    Get.back(closeOverlays: true);
+    bool? hasChanged = await Get.toNamed(AllTodoLabelView.routeName) as bool?;
+    if (hasChanged == null || !hasChanged) return;
+
+    await HomeController.to.getAllDailyTodoList(date: date);
   }
 
   void selectTodoLabel({required int index}) async {

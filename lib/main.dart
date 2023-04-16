@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tembird_app/constant/Common.dart';
+import 'package:tembird_app/constant/StyledFont.dart';
 import 'package:tembird_app/constant/StyledPalette.dart';
 import 'package:tembird_app/view/auth/login/LoginView.dart';
 import 'package:tembird_app/view/auth/login/binding/LoginBinding.dart';
@@ -32,6 +33,10 @@ import 'package:tembird_app/view/home/HomeView.dart';
 import 'package:tembird_app/view/home/binding/HomeBinding.dart';
 import 'package:tembird_app/view/init/InitView.dart';
 import 'package:tembird_app/view/init/binding/InitBinding.dart';
+import 'package:tembird_app/view/todoLabel/all/binding/AllTodoLabelBinding.dart';
+import 'package:tembird_app/view/todoLabel/all/AllTodoLabelView.dart';
+import 'package:tembird_app/view/todoLabel/edit/EditTodoLabelView.dart';
+import 'package:tembird_app/view/todoLabel/edit/binding/EditTodoLabelBinding.dart';
 
 import 'constant/PageNames.dart';
 
@@ -65,6 +70,7 @@ class MyApp extends StatelessWidget {
           titleSpacing: 16,
           centerTitle: false,
           toolbarHeight: 50,
+          titleTextStyle: StyledFont.TITLE_3,
         ),
       ),
       initialBinding: InitBinding(),
@@ -127,6 +133,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: PageNames.UPDATE_PASSWORD, page: () => const UpdatePasswordView(), binding: UpdatePasswordBinding()),
         GetPage(name: PageNames.REMOVE_ACCOUNT, page: () => const RemoveAccountView(), binding: RemoveAccountBinding()),
         GetPage(name: PageNames.CONTACT, page: () => const ContactView(), binding: ContactBinding()),
+        GetPage(name: AllTodoLabelView.routeName, page: () => const AllTodoLabelView(), binding: AllTodoLabelBinding()),
+        GetPage(name: EditTodoLabelView.routeName, page: () => const EditTodoLabelView(), binding: EditTodoLabelBinding()),
       ],
     );
   }
