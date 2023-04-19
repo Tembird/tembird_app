@@ -108,10 +108,10 @@ class AuthRepository extends RootRepository {
   Future<void> removeAccount({required String password}) async {
     Map<String, dynamic> data = {'password': password};
 
-    // final Response response = await patch('/users/update-password', jsonEncode(data));
-    // if (response.hasError) {
-    //   errorHandler(response);
-    // }
+    final Response response = await put('/user/remove', jsonEncode(data));
+    if (response.hasError) {
+      errorHandler(response);
+    }
   }
 
   Future<void> updateUserHistory({required String platform, required String platformVersion, required int buildNum}) async {

@@ -12,7 +12,7 @@ class RemoveAccountController extends RootController {
   final RxBool onLoading = RxBool(false);
   final TextEditingController passwordController = TextEditingController();
   final RxnString passwordError = RxnString(null);
-  final RxBool isPasswordObscured = RxBool(false);
+  final RxBool isPasswordObscured = RxBool(true);
 
   @override
   void onClose() {
