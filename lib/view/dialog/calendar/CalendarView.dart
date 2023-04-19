@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -55,55 +54,55 @@ class CalendarView extends GetView<CalendarController> {
                             ),
                     ),
                     const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: controller.hideKeyboard,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                          color: StyledPalette.MINERAL,
+                    Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
                         ),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              children: [
-                                TextButton(
-                                  onPressed: controller.closeCalendar,
-                                  child: const Text('취소', style: StyledFont.CALLOUT_GRAY),
-                                ),
-                                Expanded(
-                                  child: Obx(() => Text(
-                                        controller.selectedDateText.value,
-                                        style: StyledFont.HEADLINE,
-                                        textAlign: TextAlign.center,
-                                      )),
-                                ),
-                                TextButton(
-                                  onPressed: controller.confirmCalendar,
-                                  child: const Text("완료", style: StyledFont.CALLOUT_INFO),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            // TODO : Calendar
-                            SizedBox(
-                              height: 200,
-                              child: CupertinoDatePicker(
-                                initialDateTime: controller.initDate,
-                                mode: CupertinoDatePickerMode.date,
-                                onDateTimeChanged: (DateTime date) => controller.changeDate(date),
-                                minimumDate: DateTime(2023, 01, 01),
-                                dateOrder: DatePickerDateOrder.ymd,
-                                backgroundColor: StyledPalette.MINERAL,
+                        color: StyledPalette.MINERAL,
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: controller.closeCalendar,
+                                child: const Text('취소', style: StyledFont.CALLOUT_GRAY),
                               ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: controller.setDateToday,
+                                  child: Obx(
+                                    () => Text(
+                                      controller.selectedDateText.value,
+                                      style: StyledFont.HEADLINE,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: controller.confirmCalendar,
+                                child: const Text("완료", style: StyledFont.CALLOUT_INFO),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Obx(
+                            () => CalendarDatePicker(
+                              initialDate: controller.selectedDate.value!,
+                              firstDate: DateTime(2023, 01, 01),
+                              lastDate: DateTime(2099, 12, 31),
+                              onDateChanged: controller.changeDate,
+                              currentDate: DateTime.now(),
+                              initialCalendarMode: DatePickerMode.day,
                             ),
-                            SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+                        ],
                       ),
                     ),
                   ],

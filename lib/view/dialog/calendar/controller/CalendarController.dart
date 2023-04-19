@@ -41,6 +41,12 @@ class CalendarController extends RootController {
     selectedDateText.value = dateToString(date: date);
   }
 
+  void setDateToday() {
+    DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    selectedDate.value = today;
+    selectedDateText.value = dateToString(date: today);
+  }
+
   void closeCalendar() {
     Get.back();
   }
