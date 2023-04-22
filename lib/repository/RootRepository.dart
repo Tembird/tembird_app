@@ -41,7 +41,7 @@ class RootRepository extends GetConnect {
     });
 
     httpClient.addAuthenticator((Request request) async {
-      String? refreshToken = Hive.box(Common.session).get(Common.refreshTokenHeader);
+      String? refreshToken = await Hive.box(Common.session).get(Common.refreshTokenHeader);
       if (refreshToken == null || accessToken == null) return request;
 
       final response = await post('/user/refresh', null, headers: {
@@ -64,19 +64,18 @@ class RootRepository extends GetConnect {
   }
 
   void errorHandler(Response response) {
+    print(response.statusCode);
     // TODO : Check Details for Error Handling
     switch (response.statusCode) {
       case 400: // Client Error : Bad Request
         showErrorDialog(message: response.body["message"]);
         throw Error();
       case 401: // Client Error : Unauthenticated
-        accessToken = null;
-        SessionService.to.quitSession();
-        showErrorDialog(message: response.body["message"]);
         throw Error();
       case 403:
         // Client Error : Forbidden
-        showErrorDialog(message: response.body["message"]);
+        accessToken = null;
+        SessionService.to.quitSession();
         throw Error();
       case 404:
         // Client Error : Not Found

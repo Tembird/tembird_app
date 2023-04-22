@@ -23,7 +23,7 @@ class SessionService extends GetxService {
   final Rxn<User> sessionUser = Rxn(null);
 
   Future<void> initSession() async {
-    String? accessToken = Hive.box(Common.session).get(Common.accessTokenHeader, defaultValue: null);
+    String? accessToken = await Hive.box(Common.session).get(Common.accessTokenHeader, defaultValue: null);
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
     appBuildNum = packageInfo.buildNumber;
