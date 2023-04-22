@@ -49,7 +49,14 @@ class RootRepository extends GetConnect {
         Common.refreshTokenHeader: refreshToken,
       });
       if (response.hasError) {
-        errorHandler(response);
+        if (response.statusCode == 403) {
+          showErrorDialog(message: '다시 로그인해주세요');
+          await Future.delayed(const Duration(seconds: 1));
+          SessionService.to.quitSession();
+          accessToken = null;
+        } else {
+          errorHandler(response);
+        }
       }
       String? tempAccessToken = response.headers![Common.accessTokenHeader];
 
@@ -64,37 +71,36 @@ class RootRepository extends GetConnect {
   }
 
   void errorHandler(Response response) {
-    print(response.statusCode);
     // TODO : Check Details for Error Handling
     switch (response.statusCode) {
       case 400: // Client Error : Bad Request
         showErrorDialog(message: response.body["message"]);
-        throw Error();
-      case 401: // Client Error : Unauthenticated
-        throw Error();
+        throw ArgumentError(response.body["message"]);
+      case 401:
+        return;
       case 403:
-        // Client Error : Forbidden
+        // Client Error : Not Authorization
         accessToken = null;
-        SessionService.to.quitSession();
-        throw Error();
+        showErrorDialog(message: response.body["message"]);
+        throw ArgumentError(response.body["message"]);
       case 404:
         // Client Error : Not Found
         showErrorDialog(message: response.body["message"]);
-        throw Error();
+        throw ArgumentError(response.body["message"]);
       case 409:
         // Client Error : Conflict
         showErrorDialog(message: response.body["message"]);
-        throw Error();
+        throw ArgumentError(response.body["message"]);
       case 500:
         // throw "Server Error pls retry later";
         showErrorDialog(message: "서버에 문제가 있어요");
-        throw Error();
+        throw ArgumentError(response.body["message"]);
       case 503:
         showErrorDialog(message: "요청 시간이 초과되었습니다");
-        throw Error();
+        throw ArgumentError(response.body["message"]);
       default:
         showErrorDialog(message: "현재 상황을 개발자 피드백에 남겨주시면 더 좋은 서비스로 보답하겠습니다");
-        throw Error();
+        throw ArgumentError('알 수 없는 에러');
     }
   }
 
