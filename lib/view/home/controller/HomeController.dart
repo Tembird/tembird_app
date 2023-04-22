@@ -326,6 +326,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
     final List<ModalAction> modalActionList = [
       ModalAction(name: '수정하기', onPressed: () => Get.back(result: 0), isNegative: false),
       ModalAction(name: '삭제하기', onPressed: () => Get.back(result: 1), isNegative: false),
+      ModalAction(name: '시간 삭제하기', onPressed: () => Get.back(result: 2), isNegative: false),
     ];
     int? action = await showCupertinoActionSheet(
       modalActionList: modalActionList,
@@ -340,6 +341,10 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       removeDailyTodo(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
       return;
     }
+    if (action == 2) {
+      removeDailyTodoDuration(dailyTodoLabelIndex: dailyTodoLabelIndex, dailyTodoIndex: dailyTodoIndex);
+      return;
+    }
   }
 
   void removeDailyTodo({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
@@ -350,6 +355,18 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
       dailyTodoLabelList.removeAt(dailyTodoLabelIndex);
     } catch (e) {
       return;
+    } finally {
+      dailyTodoLabelList.refresh();
+      refreshScheduledIndexList();
+      refreshCellStyleList();
+    }
+  }
+
+  void removeDailyTodoDuration({required int dailyTodoLabelIndex, required int dailyTodoIndex}) async {
+    try {
+      await dailyTodoRepository.deleteDailyTodoDuration(id: dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].id);
+      dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].startAt = null;
+      dailyTodoLabelList[dailyTodoLabelIndex].todoList[dailyTodoIndex].endAt = null;
     } finally {
       dailyTodoLabelList.refresh();
       refreshScheduledIndexList();
@@ -392,7 +409,7 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
 
   void createDailyTodoAndLabel() async {
     DailyTodoLabel? dailyTodoLabel = await Get.bottomSheet(
-      SelectTodoLabelDialogView.route(date : selectedDate.value),
+      SelectTodoLabelDialogView.route(date: selectedDate.value),
       isScrollControlled: true,
       ignoreSafeArea: true,
       enableDrag: false,

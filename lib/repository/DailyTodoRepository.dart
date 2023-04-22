@@ -94,6 +94,13 @@ class DailyTodoRepository extends RootRepository {
     return result;
   }
 
+  Future<void> deleteDailyTodoDuration({required int id}) async {
+    final Response response = await delete('/daily/todo/duration/$id');
+    if (response.hasError) {
+      errorHandler(response);
+    }
+  }
+
   Future<void> deleteDailyTodo({required int id}) async {
     final Response response = await delete('/daily/todo/$id');
     if (response.hasError) {
