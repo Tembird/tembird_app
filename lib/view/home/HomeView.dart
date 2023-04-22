@@ -10,10 +10,12 @@ import 'controller/HomeController.dart';
 
 class HomeView extends GetView<HomeController> {
   static String routeName = '/home';
+
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = Get.width < 500;
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 0,
@@ -38,7 +40,7 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             const SizedBox(height: 8),
-            const HomeTabBar()
+            if (isMobile) const HomeTabBar(),
           ],
         ),
       ),
@@ -50,31 +52,75 @@ class HomeView extends GetView<HomeController> {
           color: StyledPalette.MINERAL,
           child: SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(() => controller.viewIndex.value != 1 ? Container() : Container(
-                  width: controller.tableWidth,
-                  height: 20,
-                  color: StyledPalette.MINERAL,
-                  padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
-                  child: Row(
-                    children: List.generate(6, (index) => SizedBox(
-                      width: controller.cellWidth,
-                      child: Text(
-                        '${index * 10}',
-                        textAlign: TextAlign.center,
-                        style: StyledFont.FOOTNOTE,
-                      ),
-                    )),
+                if (isMobile)
+                  Obx(
+                    () => controller.viewIndex.value == 1
+                        ? Container(
+                            width: controller.tableWidth,
+                            height: 20,
+                            color: StyledPalette.MINERAL,
+                            padding: EdgeInsets.only(left: 32 - controller.cellWidth / 2),
+                            child: Row(
+                              children: List.generate(
+                                  6,
+                                  (index) => SizedBox(
+                                        width: controller.cellWidth,
+                                        child: Text(
+                                          '${index * 10}',
+                                          textAlign: TextAlign.center,
+                                          style: StyledFont.FOOTNOTE,
+                                        ),
+                                      )),
+                            ),
+                          )
+                        : Container(),
                   ),
-                )),
                 Expanded(
-                  child: Obx(() => IndexedStack(
-                    index: controller.viewIndex.value,
-                    children: const [
-                      HomeTodoList(),
-                      HomeScheduleTable(),
-                    ],
-                  )),
+                  child: isMobile
+                      ? Obx(() => IndexedStack(
+                            index: controller.viewIndex.value,
+                            children: const [
+                              HomeTodoList(),
+                              HomeScheduleTable(),
+                            ],
+                          ))
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: controller.tableWidth,
+                                    height: 20,
+                                    color: StyledPalette.MINERAL,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: List.generate(
+                                        6,
+                                        (index) => SizedBox(
+                                          width: controller.cellWidth,
+                                          child: Text(
+                                            '${index * 10}',
+                                            textAlign: TextAlign.center,
+                                            style: StyledFont.FOOTNOTE,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    child: HomeScheduleTable(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Expanded(
+                              child: HomeTodoList(),
+                            ),
+                          ],
+                        ),
                 ),
                 const HomeBottomBar(),
               ],

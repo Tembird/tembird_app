@@ -169,8 +169,8 @@ class HomeController extends RootController with GetSingleTickerProviderStateMix
   Rxn<int> startIndex = Rxn(null);
   Rxn<int> endIndex = Rxn(null);
 
-  final double tableWidth = Get.width < 400 ? Get.width : 400;
-  final double cellWidth = ((Get.width < 400 ? Get.width : 400) - 32) / 6;
+  final double tableWidth = Get.width < 500 ? Get.width : (Get.width / 2);
+  final double cellWidth = ((Get.width < 500 ? Get.width : (Get.width / 2)) - 32) / 6;
   final double cellHeight = 45;
   final RxList<CellStyle> cellStyleList = RxList(List.generate(144, (index) => CellStyle(length: 1)));
 
