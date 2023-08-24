@@ -1,115 +1,163 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_config/flutter_config.dart';
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:tembird_app/constant/Common.dart';
+import 'package:tembird_app/constant/StyledFont.dart';
+import 'package:tembird_app/constant/StyledPalette.dart';
+import 'package:tembird_app/view/auth/login/LoginView.dart';
+import 'package:tembird_app/view/auth/login/binding/LoginBinding.dart';
+import 'package:tembird_app/view/auth/resetPassword/ResetPasswordView.dart';
+import 'package:tembird_app/view/auth/resetPassword/binding/ResetPasswordBinding.dart';
+import 'package:tembird_app/view/auth/signup/SignupView.dart';
+import 'package:tembird_app/view/auth/signup/binding/SignupBinding.dart';
+import 'package:tembird_app/view/common/HtmlView.dart';
+import 'package:tembird_app/view/help/announcement/AnnouncementDetailView.dart';
+import 'package:tembird_app/view/help/announcement/AnnouncementView.dart';
+import 'package:tembird_app/view/help/announcement/binding/AnnouncementBinding.dart';
+import 'package:tembird_app/view/help/contact/ContactView.dart';
+import 'package:tembird_app/view/help/contact/binding/ContactBinding.dart';
+import 'package:tembird_app/view/help/main/HelpView.dart';
+import 'package:tembird_app/view/help/main/binding/HelpBinding.dart';
+import 'package:tembird_app/view/help/removeAccount/RemoveAccountView.dart';
+import 'package:tembird_app/view/help/removeAccount/binding/RemoveAccountBinding.dart';
+import 'package:tembird_app/view/help/updatePassword/UpdatePasswordView.dart';
+import 'package:tembird_app/view/help/updatePassword/binding/UpdatePasswordBinding.dart';
+import 'package:tembird_app/view/help/updateUsername/RegisterUsername.dart';
+import 'package:tembird_app/view/help/updateUsername/UpdateUsernameView.dart';
+import 'package:tembird_app/view/help/updateUsername/binding/UpdateUsernameBinding.dart';
+import 'package:tembird_app/view/home/HomeView.dart';
+import 'package:tembird_app/view/home/binding/HomeBinding.dart';
+import 'package:tembird_app/view/init/InitView.dart';
+import 'package:tembird_app/view/init/binding/InitBinding.dart';
+import 'package:tembird_app/view/todoLabel/all/binding/AllTodoLabelBinding.dart';
+import 'package:tembird_app/view/todoLabel/all/AllTodoLabelView.dart';
+import 'package:tembird_app/view/todoLabel/edit/EditTodoLabelView.dart';
+import 'package:tembird_app/view/todoLabel/edit/binding/EditTodoLabelBinding.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  MobileAds.instance.initialize();
+
+  await FlutterConfig.loadEnvVariables();
+  await Hive.initFlutter();
+  await Hive.openBox(Common.session);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
+      title: 'Tembird',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        backgroundColor: StyledPalette.MINERAL,
+        scaffoldBackgroundColor: StyledPalette.MINERAL,
+        dialogBackgroundColor: StyledPalette.MINERAL,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: StyledPalette.MINERAL,
+          foregroundColor: StyledPalette.BLACK,
+          elevation: 0,
+          titleSpacing: 16,
+          centerTitle: false,
+          toolbarHeight: 50,
+          titleTextStyle: StyledFont.TITLE_3,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      initialBinding: InitBinding(),
+      initialRoute: InitView.routeName,
+      getPages: [
+        GetPage(
+          name: InitView.routeName,
+          page: () => const InitView(),
+          binding: InitBinding(),
+        ),
+        GetPage(
+          name: LoginView.routeName,
+          page: () => const LoginView(),
+          binding: LoginBinding(),
+        ),
+        GetPage(
+          name: SignupView.routeName,
+          page: () => const SignupView(),
+          binding: SignupBinding(),
+        ),
+        GetPage(
+          name: ResetPasswordView.routeName,
+          page: () => const ResetPasswordView(),
+          binding: ResetPasswordBinding(),
+        ),
+        GetPage(
+          name: RegisterUsernameView.routeName,
+          page: () => const RegisterUsernameView(),
+          binding: UpdateUsernameBinding(),
+          popGesture: false,
+        ),
+        GetPage(
+          name: HomeView.routeName,
+          page: () => const HomeView(),
+          binding: HomeBinding(),
+          transition: Transition.noTransition,
+          popGesture: false,
+          transitionDuration: Duration.zero,
+        ),
+        GetPage(
+          name: HelpView.routeName,
+          page: () => const HelpView(),
+          binding: HelpBinding(),
+          fullscreenDialog: true,
+        ),
+        GetPage(
+          name: AnnouncementView.routeName,
+          page: () => const AnnouncementView(),
+          binding: AnnouncementBinding(),
+        ),
+        GetPage(
+          name: AnnouncementDetailView.routeName,
+          page: () => const AnnouncementDetailView(),
+        ),
+        GetPage(
+          name: HtmlView.routeName,
+          page: () => const HtmlView(),
+        ),
+        GetPage(
+          name: UpdateUsernameView.routeName,
+          page: () => const UpdateUsernameView(),
+          binding: UpdateUsernameBinding(),
+        ),
+        GetPage(
+          name: UpdatePasswordView.routeName,
+          page: () => const UpdatePasswordView(),
+          binding: UpdatePasswordBinding(),
+        ),
+        GetPage(
+          name: RemoveAccountView.routeName,
+          page: () => const RemoveAccountView(),
+          binding: RemoveAccountBinding(),
+        ),
+        GetPage(
+          name: ContactView.routeName,
+          page: () => const ContactView(),
+          binding: ContactBinding(),
+        ),
+        GetPage(
+          name: AllTodoLabelView.routeName,
+          page: () => const AllTodoLabelView(),
+          binding: AllTodoLabelBinding(),
+        ),
+        GetPage(
+          name: EditTodoLabelView.routeName,
+          page: () => const EditTodoLabelView(),
+          binding: EditTodoLabelBinding(),
+        ),
+      ],
     );
   }
 }

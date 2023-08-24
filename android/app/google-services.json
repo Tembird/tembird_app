@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "239638505455",
+    "project_id": "tembird-802be",
+    "storage_bucket": "tembird-802be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239638505455:android:72acce62ed72030a2a381a",
+        "android_client_info": {
+          "package_name": "com.tembird.app.tembirdApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239638505455-6vcnmpsbbqgtuv0c32klrds8ua3hnr7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tembird.app.tembirdApp",
+            "certificate_hash": "e2ba6e5fde43f086de9c6cb40f3a0812f30be8e7"
+          }
+        },
+        {
+          "client_id": "239638505455-ltcre9kdqnnltu3is5tt38ohd61ei32d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv-4kBtIAcg-CCx0bZAJZN1GZVvr1xUrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239638505455-ltcre9kdqnnltu3is5tt38ohd61ei32d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239638505455-4tb2nepuql1b5oq75nd1qgog1j4975u9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tembird.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
